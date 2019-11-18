@@ -3,6 +3,8 @@ delete_merged_file: true
 
 rmd_files: [
   "index.Rmd",
+  "tidy.Rmd",
+  "pivot.Rmd",
   "references.Rmd"
 ]
 

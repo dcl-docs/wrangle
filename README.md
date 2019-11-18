@@ -1,6 +1,6 @@
-# Book
+# Data Wrangling
 
-This repository contains the source for the book [Book](https://dcl-book.stanford.edu/).
+This repository contains the source for the book [Data Wrangling](https://dcl-wrangle.stanford.edu/).
 
 We welcome suggestions for improvements.
 
