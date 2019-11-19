@@ -1,11 +1,6 @@
-
 # Pivot
 
 ## Basics
-
-```{r, include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-```
 
 ```{r include=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -51,14 +46,14 @@ Non-tidy data will not fulfill one or more of these characteristics.
 
 ### Longer
 
-`eagle_nests` contains data on the number of [bald eagle nesting](https://www.flickr.com/photos/usfwsmidwest/16759298633/in/photolist-rwXMAH-bXW4Cm-28DuSx6-9PDwbH-eZx3or-bqZTS8-eZFq8y-9PDw8Z-eZu4QB-NoLDSB-bqZaqg-8RQQYM-eZFqQq-eZu4pV-VLBNvb-WshJpu-VXydWp-VLBKbq-WR8GDg-cDxjcE-bpEQe4-eZu41z-zbmBDJ-br1g6e-eZJpSu-eZx3aB-eZu3Yz-9PDwez-ayvEXy-QbaNpg-9LeFY4-eZx3s6-FS2b8D-vnh2u9-KiS4LA-8aBLgF-8RVSg3-8RSKFi-8RVSgU-qFccg6-9PDwde-eZJqg9-eZu3X6-bpEQiH-Ec2vTb-MxKio7-91FpA3-9PDwhH-91FojJ-91FoB9) sites across multiple regions and years.
+`eagle_nests` contains data on the number of [bald eagle nesting sites](https://www.fws.gov/migratorybirds/pdf/management/EagleRuleRevisions-StatusReport.pdf) across multiple regions and years.
 
 ```{r}
 # Source: US Fish and Wildlife Service
 eagle_nests
 ```
 
-The data isn't tidy. Each value has its own cell and each observation has its own row, but each variable does not have its own column. In the following steps, we'll show you how to tidy `eagle_nests` using `pivot_longer()`. 
+The data isn't tidy. In the following steps, we'll show you how to tidy `eagle_nests` using `pivot_longer()`. 
 
 __Step 1:__ Identify the variables.
 
@@ -68,67 +63,93 @@ There are three variables in this dataset:
 * `year`: The year the nests were found. 
 * `num_nests`: The number of nests found. 
 
-Only one of these (`region`) is currently a column in `eagle_nests`.
+Only one of these variables (`region`) is currently a column. Values of `year` are currently stored horizontally as column names, and values of `num_nests` are stored as values of `2007` and `2009`. In order for this data to be tidy, we'll need to pivot `2007` and `2009` into a `year` column, and the values of `2007` and `2009` into a `num_nests` column.
 
-__Step 2:__ Identify the columns that need tidying.
+```{r echo=FALSE}
+knitr::include_graphics("images/pivot/longer_overview.png", dpi = image_dpi)
+```
 
-We need to tidy the columns currently storing values of `year`: `2007` and `2009`. The `cols` argument controls which columns `pivot_longer()` tidies. 
+Now that we've identified the variables, we can start filling in our call to `pivot_longer()`. We'll need three arguments, which we'll identify over the next three steps. 
+
+```{r eval=FALSE}
+eagle_nests %>% 
+  pivot_longer(
+    # Step 2
+    # Step 3
+    # Step 4
+  )
+```
+
+__Step 2:__ Identify the columns to pivot.
+
+To decide which columns to pivot, identify which columns are keeping the data from being tidy. In our example, those columns are `2007` and `2009`. 
+
+```{r echo=FALSE}
+knitr::include_graphics("images/pivot/longer_cols.png", dpi = image_dpi)
+```
+
+`2007` and `2009` are actually values of `year`, not variables themselves, and their values are actually values of `num_nests`. 
+
+The `cols` argument controls which columns `pivot_longer()` pivots. 
 
 ```{r eval=FALSE}
 eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`),
-    
-    
+    # Step 3
+    # Step 4
   )
 ```
 
-You can specify these columns in the same ways that you can specify columns inside `select()`: by name, with `contains()`, `starts_with()`, etc. Here, we have to wrap `2007` and `2009` in backticks (``) because they start with numbers.
+`cols` is similar to `select()`. You can specify columns by name, with `contains()`, `starts_with()`, etc. Here, we have to wrap `2007` and `2009` in backticks (``` ` ` ```) because they start with numbers.
 
 __Step 3__ Name the column that will store the values from the column names.
 
-Currently, values representing year are stored in the column names `2007` and `2009`.
+Now, we're just going to focus on the columns we identified in `cols`. Ultimately, `pivot_longer()` is going to move both the names of these columns and their values into new, separate columns. 
 
 ```{r echo=FALSE}
-knitr::include_graphics("images/pivot/longer_names.png", dpi = image_dpi)
+knitr::include_graphics("images/pivot/longer_names_values.png")
 ```
 
-We want these column names to become the values of a new column called `year`. `pivot_longer()`'s `names_to` argument controls the name of this new column. The argument is called `names_to` because you're specifying which column to move the column __names__ to. 
+First, we’ll focus on the column names: `2007` and `2009`. `pivot_longer()`’s `names_to` argument controls the name of the column that will store the old column names. We want to name this new column `"year"`. The argument is called `names_to` because you’re specifying which column to move the column __names__ to.
 
 ```{r eval=FALSE}
 eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`),
     names_to = "year",
-    
+    # Step 4
   )
 ```
 
-This will create a new column called `year` and fill it with the column names `2007` and `2009`. Because we specifying two columns in `cols`, we will get two values of `year` for each region. 
+Note that the argument to `names_to` has to be in quotes, while the arguments to `cols` do not. It's easy to get confused about which pivot arguments need to be quoted. Here's the general rule: if you're identifying an existing column (e.g., `2007`), do not quote. If you're talking about a column that does not currently exist (e.g., `year`), quote it. 
+
+Now, `pivot_longer()` will create a new column called `year` and fill it with the column names `2007` and `2009`. Because we specified two columns in `cols`, we will get two values of `year` for each region. 
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/pivot/longer_1.png", dpi = image_dpi)
 ```
 
-Note that `"year"` has to be in quotes. You're not identifying an existing column, you're providing a string. 
-
 __Step 4__ Name the column that will store the column values.
 
-Now, we need to tell `pivot_longer()` what to do with the values previously stored in `2007` and `2009`. 
+Now, we need to name the column that will store the values from `2007` and `2009`.
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/pivot/longer_values.png", dpi = image_dpi)
 ```
 
-`pivot_longer()`'s `values_to` argument controls the name of the column that will store these values. In `eagle_nests`, these values represent the number of nests. 
+Just as `names_to` controls the name of the column for the names, `values_to` controls the name of column for the values. In `eagle_nests`, the column values represent the number of nests, so we'll name the new column `"num_nests"`. 
 
 ```{r eval=FALSE}
 eagle_nests %>% 
-  pivot_longer(cols = c(`2007`, `2009`), 
+  pivot_longer(
+    cols = c(`2007`, `2009`), 
     names_to = "year", 
     values_to = "num_nests"
   )
 ```
+
+Again, notice that you have to quote any argument to `values_to` because it references a column that does not exist. 
 
 `pivot_longer()` will now move the values from `2007` and `2009` to a column called `num_nests`.
 
@@ -149,13 +170,13 @@ eagle_nests %>%
 
 The data is now tidy! `pivot_longer()` has many optional arguments, but `cols`, `names_to`, and `values_to` will cover most of your use-cases. The _Missing values_ and _Advanced_ sections covers some more specialized uses of `pivot_longer()`. 
 
-Here's another eagle-related example. `eagle_pairs` contains data on the number of observed bald eagle breeding pairs across years and states. 
+Here's another eagle-related example. `eagle_pairs` contains data on the number of observed [bald eagle breeding pairs](https://www.fws.gov/midwest/eagle/NestingData/nos_state_tbl.html) across years and states. 
 
 ```{r}
 eagle_pairs
 ```
 
-Again, the date isn't tidy because values (the years) are contained in the column names. We need to tidy all the year columns (`1997` through `2006`), moving the column names to a column named `"year"` and the column values to a column named `"num_nests"`.  
+Again, the date isn't tidy because values are spread across column names. We need to pivot all the year columns (`1997` through `2006`), moving their names into a column named `"year"` and their values into a column named `"num_nests"`. 
 
 Here's the full call to `pivot_longer()`:
 
@@ -170,11 +191,11 @@ eagle_pairs %>%
 
 ### Wider
 
-`pivot_wider()` is the reverse of `pivot_longers()`. `pivot_longer()` moves data from column names to cell values, while `pivot_wider()` pulls data from cell values into column names, creating a wider tibble.
+`pivot_wider()` is the reverse of `pivot_longer()`. `pivot_longer()` moves data from column names to cell values, while `pivot_wider()` pulls data from cell values into column names, creating a wider tibble.
 
-`pivot_longer()` is generally more useful for tidying than `pivot_wider()`. Often, you'll actually use `pivot_wider()` to non-tidy data because the non-tidy format is more convenient for some task you want to do (e.g., creating a visualization).
+You'll likely use `pivot_longer()` more often than `pivot_wider()` when tidying. Often, you'll actually use `pivot_wider()` to un-tidy data. The non-tidy format may be more convenient for some tasks (e.g., creating a specific visualization).
 
-We'll explain `pivot_wider()` by using it to turn the tidied `eagle_nests` back into its original form. Here's the tidied version:
+To explain `pivot_wider()`, we'll turn the tidied `eagle_nests` back into its original form. Here's the tidied version:
 
 ```{r}
 eagle_nests_tidy
@@ -182,20 +203,23 @@ eagle_nests_tidy
 
 __Step 1__ Identify the column whose values will supply the column names.
 
-We want the values from `year` to supply the new column names. 
+`pivot_wider()` turns the values from one column and turns them into column names. In our example, we want the unique values from `year` to become column names. 
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/pivot/wider_names.png", dpi = image_dpi)
 ```
 
-We specify `year` to `pivot_wider()`'s `names_from` argument. 
+`pivot_wider()`'s `names_from` argument controls which column is pivoted into column names. 
 
 ```{r eval=FALSE}
 eagle_nests_tidy %>% 
-  pivot_wider(names_from = year,                          )
+  pivot_wider(
+    names_from = year,
+    # Step 2
+    )
 ```
 
-Notice that `year` is unquoted, unlike `pivot_longer()'`s `names_to` argument, because we're referencing a column that exists in `eagle_nests_tidy`. 
+Notice that `year` is unquoted because, following the rule, `year` does exist in `eagle_nests_tidy`.
 
 __Step 2__ Identify the column whose values will supply the column values.
 
@@ -209,14 +233,17 @@ We specify `num_nests` as the `values_from` argument.
 
 ```{r}
 eagle_nests_tidy %>% 
-  pivot_wider(names_from = year, values_from = num_nests)
+  pivot_wider(
+    names_from = year, 
+    values_from = num_nests
+  )
 ```
 
 Again, supply the name of the column unquoted. 
 
 We're done! The tibble is now transformed back into its original form. 
 
-Let's look at an example of a tibble that actually does need `pivot_wider()` to be tidy. `acs` contains data from the 2012 and 2017 American Community Surveys, obtained through the tidycensus package. 
+Let's see an example of a tibble that actually does need `pivot_wider()` to be tidy. `acs` contains data from the 2012 and 2017 [American Community Surveys](https://www.census.gov/programs-surveys/acs), obtained through the [tidycensus](https://walkerke.github.io/tidycensus/) package. 
 
 ```{r}
 acs
@@ -236,18 +263,18 @@ acs %>%
   pivot_wider(names_from = variable, values_from = estimate)
 ```
 
-We've been naming the arguments to `pivot_longer()` and `pivot_wider()` because it makes it easier to understand what's happening. It's also necessary to name `name_from` and `values_from` inside `pivot_wider()`, because it's first argument isn't actually `names_from`. It's another argument called `id_cols`. This means that if you don't name `names_from` and `values_from`, you'll get a strange error:
+`pivot_wider()`'s first argument isn't actually `names_from`--it's a different argument named `id_cols`. This means that if you don't name `names_from` and `values_from`, you'll get a strange error:
 
 ```{r error=TRUE}
 eagle_nests_tidy %>% 
   pivot_wider(year, num_nests)
 ```
 
-`pivot_wider()` thinks you're trying to supply `variable` to `id_cols`. We'll talk more about what `id_cols` actually does in the _Advanced_ section. For now, it's enough to know that you should name `names_from` and `values_from` to avoid the error. 
+`pivot_wider()` thinks you're supplying `variable` to `id_cols`. We'll talk more about what `id_cols` actually does in the _Advanced_ section. For now, it's enough to know that you should name `names_from` and `values_from` to avoid the error. 
 
 ### Missing values
 
-`migration_2017` shows the number of migrants from an origin country to a `dest` country in 2017.  
+The United Nations compiles [data](https://www.un.org/en/development/desa/population/migration/data/estimates2/estimates19.asp) on the origin and destination countries of international migrants. `migration_2017` contains a subset of this data from 2017. The countries in the column names represent countries of origin, and the countries in `dest` represent destination countries. 
 
 ```{r}
 migration_2017
@@ -272,63 +299,20 @@ migration_2017 %>%
   ) 
 ```
 
-When you use `values_drop_na = TRUE` in `pivot_longer()`, you're turning _explicit_ missing values into _implicit_ missing values. This is usually only a good idea if the `NA`s were in the non-tidy data only for a structural reason, like in `migration_2017`. 
+When you use `values_drop_na = TRUE` in `pivot_longer()`, you're turning _explicit_ missing values into _implicit_ missing values. This is only a good idea if the `NA`s were in the non-tidy data for a purely structural reason, like in `migration_2017`. 
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/pivot/missing_values.png", dpi = image_dpi)
 ```
 
-`eagle_pairs`'s `NA`s aren't structual, and represent actual missing data. There were probably some number of paired Alabamian eagles in 2001, but the data isn't there. 
+`eagle_pairs`'s `NA`s aren't structual, and represent actual missing data. Paired Alabamian eagles probably existed in 2001, but the data isn't there. 
 
 ```{r}
 eagle_pairs
 ```
 
-If we used `values_drop_na = TRUE` when we pivoted `eagle_pairs`, we would turn all these explicit missing values implicit. 
+If we used `values_drop_na = TRUE` when we pivoted `eagle_pairs`, we would turn all these explicit missing values implicit, which isn't a good idea. 
 
-## Advanced
-
-So what does `id_cols` actually do? `id_cols` allows you to specify the columns that uniquely identify your observations. It's default value is all columns except the ones you are pivoting, so when we pivot `eagle_nests_tidy`, `id_cols` defaults to just `region`.
-
-```{r}
-eagle_nests_tidy %>% 
-  pivot_wider(names_from = year, values_from = num_nests)
-```
-
-When we pivot `acs`, `id_cols` defaults to `geoid`, `name`, and `year`. 
-
-```{r}
-acs %>% 
-  pivot_wider(names_from = variable, values_from = estimate)
-```
-
-Let's look at a situation in which you do need to use `id_cols`. `eagle_nests_tidy_se` includes another variable: `se`, which indicates the standard error for `num_nests`. However, `se` is only available for `2009`.
-
-```{r}
-eagle_nests_tidy_se
-```
-
-If we `pivot_wider()` just as we did before, we won't get the result that we want.
-
-```{r}
-eagle_nests_tidy_se %>% 
-  pivot_wider(names_from = year, values_from = num_nests)
-```
-
-`pivot_wider()` thinks each `region`-`se` combination uniquely identifies observations, and so creates one row for each combination. We actually want `pivot_wider()` to just ignore `se`, because we want a single row for each region. We could accomplish this by using `select()` to get rid of `se` before pivoting. 
-
-```{r}
-eagle_nests_tidy_se %>% 
-  select(-se) %>% 
-  pivot_wider(names_from = year, values_from = num_nests)
-```
-
-Or, we can set `id_cols` to `region`. 
-
-```{r}
-eagle_nests_tidy_se %>% 
-  pivot_wider(id_cols = region, names_from = year, values_from = num_nests)
-```
 
 
 [^1]: Tidy Data (vignette). https://tidyr.tidyverse.org/articles/tidy-data.html.
