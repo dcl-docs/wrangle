@@ -5,6 +5,9 @@ rmd_files: [
   "index.Rmd",
   "tidy.Rmd",
   "pivot.Rmd",
+  #"scoped_verbs.Rmd",
+  #"scoped_basics.Rmd",
+  #"scoped_predicate.Rmd",
   "references.Rmd"
 ]
 

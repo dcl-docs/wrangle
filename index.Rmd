@@ -3,7 +3,7 @@ knitr: bookdown::render_book
 title: "Data Wrangling"
 author: "Sara Altman, Bill Behrman"
 date: "`r Sys.Date()`"
-description: "Description."
+description: "A collection of readings on data wrangling."
 url: 'https\://dcl-wrangle.stanford.edu'
 github-repo: dcl-docs/book
 site: bookdown::bookdown_site
