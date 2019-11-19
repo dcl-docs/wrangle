@@ -4,7 +4,7 @@ delete_merged_file: true
 rmd_files: [
   "index.Rmd",
   "tidy.Rmd",
-  "pivot.Rmd",
+  "pivot_basic.Rmd",
   #"scoped_verbs.Rmd",
   #"scoped_basics.Rmd",
   #"scoped_predicate.Rmd",
