@@ -166,7 +166,7 @@ eagle_nests %>%
   )
 ```
 
-The data is now tidy! `pivot_longer()` has many optional arguments, but `cols`, `names_to`, and `values_to` will cover most of your use-cases. The _Missing values_ and _Advanced_ sections covers some more specialized uses of `pivot_longer()`. 
+The data is now tidy! `pivot_longer()` has many optional arguments, but `cols`, `names_to`, and `values_to` will cover most of your use-cases. The _Missing values_ section and the _Advanced pivoting_ chapter cover some more specialized uses of `pivot_longer()`. 
 
 Here's another eagle-related example. `eagle_pairs` contains data on the number of observed [bald eagle breeding pairs](https://www.fws.gov/midwest/eagle/NestingData/nos_state_tbl.html) across years and states. 
 
@@ -174,7 +174,7 @@ Here's another eagle-related example. `eagle_pairs` contains data on the number 
 eagle_pairs
 ```
 
-Again, the date isn't tidy because values are spread across column names. We need to pivot all the year columns (`1997` through `2006`), moving their names into a column named `"year"` and their values into a column named `"num_nests"`. 
+Again, the data isn't tidy because values are spread across column names. We need to pivot all the year columns (`1997` through `2006`), moving their names into a column named `"year"` and their values into a column named `"num_nests"`. 
 
 Here's the full call to `pivot_longer()`:
 
@@ -189,7 +189,7 @@ eagle_pairs %>%
 
 ## Wider
 
-`pivot_wider()` is the reverse of `pivot_longer()`. `pivot_longer()` moves data from column names to cell values, while `pivot_wider()` pulls data from cell values into column names, creating a wider tibble.
+`pivot_wider()` is the inverse of `pivot_longer()`. `pivot_longer()` moves data from column names to cell values, while `pivot_wider()` pulls data from cell values into column names, creating a wider tibble.
 
 You'll likely use `pivot_longer()` more often than `pivot_wider()` when tidying. Often, you'll actually use `pivot_wider()` to un-tidy data. The non-tidy format may be more convenient for some tasks (e.g., creating a specific visualization).
 
@@ -261,14 +261,14 @@ acs %>%
   pivot_wider(names_from = variable, values_from = estimate)
 ```
 
-`pivot_wider()`'s first argument isn't actually `names_from`--it's a different argument named `id_cols`. This means that if you don't name `names_from` and `values_from`, you'll get a strange error:
+`pivot_wider()`'s first argument isn't actually `names_from`---it's a different argument named `id_cols`. This means that if you don't name `names_from` and `values_from`, you'll get a strange error:
 
 ```{r error=TRUE}
 eagle_nests_tidy %>% 
   pivot_wider(year, num_nests)
 ```
 
-`pivot_wider()` thinks you're supplying `variable` to `id_cols`. We'll talk more about what `id_cols` actually does in the _Advanced_ section. For now, it's enough to know that you should name `names_from` and `values_from` to avoid the error. 
+`pivot_wider()` thinks you're supplying `variable` to `id_cols`. We'll talk more about what `id_cols` actually does in the _Advanced pivoting_ chapter. For now, it's enough to know that you should name `names_from` and `values_from` to avoid the error. 
 
 ## Missing values
 
@@ -285,7 +285,7 @@ migration_2017 %>%
   pivot_longer(cols = -dest, names_to = "origin", values_to = "migrants")
 ```
 
-There are a lot of `NA`s in the data. However, they don't actually represent missing values. Someone didn't forget to measure the number of migrants Afghanistan to Albania---there just aren't any. It doesn't really make sense to include these rows in our new, tidied dataset. We can use `values_drop_na` to exclude these rows.
+There are a lot of `NA`s in the data. However, they don't actually represent missing values. Someone didn't forget to measure the number of migrants Afghanistan to Albania---there just weren't any. It doesn't really make sense to include these rows in our new, tidied dataset. We can use `values_drop_na` to exclude these rows.
 
 ```{r}
 migration_2017 %>% 
