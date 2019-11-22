@@ -21,13 +21,13 @@ dimensions_3 <- read_rds(here::here("data/dimensions/dimensions_3.rds"))
 dimensions_4 <- read_rds(here::here("data/dimensions/dimensions_4.rds"))
 ```
 
-`pivot_longer()` and `pivot_wider()` are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we'll explore this flexibility by introducing some of the pivot functions' optional functionality.
+`pivot_longer()` and `pivot_wider()` are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we'll explore this flexibility by introducing some of the pivot functions' advanced functionality.
 
 ## Longer
 
 ### Types
 
-You might have noticed that `pivot_longer()` always creates the `names_to` column as a character variable. Sometimes, you'll want this column to be a different type. For example, when we `pivot_longer()` `eagle_nests`, `year` becomes a character column.
+By default, `pivot_longer()` creates the `names_to` column as a character variable. For example, when we `pivot_longer()` `eagle_nests`, `year` becomes a character column. 
 
 ```{r}
 eagle_nests %>% 
@@ -40,7 +40,7 @@ eagle_nests %>%
 
 It's probably more useful to store `year` as an integer. We can tell `pivot_longer()` our desired type for the `names_to` column by using the optional `names_ptypes` argument. 
 
-`names_types` takes a named list. We'll show you an example and then dive into the details. Here's how we would create `year` as an integer column:
+`names_types` takes a named list of column name and _prototype_ pairs. A prototype is a vector with a type, but no elements, like `integer()` or `double()`. Here's how we would create `year` as an integer column:
 
 ```{r}
 eagle_nests %>% 
@@ -51,8 +51,6 @@ eagle_nests %>%
     values_to = "num_nests"
   )
 ```
-
-`integer()` is a _prototype_. Prototypes are vectors with a type, but no elements. Here, we use a prototype vector to define the desired type of `year`.
 
 If we wanted `year` to be a double, we would use the `double()` prototype.
 
@@ -66,7 +64,7 @@ eagle_nests %>%
   )
 ```
 
-`pivot_longer()` also has a `values_ptypes` argument that controls the `values_to` column. You specify `values_ptypes` in the same way as `names_ptypes`. For example, say we wanted to change `num_nests` from its default type (double) to an integer.
+`pivot_longer()` also has a `values_ptypes` argument that controls the type of the `values_to` column. You specify `values_ptypes` in the same way as `names_ptypes`. For example, say we wanted to change `num_nests` from its default type (double) to an integer.
 
 ```{r}
 eagle_nests %>% 
@@ -98,7 +96,7 @@ gymnastics_1 %>%
   )
 ```
 
-However, `score_vault` isn't really a value of `event`. It would be better for the values to be `"vault"` and `"floor"`. We can remove the `"score_"` prefix with `pivot_longer()'` `names_prefix` argument.
+However, `score_vault` isn't really a value of `event`. It would be better for the values to be `"vault"` and `"floor"`. We can remove the `"score_"` prefix with `pivot_longer()'`s `names_prefix` argument.
 
 ```{r}
 gymnastics_1 %>% 
@@ -233,15 +231,11 @@ Earlier, we showed how you can create multiple columns from data stored in colum
 
 For example, take the following data:
 
-you can give `pivot_longer()`'s `names_to` argument a vector of names in order to create more than one column. 
-
-`pivot_wider()` has a similar functionality. You can use `pivot_wider()` to generate column names from multiple variables. For example, take the following data:
-
 ```{r}
 dimensions_1
 ```
 
-We might want a column for each combination of `estimate` and `measure`. We can do this by supplying `pivot_wider()` with multiple `names_from` variables.
+We might want each combination of `estimate` and `measure` to become the name of a new variable (i.e., `volume_median`, `volume_se`, `radius_median`, `radius_se`). Recall that `pivot_wider()`'s `names_from` argument controls which column's values are used for the new column names. If we supply multiple columns to `names_from`, `pivot_wider()` will create one new column for each unique combination. 
 
 ```{r}
 dimensions_1 %>% 
@@ -259,13 +253,13 @@ In `dimensions_1`, the names of our desired columns were stored across two varia
 dimensions_2
 ```
 
-In this case, we'll give `values_from` a vector.
+Now, values of our desired variables `volume_median`, `volume_se`, `radius_median`, and `radius_se` are in two separate places: `median` and `se`. We can specify both columns to `pivot_wider()`'s `values_from` argument.
 
 ```{r}
 dimensions_2 %>% 
   pivot_wider(
     names_from = measure, 
-    values_from = c(median, lower, upper)
+    values_from = c(median, se)
   )
 ```
 
@@ -278,7 +272,7 @@ In the previous chapter, we mentioned that you'll need to name `names_from` and 
 Here's a simplified version of the dimensions data from earlier, plus an additional variable: `method`, which describes how the measurement was found. However, it's only available for volume measurements.
 
 ```{r}
-#dimensions_2
+dimensions_3
 ```
 
 If we try to `pivot_wider()` as usual, we won't get the result we want.
