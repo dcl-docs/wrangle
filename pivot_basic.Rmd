@@ -1,4 +1,4 @@
-# Pivot basics
+# Basic pivoting
 
 ```{r include=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -9,10 +9,6 @@ eagle_nests <-
   
 eagle_nests_tidy <- 
   here::here("data/eagles/eagle_nests_tidy.rds") %>% 
-  read_rds()
-
-eagle_nests_tidy_se <- 
-  here::here("data/eagles/eagle_nests_tidy_ci.rds") %>% 
   read_rds()
 
 eagle_pairs <-
@@ -44,7 +40,7 @@ Non-tidy data will not fulfill one or more of these characteristics.
 
 ## Longer
 
-`eagle_nests` contains data on the number of [bald eagle nesting sites](https://www.fws.gov/migratorybirds/pdf/management/EagleRuleRevisions-StatusReport.pdf) across multiple regions and years.
+`eagle_nests` contains data on the number of [bald eagle nesting sites](https://www.fws.gov/migratorybirds/pdf/management/EagleRuleRevisions-StatusReport.pdf#page=19&zoom=100,0,700) across multiple regions and years.
 
 ```{r}
 # Source: US Fish and Wildlife Service

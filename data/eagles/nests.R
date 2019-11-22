@@ -11,7 +11,6 @@ library(tidyverse)
 # Parameters
 file_eagle_nests <- here::here("data/eagles/eagle_nests.rds")
 file_eagle_nests_tidy <- here::here("data/eagles/eagle_nests_tidy.rds")
-file_eagle_nests_tidy_ci <- here::here("data/eagles/eagle_nests_tidy_ci.rds")
 #===============================================================================
 
 se_2009 <- 
@@ -19,18 +18,19 @@ se_2009 <-
 
 eagle_nests <- 
   tribble(
-    ~region, ~`2007`, ~`2009`,
-    "Pacific", 1039, 2587, 
-    "Southwest", 51, 176,
-    "Rocky Mountains and Plains", 200, 338
-  ) %>% 
+    ~region, ~`2007`, ~`2009`, ~ci_lower_2009, ~ci_upper_2009,
+    "Pacific", 1039, 2587,     2073,           3101,
+    "Southwest", 51, 176,      119,            233,
+    "Rocky Mountains and Plains", 200, 338, 281, 395
+  ) 
+
+eagle_nests %>% 
+  select(-contains("ci")) %>% 
   write_rds(file_eagle_nests)
 
 eagle_nests_tidy <-
   eagle_nests %>% 
+  select(-contains("ci")) %>% 
   pivot_longer(cols = -region, names_to = "year", values_to = "num_nests") %>% 
   write_rds(file_eagle_nests_tidy)
 
-eagle_nests_tidy %>% 
-  mutate(se = if_else(year == 2009, se_2009[region], NA_real_)) %>% 
-  write_rds(file_eagle_nests_tidy_ci)

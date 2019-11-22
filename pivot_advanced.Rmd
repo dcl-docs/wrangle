@@ -1,0 +1,322 @@
+
+# Advanced pivoting
+
+```{r include=FALSE, message=FALSE}
+library(tidyverse)
+
+eagle_nests <- read_rds(here::here("data/eagles/eagle_nests.rds"))
+
+twins <- read_rds(here::here("data/twins/twins.rds"))
+
+gymnastics_1 <- read_rds(here::here("data/gymnastics/gymnastics_1.rds"))
+gymnastics_2 <- read_rds(here::here("data/gymnastics/gymnastics_2.rds"))
+gymnastics_3 <- read_rds(here::here("data/gymnastics/gymnastics_3.rds"))
+gymnastics_3 <- read_rds(here::here("data/gymnastics/gymnastics_3.rds"))
+gymnastics_4 <- read_rds(here::here("data/gymnastics/gymnastics_4.rds"))
+gymnastics_5 <- read_rds(here::here("data/gymnastics/gymnastics_5.rds"))
+
+dimensions_1 <- read_rds(here::here("data/dimensions/dimensions_1.rds"))
+dimensions_2 <- read_rds(here::here("data/dimensions/dimensions_2.rds"))
+dimensions_3 <- read_rds(here::here("data/dimensions/dimensions_3.rds"))
+dimensions_4 <- read_rds(here::here("data/dimensions/dimensions_4.rds"))
+```
+
+`pivot_longer()` and `pivot_wider()` are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we'll explore this flexibility by introducing some of the pivot functions' optional functionality.
+
+## Longer
+
+### Types
+
+You might have noticed that `pivot_longer()` always creates the `names_to` column as a character variable. Sometimes, you'll want this column to be a different type. For example, when we `pivot_longer()` `eagle_nests`, `year` becomes a character column.
+
+```{r}
+eagle_nests %>% 
+  pivot_longer(
+    cols = c(`2007`, `2009`), 
+    names_to = "year", 
+    values_to = "num_nests"
+  )
+```
+
+It's probably more useful to store `year` as an integer. We can tell `pivot_longer()` our desired type for the `names_to` column by using the optional `names_ptypes` argument. 
+
+`names_types` takes a named list. We'll show you an example and then dive into the details. Here's how we would create `year` as an integer column:
+
+```{r}
+eagle_nests %>% 
+  pivot_longer(
+    cols = c(`2007`, `2009`), 
+    names_to = "year", 
+    names_ptypes = list(year = integer()),
+    values_to = "num_nests"
+  )
+```
+
+`integer()` is a _prototype_. Prototypes are vectors with a type, but no elements. Here, we use a prototype vector to define the desired type of `year`.
+
+If we wanted `year` to be a double, we would use the `double()` prototype.
+
+```{r}
+eagle_nests %>% 
+  pivot_longer(
+    cols = c(`2007`, `2009`), 
+    names_to = "year", 
+    names_ptypes = list(year = double()),
+    values_to = "num_nests"
+  )
+```
+
+`pivot_longer()` also has a `values_ptypes` argument that controls the `values_to` column. You specify `values_ptypes` in the same way as `names_ptypes`. For example, say we wanted to change `num_nests` from its default type (double) to an integer.
+
+```{r}
+eagle_nests %>% 
+  pivot_longer(
+    cols = c(`2007`, `2009`), 
+    names_to = "year", 
+    names_ptypes = list(year = integer()),
+    values_to = "num_nests",
+    values_ptypes = list(num_nests = integer())
+  )
+```
+
+### Prefixes
+
+Sometimes, the columns you want to pivot will contain extra information, either in their names or their values. For example, `gymnastics_1` contains data on the scores of women's Olympic gymnastic teams in 2016. 
+
+```{r}
+gymnastics_1
+```
+
+To tidy `gymnastics_1`, we need to pivot `score_vault` and `score_floor`.
+
+```{r}
+gymnastics_1 %>% 
+  pivot_longer(
+    cols = -country, 
+    names_to = "event", 
+    values_to = "score"
+  )
+```
+
+However, `score_vault` isn't really a value of `event`. It would be better for the values to be `"vault"` and `"floor"`. We can remove the `"score_"` prefix with `pivot_longer()'` `names_prefix` argument.
+
+```{r}
+gymnastics_1 %>% 
+  pivot_longer(
+    cols = -country, 
+    names_to = "event", 
+    names_prefix = "score_",
+    values_to = "score"
+  )
+```
+
+### Multiple values
+
+`gymnastics_2` includes data on both the 2012 and 2016 Olympics.
+
+```{r}
+gymnastics_2
+```
+
+There are four variables in this non-tidy dataset: `country`, `event`, `year`, and `score`. To tidy the data, we'll need to pivot `vault_2012` through `floor_2016`. In contrast to other examples we've seen so far, though, each of these variable names contains _two_ values: a `event` value and a `year` value. If we `pivot_longer()` as usual, both of these values will get placed in the same cell:
+
+```{r}
+gymnastics_2 %>% 
+  pivot_longer(
+    cols = -country,
+    names_to = "event_year",
+    values_to = "score"
+  )
+```
+
+`event_year` contains two variables, and so the result isn't tidy. Instead, we want `pivot_longer()` to split each pivoted variable name into two, placing `"vault"` or `"floor"` into an `event` variable and `2012` or `2016` into a `year` variable. 
+
+We'll need to make the following two changes to our `pivot_longer()` call:
+
+* Change `names_to` to be a vector of two names: `c("event", "year)`. This will tell `pivot_longer()` to create two variables from the column names instead of one.
+* Use the `names_sep` argument to tell `pivot_longer()` what separates an `event` value from a `year` in each of the column names. Here, that's an underscore (`_`). 
+
+```{r}
+gymnastics_2 %>% 
+  pivot_longer(
+    cols = -country,
+    names_to = c("event", "year"),
+    names_sep = "_",
+    values_to = "score"
+  )
+```
+
+`pivot_longer()` created three variables, instead of the default two: `event`, `year`, and `score`. Now, the data is tidy.
+
+We can extend this idea to work with any number of columns. `gymnastics_3` has three values stored in each column name: `event`, `year`, and `gender`.
+
+```{r}
+gymnastics_3
+```
+
+`names_sep` is still `_`, but we'll need to change `names_to` to include `"gender"`. 
+
+```{r}
+gymnastics_3 %>% 
+  pivot_longer(
+    cols = -country,
+    names_to = c("event", "year", "gender"),
+    names_sep = "_",
+    values_to = "score"
+  )
+```
+
+Finally, what if there isn't a separator like `_` in the column names? 
+
+```{r}
+gymnastics_4 
+```
+
+Instead of using `names_sep`, we can a related `pivot_longer()` argument: `names_pattern`. `names_pattern` is more flexible than `names_sep` because it allows regular expression groups, matching each group with a variable from `names_to`. 
+
+For `gymnastics_4`, we want to create two variables from the column names: `event` and `year`. This means `names_pattern` needs two groups. Here's a regular expression we could use:
+
+```{r}
+"([A-z]+)(\\d+)"
+```
+
+`"([A-z]+)"` matches only letters, so will pull out just `"vault"` or `"floor"`. `"(\\d+)"` matches digits and will pull out `2012` or `2016`. 
+
+Here's the call to `pivot_longer()`:
+
+```{r}
+gymnastics_4 %>% 
+  pivot_longer(
+    cols = -country,
+    names_to = c("event", "year"),
+    names_pattern = "([A-z]+)(\\d+)",
+    names_ptypes = list(year = integer()),
+    values_to = "score"
+  )
+```
+
+`pivot_longer()` successfully separates the events from the years. 
+
+## Wider
+
+### Prefixes
+
+Like `pivot_longer()`, `pivot_wider()` also has a `names_prefix` argument. However, it adds a prefix insteads of removing one.
+
+`twins` contains some data on two sets of (real) twins. `n` defines the birth order.
+
+```{r}
+twins
+```
+
+If we `pivot_wider()` without a prefix, we'll get numbers as column names, which isn't very informative.
+
+```{r}
+twins %>% 
+  pivot_wider(names_from = "n", values_from = "name")
+```
+
+We can use `names_prefix` to add an informative prefix.
+
+```{r}
+twins %>% 
+  pivot_wider(
+    names_from = "n", 
+    names_prefix = "twin_", 
+    values_from = "name"
+  )
+```
+
+### Multiple values
+
+Earlier, we showed how you can create multiple columns from data stored in column names using `pivot_longer()`. Analogously, you can use `pivot_wider()` to create column names that combine values from multiple columns.
+
+For example, take the following data:
+
+you can give `pivot_longer()`'s `names_to` argument a vector of names in order to create more than one column. 
+
+`pivot_wider()` has a similar functionality. You can use `pivot_wider()` to generate column names from multiple variables. For example, take the following data:
+
+```{r}
+dimensions_1
+```
+
+We might want a column for each combination of `estimate` and `measure`. We can do this by supplying `pivot_wider()` with multiple `names_from` variables.
+
+```{r}
+dimensions_1 %>% 
+  pivot_wider(
+    names_from = c(measure, estimate), 
+    values_from = value
+  )
+```
+
+By default, `pivot_wider()` will combine the two values with an underscore, but you can control the separator with `names_sep`. 
+
+In `dimensions_1`, the names of our desired columns were stored across two variables: `estimate` and `measure`. You might also encounter values stored across multiple variables. 
+
+```{r}
+dimensions_2
+```
+
+In this case, we'll give `values_from` a vector.
+
+```{r}
+dimensions_2 %>% 
+  pivot_wider(
+    names_from = measure, 
+    values_from = c(median, lower, upper)
+  )
+```
+
+`pivot_wider()` pivots `measure`, then creates columns by combining the value of measure with each column name specified in `values_from`. 
+
+### `id_cols`
+
+In the previous chapter, we mentioned that you'll need to name `names_from` and `values_from` in `pivot_wider()` because `pivot_wider()`'s first argument is actually `id_cols`. Now, we'll explain what `id_cols` actually does. 
+
+Here's a simplified version of the dimensions data from earlier, plus an additional variable: `method`, which describes how the measurement was found. However, it's only available for volume measurements.
+
+```{r}
+#dimensions_2
+```
+
+If we try to `pivot_wider()` as usual, we won't get the result we want.
+
+```{r}
+#dimensions_3 %>% 
+ # pivot_wider(names_from = measure, values_from = value)
+```
+
+The default value of `id_cols` is all the columns, minus the ones specified in `names_from` and `values_from`. In our situation, that means that `item` and `method` are supplied to `id_cols`. `id_cols` then uses those 
+
+`eagle_nests_tidy_ci` is the eagle nests tibble from earlier, plus two additional variables: `ci_lower_2009` and `ci_upper_2009`, which give the upper and lower bounds for the `num_nests` credible interval. However, U.S. Fish adn Wildlife for only able to calculate these bounds for the 2009 estimates. 
+
+
+If we `pivot_longer()` as normal, we'll won't 
+
+So what does `id_cols` actually do? `id_cols` allows you to specify the columns that uniquely identify your observations. It's default value is all columns except the ones you are pivoting, so when we pivot `eagle_nests_tidy`, `id_cols` defaults to just `region`.
+
+
+
+When we pivot `acs`, `id_cols` defaults to `geoid`, `name`, and `year`. 
+
+
+
+Let's look at a situation in which you do need to use `id_cols`. `eagle_nests_tidy_se` includes another variable: `se`, which indicates the standard error for `num_nests`. However, `se` is only available for `2009`.
+
+
+
+If we `pivot_wider()` just as we did before, we won't get the result that we want.
+
+
+
+`pivot_wider()` thinks each `region`-`se` combination uniquely identifies observations, and so creates one row for each combination. We actually want `pivot_wider()` to just ignore `se`, because we want a single row for each region. We could accomplish this by using `select()` to get rid of `se` before pivoting. 
+
+
+
+Or, we can set `id_cols` to `region`. 
+
+
+
+
