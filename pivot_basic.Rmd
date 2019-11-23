@@ -16,7 +16,7 @@ eagle_pairs <-
   read_rds()
 
 acs <- 
-  here::here("data/acs/acs_2012_2017.rds") %>% 
+  here::here("data/acs/acs_2016_1.rds") %>% 
   read_rds()
 
 migration_2017 <-
@@ -237,7 +237,7 @@ Again, supply the name of the column unquoted.
 
 We're done! The tibble is now transformed back into its original form. 
 
-Let's see an example of a tibble that actually does need `pivot_wider()` to be tidy. `acs` contains data from the 2012 and 2017 [American Community Surveys](https://www.census.gov/programs-surveys/acs), obtained through the [tidycensus](https://walkerke.github.io/tidycensus/) package. 
+Let's see an example of a tibble that actually does need `pivot_wider()` to be tidy. `acs` contains data from the 2012-2016 [American Community Survey](https://www.census.gov/programs-surveys/acs), obtained through the [tidycensus](https://walkerke.github.io/tidycensus/) package. 
 
 ```{r}
 acs

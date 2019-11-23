@@ -19,6 +19,10 @@ dimensions_1 <- read_rds(here::here("data/dimensions/dimensions_1.rds"))
 dimensions_2 <- read_rds(here::here("data/dimensions/dimensions_2.rds"))
 dimensions_3 <- read_rds(here::here("data/dimensions/dimensions_3.rds"))
 dimensions_4 <- read_rds(here::here("data/dimensions/dimensions_4.rds"))
+
+acs_2 <- read_rds(here::here("data/acs/acs_2016_2.rds"))
+acs_3 <- read_rds(here::here("data/acs/acs_2016_3.rds"))
+acs_4 <- read_rds(here::here("data/acs/acs_2016_4.rds"))
 ```
 
 `pivot_longer()` and `pivot_wider()` are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we'll explore this flexibility by introducing some of the pivot functions' advanced functionality.
@@ -40,7 +44,7 @@ eagle_nests %>%
 
 It's probably more useful to store `year` as an integer. We can tell `pivot_longer()` our desired type for the `names_to` column by using the optional `names_ptypes` argument. 
 
-`names_types` takes a named list of column name and _prototype_ pairs. A prototype is a vector with a type, but no elements, like `integer()` or `double()`. Here's how we would create `year` as an integer column:
+`names_types` takes a named list of column name and _prototype_ pairs. A prototype is a vector with a type, but no elements. The integer prototype is `integer()`. Here's how we would create `year` as an integer column:
 
 ```{r}
 eagle_nests %>% 
@@ -79,7 +83,7 @@ eagle_nests %>%
 
 ### Prefixes
 
-Sometimes, the columns you want to pivot will contain extra information, either in their names or their values. For example, `gymnastics_1` contains data on the scores of women's Olympic gymnastic teams in 2016. 
+Sometimes, the columns you want to pivot will contain extra information, either in their names or their values. For example, `gymnastics_1` contains data on the scores of three countries' women's Olympic gymnastic teams in 2016. 
 
 ```{r}
 gymnastics_1
@@ -174,11 +178,11 @@ Instead of using `names_sep`, we can a related `pivot_longer()` argument: `names
 
 For `gymnastics_4`, we want to create two variables from the column names: `event` and `year`. This means `names_pattern` needs two groups. Here's a regular expression we could use:
 
-```{r}
-"([A-z]+)(\\d+)"
+```{r eval=FALSE}
+"([:alpha:]+)(\\d+)"
 ```
 
-`"([A-z]+)"` matches only letters, so will pull out just `"vault"` or `"floor"`. `"(\\d+)"` matches digits and will pull out `2012` or `2016`. 
+`"([:alpha:]+)"` matches only letters, so will pull out just `"vault"` or `"floor"`. `"(\\d+)"` matches digits and will pull out `2012` or `2016`. 
 
 Here's the call to `pivot_longer()`:
 
@@ -187,8 +191,7 @@ gymnastics_4 %>%
   pivot_longer(
     cols = -country,
     names_to = c("event", "year"),
-    names_pattern = "([A-z]+)(\\d+)",
-    names_ptypes = list(year = integer()),
+    names_pattern = "([:alpha:]+)(\\d+)",
     values_to = "score"
   )
 ```
@@ -199,7 +202,7 @@ gymnastics_4 %>%
 
 ### Prefixes
 
-Like `pivot_longer()`, `pivot_wider()` also has a `names_prefix` argument. However, it adds a prefix insteads of removing one.
+Like `pivot_longer()`, `pivot_wider()` also has a `names_prefix` argument. However, it adds a prefix instead of removing one.
 
 `twins` contains some data on two sets of (real) twins. `n` defines the birth order.
 
@@ -229,87 +232,79 @@ twins %>%
 
 Earlier, we showed how you can create multiple columns from data stored in column names using `pivot_longer()`. Analogously, you can use `pivot_wider()` to create column names that combine values from multiple columns.
 
-For example, take the following data:
+For example, take the following modified subset of the American Community Survey data from last chapter:
 
 ```{r}
-dimensions_1
+acs_2
 ```
 
-We might want each combination of `estimate` and `measure` to become the name of a new variable (i.e., `volume_median`, `volume_se`, `radius_median`, `radius_se`). Recall that `pivot_wider()`'s `names_from` argument controls which column's values are used for the new column names. If we supply multiple columns to `names_from`, `pivot_wider()` will create one new column for each unique combination. 
+The `measure` column indicates if a given row represents the estimate of the variable or the margin of error. We might want each combination of `variable` and `measure` to become the name of a new variable (i.e., `pop_renter_estimate`, `pop_renter_error`, `median_rent_estimate`, `median_rent_error`). Recall that `pivot_wider()`'s `names_from` argument controls which column's values are used for the new column names. If we supply multiple columns to `names_from`, `pivot_wider()` will create one new column for each unique combination. 
 
 ```{r}
-dimensions_1 %>% 
+acs_2 %>% 
   pivot_wider(
-    names_from = c(measure, estimate), 
+    names_from = c(variable, measure), 
     values_from = value
   )
 ```
 
 By default, `pivot_wider()` will combine the two values with an underscore, but you can control the separator with `names_sep`. 
 
-In `dimensions_1`, the names of our desired columns were stored across two variables: `estimate` and `measure`. You might also encounter values stored across multiple variables. 
+In `acs_2`, the names of our desired columns were stored across two variables: `variable` and `measure`. You might also encounter values stored across multiple variables. 
 
 ```{r}
-dimensions_2
+acs_3
 ```
 
-Now, values of our desired variables `volume_median`, `volume_se`, `radius_median`, and `radius_se` are in two separate places: `median` and `se`. We can specify both columns to `pivot_wider()`'s `values_from` argument.
+Now, values of our desired variables (`pop_renter_esimate`, `pop_renter_error`, `median_rent_estimate`, and `median_rent_error`) are in two separate columns: `estimate` and `error`. We can specify both columns to `pivot_wider()`'s `values_from` argument.
 
 ```{r}
-dimensions_2 %>% 
+acs_3 %>% 
   pivot_wider(
-    names_from = measure, 
-    values_from = c(median, se)
+    names_from = variable, 
+    values_from = c(estimate, error)
   )
 ```
 
-`pivot_wider()` pivots `measure`, then creates columns by combining the value of measure with each column name specified in `values_from`. 
+`pivot_wider()` pivots `variable`, then creates columns by combining the value of measure with each column name specified in `values_from`. 
 
 ### `id_cols`
 
-In the previous chapter, we mentioned that you'll need to name `names_from` and `values_from` in `pivot_wider()` because `pivot_wider()`'s first argument is actually `id_cols`. Now, we'll explain what `id_cols` actually does. 
+In the previous chapter, we mentioned that you'll need to name `names_from` and `values_from` in `pivot_wider()` because `pivot_wider()`'s first argument is actually `id_cols`. But what does `id_cols` do? To explain, we'll go over a brief example.
 
-Here's a simplified version of the dimensions data from earlier, plus an additional variable: `method`, which describes how the measurement was found. However, it's only available for volume measurements.
-
-```{r}
-dimensions_3
-```
-
-If we try to `pivot_wider()` as usual, we won't get the result we want.
+Here's another ACS dataset:
 
 ```{r}
-#dimensions_3 %>% 
- # pivot_wider(names_from = measure, values_from = value)
+acs_4
 ```
 
-The default value of `id_cols` is all the columns, minus the ones specified in `names_from` and `values_from`. In our situation, that means that `item` and `method` are supplied to `id_cols`. `id_cols` then uses those 
+Now, `variable` includes three variables: the total housed population (`"pop_housed"`), total renter population (`"pop_renter"`), and median rent (`"median_rent"`). However, `error` is only available for `"pop_renter"` and `"median_rent"`. Say that we don't want to pivot `error` because we don't need the margin of error data. Here's an attempt:
 
-`eagle_nests_tidy_ci` is the eagle nests tibble from earlier, plus two additional variables: `ci_lower_2009` and `ci_upper_2009`, which give the upper and lower bounds for the `num_nests` credible interval. However, U.S. Fish adn Wildlife for only able to calculate these bounds for the 2009 estimates. 
+```{r}
+acs_4 %>% 
+  pivot_wider(
+    names_from = variable,
+    values_from = estimate
+  )
+```
+
+This probably isn't the result we want. `pivot_wider()` created one row for each `geoid`-`name`-`error` combination, thinking that `geoid`, `name`, and `error` all identify an observation. We can fix this by setting `id_cols`. 
+
+`id_cols` controls which columns define an observation. By default, `id_cols` includes all columns not specified in `names_from` or `values_from`. Here, we want `pivot_wider()` to understand that each observation should be a state, defined by `geoid` and `name`. To fix the problem, we'll tell `pivot_longer()` that `error` should not be included in `id_cols`. 
+
+```{r}
+acs_4 %>% 
+  pivot_wider(
+    id_cols = -error,
+    names_from = variable,
+    values_from = estimate
+  )
+```
+
+That looks a lot better! `pivot_wider()` threw out the `error` column and created one row for each state. 
 
 
-If we `pivot_longer()` as normal, we'll won't 
 
-So what does `id_cols` actually do? `id_cols` allows you to specify the columns that uniquely identify your observations. It's default value is all columns except the ones you are pivoting, so when we pivot `eagle_nests_tidy`, `id_cols` defaults to just `region`.
-
-
-
-When we pivot `acs`, `id_cols` defaults to `geoid`, `name`, and `year`. 
-
-
-
-Let's look at a situation in which you do need to use `id_cols`. `eagle_nests_tidy_se` includes another variable: `se`, which indicates the standard error for `num_nests`. However, `se` is only available for `2009`.
-
-
-
-If we `pivot_wider()` just as we did before, we won't get the result that we want.
-
-
-
-`pivot_wider()` thinks each `region`-`se` combination uniquely identifies observations, and so creates one row for each combination. We actually want `pivot_wider()` to just ignore `se`, because we want a single row for each region. We could accomplish this by using `select()` to get rid of `se` before pivoting. 
-
-
-
-Or, we can set `id_cols` to `region`. 
 
 
 
