@@ -179,10 +179,10 @@ Instead of using `names_sep`, we can a related `pivot_longer()` argument: `names
 For `gymnastics_4`, we want to create two variables from the column names: `event` and `year`. This means `names_pattern` needs two groups. Here's a regular expression we could use:
 
 ```{r eval=FALSE}
-"([:alpha:]+)(\\d+)"
+"([A-Za-z]+)(\\d+)"
 ```
 
-`"([:alpha:]+)"` matches only letters, so will pull out just `"vault"` or `"floor"`. `"(\\d+)"` matches digits and will pull out `2012` or `2016`. 
+`"([A-Za-z]+)"` matches only letters, so will pull out just `"vault"` or `"floor"`. `"(\\d+)"` matches digits and will pull out `2012` or `2016`. 
 
 Here's the call to `pivot_longer()`:
 
@@ -191,7 +191,7 @@ gymnastics_4 %>%
   pivot_longer(
     cols = -country,
     names_to = c("event", "year"),
-    names_pattern = "([:alpha:]+)(\\d+)",
+    names_pattern = "([A-Za-z]+)(\\d+)",
     values_to = "score"
   )
 ```
