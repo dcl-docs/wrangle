@@ -8,7 +8,7 @@ library(tidyverse)
 library(tidycensus)
 
 # Parameters
-YEAR <- 2016
+YEAR <- 2017
 variables <- 
   c(
     "pop_housed" = "B25008_001", 

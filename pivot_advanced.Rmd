@@ -20,9 +20,9 @@ dimensions_2 <- read_rds(here::here("data/dimensions/dimensions_2.rds"))
 dimensions_3 <- read_rds(here::here("data/dimensions/dimensions_3.rds"))
 dimensions_4 <- read_rds(here::here("data/dimensions/dimensions_4.rds"))
 
-acs_2 <- read_rds(here::here("data/acs/acs_2016_2.rds"))
-acs_3 <- read_rds(here::here("data/acs/acs_2016_3.rds"))
-acs_4 <- read_rds(here::here("data/acs/acs_2016_4.rds"))
+acs_2 <- read_rds(here::here("data/acs/acs_2017_2.rds"))
+acs_3 <- read_rds(here::here("data/acs/acs_2017_3.rds"))
+acs_4 <- read_rds(here::here("data/acs/acs_2017_4.rds"))
 ```
 
 `pivot_longer()` and `pivot_wider()` are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we'll explore this flexibility by introducing some of the pivot functions' advanced functionality.
