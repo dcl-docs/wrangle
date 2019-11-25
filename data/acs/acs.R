@@ -1,4 +1,4 @@
-# Description
+# 5-year ACS data using tidycensus
 
 # Author: Sara Altman
 # Version: 2019-11-14
