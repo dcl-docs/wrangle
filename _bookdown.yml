@@ -3,12 +3,17 @@ delete_merged_file: true
 
 rmd_files: [
   "index.Rmd",
+  "manip-basics.Rmd",
+  "manip-one-table.Rmd",
+  "parse-basics.Rmd",
   "tidy.Rmd",
   "pivot_basic.Rmd",
   "pivot_advanced.Rmd",
   "scoped_verbs.Rmd",
   "scoped_basics.Rmd",
   "scoped_predicate.Rmd",
+  "apis.Rmd",
+  "googlesheets.Rmd",
   "references.Rmd"
 ]
 
