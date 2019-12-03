@@ -3,17 +3,6 @@
 
 ```{r include=FALSE, message=FALSE}
 library(tidyverse)
-
-eagle_nests <- read_rds(here::here("data/eagles/eagle_nests.rds"))
-
-twins <- read_rds(here::here("data/twins/twins.rds"))
-
-gymnastics_1 <- read_rds(here::here("data/gymnastics/gymnastics_1.rds"))
-gymnastics_2 <- read_rds(here::here("data/gymnastics/gymnastics_2.rds"))
-gymnastics_3 <- read_rds(here::here("data/gymnastics/gymnastics_3.rds"))
-gymnastics_3 <- read_rds(here::here("data/gymnastics/gymnastics_3.rds"))
-gymnastics_4 <- read_rds(here::here("data/gymnastics/gymnastics_4.rds"))
-gymnastics_5 <- read_rds(here::here("data/gymnastics/gymnastics_5.rds"))
 ```
 
 ```{r}
@@ -26,10 +15,10 @@ library(dcldata)
 
 ### Types
 
-By default, `pivot_longer()` creates the `names_to` column as a character variable. For example, when we `pivot_longer()` `eagle_nests`, `year` becomes a character column. 
+By default, `pivot_longer()` creates the `names_to` column as a character variable. For example, when we `pivot_longer()` `example_eagle_nests`, `year` becomes a character column. 
 
 ```{r}
-eagle_nests %>% 
+example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
@@ -42,7 +31,7 @@ It's probably more useful to store `year` as an integer. We can tell `pivot_long
 `names_types` takes a named list of column name and _prototype_ pairs. A prototype is a vector with a type, but no elements. The integer prototype is `integer()`. Here's how we would create `year` as an integer column:
 
 ```{r}
-eagle_nests %>% 
+example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
@@ -54,7 +43,7 @@ eagle_nests %>%
 If we wanted `year` to be a double, we would use the `double()` prototype.
 
 ```{r}
-eagle_nests %>% 
+example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
@@ -66,7 +55,7 @@ eagle_nests %>%
 `pivot_longer()` also has a `values_ptypes` argument that controls the type of the `values_to` column. You specify `values_ptypes` in the same way as `names_ptypes`. For example, say we wanted to change `num_nests` from its default type (double) to an integer.
 
 ```{r}
-eagle_nests %>% 
+example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
@@ -78,16 +67,16 @@ eagle_nests %>%
 
 ### Prefixes
 
-Sometimes, the columns you want to pivot will contain extra information, either in their names or their values. For example, `gymnastics_1` contains data on the scores of three countries' women's Olympic gymnastic teams in 2016. 
+Sometimes, the columns you want to pivot will contain extra information, either in their names or their values. For example, `example_gymnastics_1` contains data on the scores of three countries' women's Olympic gymnastic teams in 2016. 
 
 ```{r}
-gymnastics_1
+example_gymnastics_1
 ```
 
-To tidy `gymnastics_1`, we need to pivot `score_vault` and `score_floor`.
+To tidy `example_gymnastics_1`, we need to pivot `score_vault` and `score_floor`.
 
 ```{r}
-gymnastics_1 %>% 
+example_gymnastics_1 %>% 
   pivot_longer(
     cols = -country, 
     names_to = "event", 
@@ -98,7 +87,7 @@ gymnastics_1 %>%
 However, `score_vault` isn't really a value of `event`. It would be better for the values to be `"vault"` and `"floor"`. We can remove the `"score_"` prefix with `pivot_longer()'`s `names_prefix` argument.
 
 ```{r}
-gymnastics_1 %>% 
+example_gymnastics_1 %>% 
   pivot_longer(
     cols = -country, 
     names_to = "event", 
@@ -109,16 +98,16 @@ gymnastics_1 %>%
 
 ### Multiple values
 
-`gymnastics_2` includes data on both the 2012 and 2016 Olympics.
+`example_gymnastics_2` includes data on both the 2012 and 2016 Olympics.
 
 ```{r}
-gymnastics_2
+example_gymnastics_2
 ```
 
 There are four variables in this non-tidy dataset: `country`, `event`, `year`, and `score`. To tidy the data, we'll need to pivot `vault_2012` through `floor_2016`. In contrast to other examples we've seen so far, though, each of these variable names contains _two_ values: a `event` value and a `year` value. If we `pivot_longer()` as usual, both of these values will get placed in the same cell:
 
 ```{r}
-gymnastics_2 %>% 
+example_gymnastics_2 %>% 
   pivot_longer(
     cols = -country,
     names_to = "event_year",
@@ -134,7 +123,7 @@ We'll need to make the following two changes to our `pivot_longer()` call:
 * Use the `names_sep` argument to tell `pivot_longer()` what separates an `event` value from a `year` in each of the column names. Here, that's an underscore (`_`). 
 
 ```{r}
-gymnastics_2 %>% 
+example_gymnastics_2 %>% 
   pivot_longer(
     cols = -country,
     names_to = c("event", "year"),
@@ -145,16 +134,16 @@ gymnastics_2 %>%
 
 `pivot_longer()` created three variables, instead of the default two: `event`, `year`, and `score`. Now, the data is tidy.
 
-We can extend this idea to work with any number of columns. `gymnastics_3` has three values stored in each column name: `event`, `year`, and `gender`.
+We can extend this idea to work with any number of columns. `example_gymnastics_3` has three values stored in each column name: `event`, `year`, and `gender`.
 
 ```{r}
-gymnastics_3
+example_gymnastics_3
 ```
 
 `names_sep` is still `_`, but we'll need to change `names_to` to include `"gender"`. 
 
 ```{r}
-gymnastics_3 %>% 
+example_gymnastics_3 %>% 
   pivot_longer(
     cols = -country,
     names_to = c("event", "year", "gender"),
@@ -166,12 +155,12 @@ gymnastics_3 %>%
 Finally, what if there isn't a separator like `_` in the column names? 
 
 ```{r}
-gymnastics_4 
+example_gymnastics_4 
 ```
 
 Instead of using `names_sep`, we can a related `pivot_longer()` argument: `names_pattern`. `names_pattern` is more flexible than `names_sep` because it allows regular expression groups, matching each group with a variable from `names_to`. 
 
-For `gymnastics_4`, we want to create two variables from the column names: `event` and `year`. This means `names_pattern` needs two groups. Here's a regular expression we could use:
+For `example_gymnastics_4`, we want to create two variables from the column names: `event` and `year`. This means `names_pattern` needs two groups. Here's a regular expression we could use:
 
 ```{r eval=FALSE}
 "([A-Za-z]+)(\\d+)"
@@ -182,7 +171,7 @@ For `gymnastics_4`, we want to create two variables from the column names: `even
 Here's the call to `pivot_longer()`:
 
 ```{r}
-gymnastics_4 %>% 
+example_gymnastics_4 %>% 
   pivot_longer(
     cols = -country,
     names_to = c("event", "year"),
@@ -199,23 +188,23 @@ gymnastics_4 %>%
 
 Like `pivot_longer()`, `pivot_wider()` also has a `names_prefix` argument. However, it adds a prefix instead of removing one.
 
-`twins` contains some data on two sets of (real) twins. `n` defines the birth order.
+`example_twins` contains some data on two sets of (real) twins. `n` defines the birth order.
 
 ```{r}
-twins
+example_twins
 ```
 
 If we `pivot_wider()` without a prefix, we'll get numbers as column names, which isn't very informative.
 
 ```{r}
-twins %>% 
+example_twins %>% 
   pivot_wider(names_from = "n", values_from = "name")
 ```
 
 We can use `names_prefix` to add an informative prefix.
 
 ```{r}
-twins %>% 
+example_twins %>% 
   pivot_wider(
     names_from = "n", 
     names_prefix = "twin_", 
