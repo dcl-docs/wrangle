@@ -14,15 +14,10 @@ gymnastics_3 <- read_rds(here::here("data/gymnastics/gymnastics_3.rds"))
 gymnastics_3 <- read_rds(here::here("data/gymnastics/gymnastics_3.rds"))
 gymnastics_4 <- read_rds(here::here("data/gymnastics/gymnastics_4.rds"))
 gymnastics_5 <- read_rds(here::here("data/gymnastics/gymnastics_5.rds"))
+```
 
-dimensions_1 <- read_rds(here::here("data/dimensions/dimensions_1.rds"))
-dimensions_2 <- read_rds(here::here("data/dimensions/dimensions_2.rds"))
-dimensions_3 <- read_rds(here::here("data/dimensions/dimensions_3.rds"))
-dimensions_4 <- read_rds(here::here("data/dimensions/dimensions_4.rds"))
-
-acs_2 <- read_rds(here::here("data/acs/acs_2017_2.rds"))
-acs_3 <- read_rds(here::here("data/acs/acs_2017_3.rds"))
-acs_4 <- read_rds(here::here("data/acs/acs_2017_4.rds"))
+```{r}
+library(dcldata)
 ```
 
 `pivot_longer()` and `pivot_wider()` are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we'll explore this flexibility by introducing some of the pivot functions' advanced functionality.
@@ -235,13 +230,13 @@ Earlier, we showed how you can create multiple columns from data stored in colum
 For example, take the following modified subset of the American Community Survey data from last chapter:
 
 ```{r}
-acs_2
+example_acs_2
 ```
 
 The `measure` column indicates if a given row represents the estimate of the variable or the margin of error. We might want each combination of `variable` and `measure` to become the name of a new variable (i.e., `pop_renter_estimate`, `pop_renter_error`, `median_rent_estimate`, `median_rent_error`). Recall that `pivot_wider()`'s `names_from` argument controls which column's values are used for the new column names. If we supply multiple columns to `names_from`, `pivot_wider()` will create one new column for each unique combination. 
 
 ```{r}
-acs_2 %>% 
+example_acs_2 %>% 
   pivot_wider(
     names_from = c(variable, measure), 
     values_from = value
@@ -250,16 +245,16 @@ acs_2 %>%
 
 By default, `pivot_wider()` will combine the two values with an underscore, but you can control the separator with `names_sep`. 
 
-In `acs_2`, the names of our desired columns were stored across two variables: `variable` and `measure`. You might also encounter values stored across multiple variables. 
+In `example_acs_2`, the names of our desired columns were stored across two variables: `variable` and `measure`. You might also encounter values stored across multiple variables. 
 
 ```{r}
-acs_3
+example_acs_3
 ```
 
 Now, values of our desired variables (`pop_renter_esimate`, `pop_renter_error`, `median_rent_estimate`, and `median_rent_error`) are in two separate columns: `estimate` and `error`. We can specify both columns to `pivot_wider()`'s `values_from` argument.
 
 ```{r}
-acs_3 %>% 
+example_acs_3 %>% 
   pivot_wider(
     names_from = variable, 
     values_from = c(estimate, error)
@@ -275,13 +270,13 @@ In the previous chapter, we mentioned that you'll need to name `names_from` and 
 Here's another ACS dataset:
 
 ```{r}
-acs_4
+example_acs_4
 ```
 
 Now, `variable` includes three variables: the total housed population (`"pop_housed"`), total renter population (`"pop_renter"`), and median rent (`"median_rent"`). However, `error` is only available for `"pop_renter"` and `"median_rent"`. Say that we don't want to pivot `error` because we don't need the margin of error data. Here's an attempt:
 
 ```{r}
-acs_4 %>% 
+example_acs_4 %>% 
   pivot_wider(
     names_from = variable,
     values_from = estimate
@@ -293,7 +288,7 @@ This probably isn't the result we want. `pivot_wider()` created one row for each
 `id_cols` controls which columns define an observation. By default, `id_cols` includes all columns not specified in `names_from` or `values_from`. Here, we want `pivot_wider()` to understand that each observation should be a state, defined by `geoid` and `name`. To fix the problem, we'll tell `pivot_longer()` that `error` should not be included in `id_cols`. 
 
 ```{r}
-acs_4 %>% 
+example_acs_4 %>% 
   pivot_wider(
     id_cols = -error,
     names_from = variable,

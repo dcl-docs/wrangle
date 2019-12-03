@@ -15,14 +15,15 @@ eagle_pairs <-
   here::here("data/eagles/eagle_pairs.rds") %>% 
   read_rds()
 
-acs <- 
-  here::here("data/acs/acs_2017_1.rds") %>% 
-  read_rds()
-
 migration_2017 <-
   here::here("data/migration/migration_2017.rds") %>% 
   read_rds()
 ```
+
+```{r}
+library(dcldata)
+```
+
 
 Most of the data you'll encounter won't be tidy, and it will be your job to figure out how to make it tidy. In this chapter, you'll learn about two of the most important tidying tools: `pivot_longer()` and `pivot_wider()`. 
 
@@ -237,23 +238,23 @@ Again, supply the name of the column unquoted.
 
 We're done! The tibble is now transformed back into its original form. 
 
-Let's see an example of a tibble that actually does need `pivot_wider()` to be tidy. `acs` contains data from the 2013-2017 [American Community Survey](https://www.census.gov/programs-surveys/acs), obtained through the [tidycensus](https://walkerke.github.io/tidycensus/) package. 
+Let's see an example of a tibble that actually does need `pivot_wider()` to be tidy. `example_acs_1` contains data from the 2013-2017 [American Community Survey](https://www.census.gov/programs-surveys/acs), obtained through the [tidycensus](https://walkerke.github.io/tidycensus/) package. 
 
 ```{r}
-acs
+example_acs_1
 ```
 
 `variable` and `estimate` are not really variables (if you see a variable named `variable` it's a good sign you need `pivot_wider()`). There are three distinct values in `variable`:
 
 ```{r}
-acs %>% 
+example_acs_1 %>% 
   distinct(variable)
 ```
 
 Each of these values is actually a variable whose values are currently stored in `estimate`. To pivot, we'll set `names_from` to `variable` and `values_from` to `estimate`. 
 
 ```{r}
-acs %>% 
+example_acs_1 %>% 
   pivot_wider(names_from = variable, values_from = estimate)
 ```
 
