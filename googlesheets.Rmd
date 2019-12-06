@@ -82,9 +82,11 @@ all_my_sheets <- sheets_find()
 ```
 
 ```{r echo=FALSE}
+display_sheets <- c("my-sheet-1", "my-sheet-2", "important-data", "top-secret-data")
+
 all_my_sheets <-
   all_my_sheets %>% 
-  slice(1:4)
+  filter(name %in% display_sheets)
 ```
 
 ```{r}
