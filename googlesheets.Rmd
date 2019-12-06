@@ -1,21 +1,3 @@
-```{r include=FALSE, cache=FALSE}
-set.seed(858)
-
-options(
-  digits = 3,
-  dplyr.print_max = 6,
-  dplyr.print_min = 6
-)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  fig.align = 'center',
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-
-image_dpi <- 125
-```
 
 # Google Sheets
 
@@ -77,12 +59,13 @@ As of 2019-12-05, you cannot write to Google Sheets with the googlesheets4 packa
 
 It can sometimes be difficult to find the exact Google Sheet you're looking for. googlesheets4 includes a handy function that will return the names of the all your sheets, alongside their IDs, in an object called a _dribble_. A dribble is a tibble specifically for storing metadata about Google Drive files. 
 
-```{r message=FALSE}
+```{r message=FALSE, cache=TRUE}
 all_my_sheets <- sheets_find()
 ```
 
-```{r echo=FALSE}
-display_sheets <- c("my-sheet-1", "my-sheet-2", "important-data", "top-secret-data")
+```{r echo=FALSE, cache=TRUE}
+display_sheets <- 
+  c("my-sheet-1", "my-sheet-2", "important-data", "top-secret-data")
 
 all_my_sheets <-
   all_my_sheets %>% 
@@ -124,9 +107,9 @@ __Step 2__ Find the path to your gargle token.
 
 googlesheets4 will store your token in the folder at `~/.R/gargle/gargle-oauth/`. Now, you just need to figure out the name of your token. Token names are a bunch of random numbers and letters followed by your Google email address. 
 
-The easiest way to determine the full path to your token is to use tab completion inside RStudio. Paste `~/.R/gargle/gargle-oauth/"` into RStudio (either in the console or in a R Markdown chunk). Note that you'll need the `"`s. Then, place your cursor after the last '\\\\' and hit the tab key. The name of your token should pop up. Select it. 
+The easiest way to determine the full path to your token is to use tab completion inside RStudio. Paste `~/.R/gargle/gargle-oauth/"` into RStudio (either in the console or in a R Markdown chunk). Note that you'll need the `"`s. Then, place your cursor after the last `/` and hit the tab key. The name of your token should pop up. Select it. 
 
-Now, you should see the full path! It will look something like:
+You should now see the full path! It will look something like:
 
 `
 "~/.R/gargle/gargle-oauth/yx09809384908kx32k92l039223w1o14_you@gmail.com"
