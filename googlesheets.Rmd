@@ -25,7 +25,7 @@ library(tidyverse)
 library(googlesheets4)
 
 # Parameters
-  # URL for Gapminder example
+  # Sheet ID for Gapminder example
 id_gapminder <- "1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ"
 ```
 
