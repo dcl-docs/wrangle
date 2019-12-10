@@ -5,13 +5,19 @@
 library(tidyverse)
 ```
 
+```{r echo=FALSE}
+request_full <- "https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02&key=YOUR_KEY_GOES_HERE"
+request <- "https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02"
+```
+
+
 APIs, especially if you've never worked with them before, can be confusing. In this chapter, we'll try to demystify the process of working with APIs in R. You can use APIs for many different tasks, including reading in data, writing data (e.g., to Google Sheets), and carrying out tasks that you would usually carry out manually in your browser (e.g., pushing files to GitHub, moving files around in Google Drive, sending emails). We'll focus just on reading data, but many of the ideas explained here are also relevant to other tasks. 
 
 ## What is an API?
 
-You're already used to sending and receiving information over the internet. When you navigate to a URL in your browser, you're requesting information. For example, if you open `http://twitter.com`, you're requesting that Twitter sends the information for its homepage over to your computer. Then, when you type out a tweet and click _Send tweet_, you send information back over to Twitter.  
+You're already used to sending and receiving information over the internet. When you navigate to a URL in your browser, you're requesting information. For example, if you open `http://twitter.com`, you're requesting that Twitter sends the information for its homepage over to your computer. Then, when you type out a tweet and click _Tweet_, you send information back over to Twitter.  
 
-APIs work in much the same way. APIs allow you to send and receive information over the internet, and you use URLs to control what information is sent or received. The main difference between using the internet "normally" and using an API is that the "normal" internet is made for humans, while APIs are made for computers. The Twitter homepage is designed so that it's easy for humans to read and send tweets, while the Twitter API is designed to make it easy for computers to download data and send tweets. 
+APIs work in much the same way. APIs allow you to send and receive information over the internet, and many even use URLs to control what information is sent or received. The main difference between using the internet "normally" and using an API is that the "normal" internet is made for humans, while APIs are made for computers. The Twitter homepage is designed so that it's easy for humans to read and send tweets, while the Twitter API is designed to make it easy for computers to download data and send tweets. 
 
 You might think of using the internet normally like browsing a nicely lit, well-designed store, while using an API is like going directly to that store's highly organized warehouse. 
 
@@ -30,24 +36,24 @@ The first step to using an API is to determine if one exists for the task you wa
 
 Like many organizations, the Census Bureau stores information about its APIs under a [Developers page](https://www.census.gov/developers/). You can navigate to this page from the Census Bureau homepage by going to _Explore Data_ > _Developers_. Organizations often assume that developers are the ones using APIs (but you don't need to be a developer to use an API!). 
 
-Once you've determined if an organization supplies APIs and where they document them, you need to determine which API you want. Many organizations will have multiple available APIs. Just like one organization (e.g., Google) can have multiple web applications (`drive.google.com`, `gmail.com`, `calendar.google.com`, etc.), organizations can have different APIs for different types of requests. (Note that these are sometimes called _Endpoints_ or _Resources_ instead.)
+Once you've determined if an organization supplies APIs and where they document them, you need to determine which API you want. Many organizations will have multiple available APIs. Just like one organization (e.g., Google) can have multiple web applications (`drive.google.com`, `gmail.com`, `calendar.google.com`, etc.), organizations can have different APIs for different types of requests. 
 
 The full list of Census Bureau APIs on its [Available APIs page](https://www.census.gov/data/developers/data-sets.html).
 
-Browse the available APIs to determine which one you want. For our Census example, we'll use the [Vintage 2018 Population Estimates API](https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html), one of the many [Population Estimates and Projections APIs](https://www.census.gov/data/developers/data-sets/popest-popproj.html). Vintage 2018 sounds like it refers to a bottle of wine, but actually refers to estimates between 2018 and the 2010 Census.
+Browse the available APIs to determine which one you want (these are sometimes listed under _Endpoints_ or _Resources_ instead). For our Census example, we'll use the [Vintage 2018 Population Estimates API](https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html), one of the many [Population Estimates and Projections APIs](https://www.census.gov/data/developers/data-sets/popest-popproj.html). Vintage 2018 sounds like it refers to a bottle of wine, but actually refers to estimates between 2018 and the 2010 Census.
 
 Now that you've determined which API you to use, you're ready to start constructing your _API request_.
 
 ## Craft your request
 
-For web APIs, an _API request_ is a URL. Just like with normal URLs, the specifics of an API URL determine the information you'll receive back. To figure out how to specify your API request, you'll typically need to consult your API's documentation to determine two things:
+The specifics of an API request determine the information you'll receive back. To figure out how to specify your request, you'll typically need to consult your API's documentation to determine two things:
 
-* The base API request. This is analogous to the homepage URL, like https://www.wikipedia.org/.
-* The API parameters. API parameters allow you to control what the request asks for, like how information at the end of a normal URL can point to a specific webpage (e.g., [https://wikipedia.org/wiki/Snow_leopard/](https://wikipedia.org/wiki/Snow_leopard/)).
+* The base API request. This is analogous to a homepage URL, like https://www.wikipedia.org/.
+* The API parameters. API parameters allow you to control what the request asks for, like how information at the end of a normal URL can point to a specific webpage (e.g., [https://wikipedia.org/wiki/Snow_leopard](https://wikipedia.org/wiki/Snow_leopard/)).
 
 ### Base request
 
-The base request will usually look something like [api.[service-name].com/[other-details]](). For the Census Bureau API we're using, the base request is https://api.census.gov/data/2018/pep/population.
+For APIs whose requests are URLs, the base request will usually look something like [api.[service-name].com/[other-details]](). For the Census Bureau API we're using, the base request is https://api.census.gov/data/2018/pep/population.
 
 ### Parameters
 
@@ -60,13 +66,13 @@ This is where the API documentation becomes especially important. Different orga
 
 Let's look at one of the examples from the [Vintage 2018 API example page](https://api.census.gov/data/2018/pep/population/examples.html):
 
-`https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02&key=YOUR_KEY_GOES_HERE`
+`r request_full`
 
 The `?` marks the end of the base API request and the beginning of the parameters section. The `&`s separate the parameters from each other, just as commas separate function arguments in R. Finally, you supply values to parameters with `=`, just like in an R function call. 
 
 The example request above has three parameters, all in lowercase: `get`, `for`, and `key`. We'll talk more about the Census APIs in the next chapter. For now, just know that the example supplies the value `GEONAME,POP` to `get` and `state:02` to `for`. An API key isn't actually required for the Census API, so we'll remove that parameter:
 
-`https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02`
+`r request`
 
 `get` specifies which variables from the data we'll get back. The request says we want `GEONAME` (the name of the geography unit) and `POP` (population). `for` specifies the geographic unit. Here, we've said we want data for the state with the FIPS code `02`, which is Alaska. 
 
@@ -74,14 +80,13 @@ Now that we have an API request, we can test it out!
 
 ## Test your request
 
-API requests are URLs, so you can open them in your browser. Click on our example API request to see what it gives you:
+Our API request is a URL, so we can open it in the browser. Click on our example API request to see what it gives you:
 
-[https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02](https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02)
+`r request`
 
 You should see:
 
-```{r echo=FALSE}
-request <- "https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02"
+```{r echo=FALSE, comment = ""}
 read_lines(request) %>% 
   cat(sep = "\n")
 ```
@@ -92,47 +97,96 @@ In our example, our request was successful! We queried the Census Bureau's API a
 
 ## Read the data into R
 
-If the result of your API request looks like what we got above, the API is sending you data in JSON (JavaScript Object Notation). JSON is a common format for data from APIs. Another common format is XML. Before you read the data into R, you'll need to determine which format the data is in, either by consulting the documentation or looking at the result of your request. 
+### JSON data
 
-(If the data is in XML, you'll see a tag up at the top of the response that includes the word "xml", so you'll know it's XML.)
+If the result of your API request looks like what we got above, the API is sending you data in JSON (JavaScript Object Notation). JSON is a common format for data from APIs. XML is another common format. If the data is in XML, you'll see a tag up at the top of the response that includes the word "xml". 
 
-Here, the data is coming back as JSON, so we need a way to read a JSON into R. We can use `fromJSON()` from the jsonlite package. 
+Here, we need a way to read JSON into R. We can use `fromJSON()` from the jsonlite package. 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
+library(jsonlite)
 request <- "https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02"
 
-jsonlite::fromJSON(request)
+fromJSON(request)
 ```
 
-`fromJSON()` returns a matrix, not a tibble, so we'll need to do some extra work to get the data into a tidy tibble. 
+`fromJSON()` returns a matrix, not a tibble. We'll need to do some extra work to get the data into a tidy tibble. 
 
-```{r}
-jsonlite::fromJSON(request) %>% 
+```{r warning=FALSE}
+request %>% 
+  fromJSON() %>% 
   as_tibble() %>% 
   janitor::row_to_names(row_number = 1)
 ```
 
 `as_tibble()` converts the matrix to a tibble, and `janitor::row_to_names(row_number = 1)` converts the first row to the column names.
 
-The httr package provides a more general way of working with APIs in R. We get use `httr::get()` to send our request to an API and capture the response.
+### All formats
 
-```{r}
-httr::GET(request)
+The httr package provides a more general way of getting data from an API. We get use `httr::get()` to send our request to an API and capture the response.
+
+```{r message=FALSE, warning=FALSE}
+library(httr)
+
+response <- GET(request)
+
+response
 ```
 
-The result is a response object.
+The result is a response object, and contains additional information about the result of your request.
 
 ```{r}
-class(httr::GET(request))
+class(response)
 ```
 
-We'll need to extract out the actual data with `httr::content()`.
+httr contains functions for extracting information out of response objects. `http_error()` returns `TRUE` if there was an error with your request, and `FALSE` otherwise.
 
 ```{r}
-httr::GET(request) %>% 
-  httr::content()
+http_error(response)
 ```
 
-Now, the data is a list, which will also require some tidying work. For our Census Bureau case (and many other situations), `fromJSON()` is an easier solution. However, it's useful to know about the httr package, especially if you plan to working a lot with APIs. 
+We can also determine the type of data with `http_type()`.
 
-Those are the basics of using APIs to download data in R. In the next chapter, we'll discuss using the Census APIs in more detail.
+```{r}
+http_type(response)
+```
+
+It's JSON, which matches what we discovered in the previous section.
+
+To extract out the actual data, we can use `content()`.
+
+```{r}
+content(response)
+```
+
+Now, the data is a list. To turn into a tibble, we'll first turn it into a matrix.
+
+```{r}
+response %>% 
+  content() %>% 
+  unlist() %>% 
+  matrix(ncol = 3, byrow = TRUE)
+```
+
+`unlist()` turns the content into an atomic vector, and `matrix()` turns the vector into a matrix. `ncol` specifies that we want three columns, and `byrow = TRUE` causes `matrix()` to fill the matrix row-by-row, instead of column-by-column.
+
+Then, we can apply the same steps as we did in the JSON section.
+
+```{r}
+response %>% 
+  content() %>% 
+  unlist() %>% 
+  matrix(ncol = 3, byrow = TRUE) %>% 
+  as_tibble() %>% 
+  janitor::row_to_names(row_number = 1)
+```
+
+For our Census Bureau case (and many other situations), `fromJSON()` is an easier solution. However, it's useful to know about the httr package, especially if you're working with an API in a script or package. `GET()` and `http_error()` allow you to programmatically handle errors, while `fromJSON()` will fail if something goes wrong. 
+
+httr also contains many other functions for working with APIs--we've just covered the basics. In addition to using `httr::GET()` to read in data, you can use functions like `httr::PUT()` and `httr::POST()` to _send_ data to APIs. You can read more about httr on the [package website](https://httr.r-lib.org/).
+
+## Next steps
+
+You now know the basics of working with APIs in R. Fortunately, there are R packages that wrap many of the commonly used APIs, hiding the messy details. If an R package is available, you won't have to worry about creating an API request yourself or figuring out how to read in the resulting data. In the coming chapters, we'll explain two such R packages: tidycensus and googlesheets4.
+
+For the APIs without a matching R package, however, it's necessary to understand the workflow covered above. In the Census chapter, we'll go over additional examples of this workflow. 
