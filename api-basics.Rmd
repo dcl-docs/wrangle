@@ -5,7 +5,7 @@
 library(tidyverse)
 ```
 
-APIs, especially if you've never worked with them before, can be confusing. In this chapter, we'll try to demistify the process of working with APIs in R. You can use APIs for many different tasks, including reading in data, writing data (e.g., to Google Sheets), and carrying out tasks that you would usually carry out manually in your browser (e.g., pushing files to GitHub, moving files around in Google Drive, sending emails). We'll focus just on reading data, but many of the ideas explained here are also relevant to other tasks. 
+APIs, especially if you've never worked with them before, can be confusing. In this chapter, we'll try to demystify the process of working with APIs in R. You can use APIs for many different tasks, including reading in data, writing data (e.g., to Google Sheets), and carrying out tasks that you would usually carry out manually in your browser (e.g., pushing files to GitHub, moving files around in Google Drive, sending emails). We'll focus just on reading data, but many of the ideas explained here are also relevant to other tasks. 
 
 ## What is an API?
 
@@ -13,7 +13,7 @@ You're already used to sending and receiving information over the internet. When
 
 APIs work in much the same way. APIs allow you to send and receive information over the internet, and you use URLs to control what information is sent or received. The main difference between using the internet "normally" and using an API is that the "normal" internet is made for humans, while APIs are made for computers. The Twitter homepage is designed so that it's easy for humans to read and send tweets, while the Twitter API is designed to make it easy for computers to download data and send tweets. 
 
-You might think of using the internet normally like browsing a nicely lit, well-designed store, while using an API is like going directly to that store's highly organized wharehouse. 
+You might think of using the internet normally like browsing a nicely lit, well-designed store, while using an API is like going directly to that store's highly organized warehouse. 
 
 The type of API we're talking about here is actually called a _web API_. APIs (Application Programming Interfaces) are a much broader category that include all interfaces that facilitate communication between computer applications. However, when most people talk about APIs now, they mean web APIs. 
 
