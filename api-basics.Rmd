@@ -1,5 +1,5 @@
 
-# API Basics
+# API basics
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
