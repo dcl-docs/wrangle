@@ -13,6 +13,7 @@ rmd_files: [
   "scoped_basics.Rmd",
   "scoped_predicate.Rmd",
   "apis.Rmd",
+  "api-basics.Rmd",
   "googlesheets.Rmd",
   "references.Rmd"
 ]
