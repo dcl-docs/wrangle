@@ -101,43 +101,31 @@ When you knit an R Markdown, you're using R _non-interactively_. googlesheets4 c
 
 Before trying to knit an R Markdown file that uses googlesheets4 for the first time, carry out the following steps:
 
-__Step 1__ Run `sheets_auth()` to initialize your gargle token.
+__Step 1__ Run `sheets_auth()` to initialize your gargle token.  
 
-__Step 2__ Find the path to your gargle token. 
+__Step 2__ Open your .Rprofile in RStudio by running `usethis::edit_r_profile()`. 
 
-googlesheets4 will store your token in the folder at `~/.R/gargle/gargle-oauth/`. Now, you just need to figure out the name of your token. Token names are a bunch of random numbers and letters followed by your Google email address. 
+__Step 3__ Add gargle options to your .Rprofile.
 
-The easiest way to determine the full path to your token is to use tab completion inside RStudio. Paste `~/.R/gargle/gargle-oauth/"` into RStudio (either in the console or in a R Markdown chunk). Note that you'll need the `"`s. Then, place your cursor after the last `/` and hit the tab key. The name of your token should pop up. Select it. 
-
-You should now see the full path! It will look something like:
-
-`
-"~/.R/gargle/gargle-oauth/yx09809384908kx32k92l039223w1o14_you@gmail.com"
-`
-
-Copy the full path (including the `""`s) to your clipboard.
-
-__Step 3__ Open your .Rprofile in RStudio by running `usethis::edit_r_profile()`. 
-
-__Step 4__ Add gargle options to your .Rprofile.
-
-Paste the following into your .Rprofile, replacing `GARGLE_TOKEN_PATH` with the path you just copied, and `YOUR_GOOGLE_EMAIL` with your Google email (complete with the \@gmail.com, \@stanford.edu, etc.). 
+Paste the following into your .Rprofile, replacing `YOUR_GOOGLE_ACCOUNT_EMAIL` with your Google Account email (complete with the \@gmail.com, \@stanford.edu, etc.). 
 
 ```{r eval=FALSE}
 options(
-  gargle_oauth_cache = "GARGLE_TOKEN_PATH",
-  gargle_oauth_email = "YOUR_GOOGLE_EMAIL"
+  gargle_oauth_cache = "~/.R/gargle/gargle_oauth/",
+  gargle_oauth_email = "YOUR_GOOGLE_ACCOUNT_EMAIL"
 )
 ```
 
 Note that both need to be in quotes.
 
-__Step 5__ Restart R for the changes to take effect. 
+`"~/.R/gargle/gargle_oauth/"` is the default location for the gargle token you initialized in Step 1. Now, instead of needing to prompt you for information, `sheets_auth()` can use the information stored in your .Rprofile options to authenticate you.
+
+__Step 4__ Restart R for the changes to take effect. 
 
 You can use the keyboard shortcut `Cmd/Ctrl + Shift + F10`, or go to _Session_ > _Restart R_. 
 
 
-__Step 6__ Run `sheets_auth()` again and try knitting.
+__Step 5__ Run `sheets_auth()` again and try knitting.
 
 Now, you're all set to knit R Markdown documents that use googlesheets4. You will need to run `sheets_auth()` once per new R session (e.g., whenever you re-open RStudio, restart R, etc.). If an R Markdown document that that uses googlesheets4 won't finish knitting, you may have forgotten to run `sheets_auth()`. 
 
