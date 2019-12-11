@@ -127,9 +127,7 @@ request %>%
 The httr package provides a more general way of getting data from an API. We get use `httr::get()` to send our request to an API and capture the response.
 
 ```{r message=FALSE, warning=FALSE}
-library(httr)
-
-response <- GET(request)
+response <- httr::GET(request)
 
 response
 ```
@@ -143,13 +141,13 @@ class(response)
 httr contains functions for extracting information out of response objects. `http_error()` returns `TRUE` if there was an error with your request, and `FALSE` otherwise.
 
 ```{r}
-http_error(response)
+httr::http_error(response)
 ```
 
 We can also determine the type of data with `http_type()`.
 
 ```{r}
-http_type(response)
+httr::http_type(response)
 ```
 
 It's JSON, which matches what we discovered in the previous section.
@@ -157,14 +155,14 @@ It's JSON, which matches what we discovered in the previous section.
 To extract out the actual data, we can use `content()`.
 
 ```{r}
-content(response)
+httr::content(response)
 ```
 
 Now, the data is a list. To turn into a tibble, we'll first turn it into a matrix.
 
 ```{r}
 response %>% 
-  content() %>% 
+  httr::content() %>% 
   unlist() %>% 
   matrix(ncol = 3, byrow = TRUE)
 ```
@@ -175,14 +173,14 @@ Then, we can apply the same steps as we did in the JSON section.
 
 ```{r}
 response %>% 
-  content() %>% 
+  httr::content() %>% 
   unlist() %>% 
   matrix(ncol = 3, byrow = TRUE) %>% 
   as_tibble() %>% 
   janitor::row_to_names(row_number = 1)
 ```
 
-For our Census Bureau case (and many other situations), `fromJSON()` is an easier solution. However, it's useful to know about the httr package, especially if you're working with an API in a script or package. `GET()` and `http_error()` allow you to programmatically handle errors, while `fromJSON()` will fail if something goes wrong. 
+For our Census Bureau case (and many other situations), `fromJSON()` is an easier solution. However, it's useful to know about the httr package, especially if you're working with an API in a script or package. `httr::GET()` and `httr::http_error()` allow you to programmatically handle errors, while `fromJSON()` will fail if something goes wrong. 
 
 httr also contains many other functions for working with APIs--we've just covered the basics. In addition to using `httr::GET()` to read in data, you can use functions like `httr::PUT()` and `httr::POST()` to _send_ data to APIs. You can read more about httr on the [package website](https://httr.r-lib.org/).
 
