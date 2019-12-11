@@ -70,7 +70,9 @@ Let's look at one of the examples from the [Vintage 2018 API example page](https
 
 The `?` marks the end of the base API request and the beginning of the parameters section. The `&`s separate the parameters from each other, just as commas separate function arguments in R. Finally, you supply values to parameters with `=`, just like in an R function call. 
 
-The example request above has three parameters, all in lowercase: `get`, `for`, and `key`. We'll talk more about the Census APIs in the next chapter. For now, just know that the example supplies the value `GEONAME,POP` to `get` and `state:02` to `for`. An API key isn't actually required for the Census API, so we'll remove that parameter:
+The example request above has three parameters, all in lowercase: `get`, `for`, and `key`. We'll talk more about the Census APIs in the next chapter. For now, just know that the example supplies the value `GEONAME,POP` to `get` and `state:02` to `for`. 
+
+`key` refers to an API access key. For some APIs, you'll need to request a key through their website and then include that key in your request. Other APIs, as you'll see in the [Google Sheets chapter](http://dcl-wrangle.stanford.edu/googlesheets.html), require a more complex form of authentication. However, the Census API doesn't require a key, so we'll remove that parameter:
 
 `r request`
 
