@@ -103,18 +103,17 @@ If the result of your API request looks like what we got above, the API is sendi
 
 Here, we need a way to read JSON into R. We can use `fromJSON()` from the jsonlite package. 
 
-```{r message=FALSE, warning=FALSE}
-library(jsonlite)
+```{r}
 request <- "https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=state:02"
 
-fromJSON(request)
+jsonlite::fromJSON(request)
 ```
 
 `fromJSON()` returns a matrix, not a tibble. We'll need to do some extra work to get the data into a tidy tibble. 
 
 ```{r warning=FALSE}
 request %>% 
-  fromJSON() %>% 
+  jsonlite::fromJSON() %>% 
   as_tibble() %>% 
   janitor::row_to_names(row_number = 1)
 ```
