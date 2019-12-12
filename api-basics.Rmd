@@ -111,7 +111,7 @@ request <- "https://api.census.gov/data/2018/pep/population?get=GEONAME,POP&for=
 jsonlite::fromJSON(request)
 ```
 
-`fromJSON()` returns a matrix, not a tibble. We'll need to do some extra work to get the data into a tidy tibble. 
+`jsonlite::fromJSON()` returns a matrix, not a tibble. We'll need to do some extra work to get the data into a tidy tibble. 
 
 ```{r warning=FALSE}
 request %>% 
@@ -124,7 +124,7 @@ request %>%
 
 ### All formats
 
-The httr package provides a more general way of getting data from an API. We get use `httr::get()` to send our request to an API and capture the response.
+The httr package provides a more general way of getting data from an API. We get use `httr::GET()` to send our request to an API and capture the response.
 
 ```{r message=FALSE, warning=FALSE}
 response <- httr::GET(request)
@@ -138,13 +138,13 @@ The result is a response object, and contains additional information about the r
 class(response)
 ```
 
-httr contains functions for extracting information out of response objects. `http_error()` returns `TRUE` if there was an error with your request, and `FALSE` otherwise.
+httr contains functions for extracting information out of response objects. `httr::http_error()` returns `TRUE` if there was an error with your request, and `FALSE` otherwise.
 
 ```{r}
 httr::http_error(response)
 ```
 
-We can also determine the type of data with `http_type()`.
+We can also determine the type of data with `httr::http_type()`.
 
 ```{r}
 httr::http_type(response)
@@ -152,7 +152,7 @@ httr::http_type(response)
 
 It's JSON, which matches what we discovered in the previous section.
 
-To extract out the actual data, we can use `content()`.
+To extract out the actual data, we can use `httr::content()`.
 
 ```{r}
 httr::content(response)
@@ -180,9 +180,9 @@ response %>%
   janitor::row_to_names(row_number = 1)
 ```
 
-For our Census Bureau case (and many other situations), `fromJSON()` is an easier solution. However, it's useful to know about the httr package, especially if you're working with an API in a script or package. `httr::GET()` and `httr::http_error()` allow you to programmatically handle errors, while `fromJSON()` will fail if something goes wrong. 
+For our Census Bureau case (and many other situations), `jsonlite::fromJSON()` is an easier solution. However, it's useful to know about the httr package, especially if you're working with an API in a script or package. `httr::GET()` and `httr::http_error()` allow you to programmatically handle errors, while `jsonlite::fromJSON()` will fail if something goes wrong. 
 
-httr also contains many other functions for working with APIs--we've just covered the basics. In addition to using `httr::GET()` to read in data, you can use functions like `httr::PUT()` and `httr::POST()` to _send_ data to APIs. You can read more about httr on the [package website](https://httr.r-lib.org/).
+httr also contains many other functions for working with APIs---we've just covered the basics. In addition to using `httr::GET()` to read in data, you can use functions like `httr::PUT()` and `httr::POST()` to _send_ data to APIs. You can read more about httr on the [package website](https://httr.r-lib.org/).
 
 ## Next steps
 
