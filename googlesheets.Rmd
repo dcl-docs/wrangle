@@ -111,14 +111,14 @@ Paste the following into your .Rprofile, replacing `YOUR_GOOGLE_ACCOUNT_EMAIL` w
 
 ```{r eval=FALSE}
 options(
-  gargle_oauth_cache = "~/.R/gargle/gargle_oauth/",
+  gargle_oauth_cache = "~/.R/gargle/gargle_oauth",
   gargle_oauth_email = "YOUR_GOOGLE_ACCOUNT_EMAIL"
 )
 ```
 
 Note that both need to be in quotes.
 
-`"~/.R/gargle/gargle_oauth/"` is the default location for the gargle token you initialized in Step 1. Now, instead of needing to prompt you for information, `sheets_auth()` can use the information stored in your .Rprofile options to authenticate you.
+`"~/.R/gargle/gargle_oauth"` is the default location for the gargle token you initialized in Step 1. Now, instead of needing to prompt you for information, `sheets_auth()` can use the information stored in your .Rprofile options to authenticate you.
 
 __Step 4__ Restart R for the changes to take effect. 
 
