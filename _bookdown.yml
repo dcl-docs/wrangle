@@ -15,6 +15,7 @@ rmd_files: [
   "apis.Rmd",
   "api-basics.Rmd",
   "googlesheets.Rmd",
+  #"census.Rmd",
   "references.Rmd"
 ]
 

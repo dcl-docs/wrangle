@@ -1,0 +1,243 @@
+
+# US census data
+
+```{r message=FALSE, warning=FALSE}
+library(tidycensus)
+library(tidyverse)
+```
+
+## Census basics
+
+When you think of the U.S. Census Bureau, you might think of population estimates that come around every 10 years. The Census Bureau is responsible for determining the population of the U.S. every ten years, but it also collects and publishes social, economic, housing, and demographic data.
+
+The Census Bureau is not synonymous with the once-every-ten-year census (the _decennial census_). As you saw in the Census Basics chapter, the Census Bureau makes available a wide variety of APIs. In this chapter, we'll focus on three categories: the decennial census, the American Community Survey, and the population estimates. 
+
+We'll show you how to use the tidycensus package to obtain decennial census and ACS data, and then show you how to directly work with the Census Bureau APIs for other situations, including the population estimate APIs. First, we'll go into some more detail about the difference between the decennial census, the ACS, and the population estimates.
+
+### Decennial census
+
+The _decennial census_ is what most people think of when they think of the US census. The decennial census is required by the U.S. Constitution and takes place once every ten years. The first one was in 1790, and they've happend every ten years since. The primary purpose of the decennial census is to determine the number of people living in the United States, which is critical for various features of U.S. government, including the number of House of Representatives seats awarded to each state. 
+
+Prior to the 2020 census, census takers went door-to-door to collect the data. In 2020, respondents can answer the survey over internet, phone, or mail.
+
+The decennial census is supposed to count every resident of the United States, and so the Census Bureau tries to reach every household in the U.S. The population numbers you get from the U.S. Census are therefore as defintive as you're going to get. They aren't estimates based on samples, as the counts from many surveys are. 
+
+However, the data only comes out once every ten years, and so can be out-of-date. The decennial census survey also only asks a few questions, primarily about household size, race, ethnicity
+The decennial census survey also only asks a few questions.
+
+### American Community Survey 
+
+Decennial censuses between 1790 and 2000 included both a short form and a long form. All households filled out the short form, but only a sample filled out the long form. After the 2000 Census, however, the long form became the American Community Survey and the Census Bureau began collected more detailed data every year. 
+
+The American Community survey is more frequent and comprehensive than the decennial census. Every year, the ACS contacts 3.5 million households. The survey includes social, economic, housing, and demographics questions.  
+
+In contrast to the decennial census, the ACS samples the US population, and so all data published from the ACS is an estimate. Because of this, they also include margin of error estimates for every measure. 
+
+The ACS calculates these estimates over two time periods: 1 year and 5 year. The 1 year estimates are the most current, but will have larger margins of error because the sample size is smaller. The 1-year estimates are primarily helpful if you want to study an area taht is reapidly changing, or have a reason to require data at a singel year granularity.[^1]
+
+Most of the time, however, you'll want to use the 5-year estimates. These have a larger sample size and so provide more reliable estimates, especially for smaller geographic units.
+
+The ACS is an incredible source of knowledge about the United States, and its used by a variety of agencies, from federal, state, and local government agencies, to emergency planners, to journalists.
+
+ACS: more variables, more current, less definitive
+
+from https://www.census.gov/content/dam/Census/programs-surveys/acs/about/ACS_Information_Guide.pdf
+
+### Population estimates
+
+The third type of data published by the Census that we'll talk about are the population estimates. As we said earlier, the decennial census publishes the definitive data on the population of the United States every ten years. But what if you want to know the population of a geographic area between decennial census years?
+
+The Census Bureau also produces estimates of the population between decennial census years. These are useful if you want a good estimate of the population between decennial census years. The ACS also publishes population estiamtes, but these estimates are more accurate. 
+
+### Which data do you want?
+
+* decennial if you want definitive population data, or a limited number of variables, and its not a problem that the data is only available every 10 years.
+* ACS for most things. If you want to learn about social, economic, housing, demographics, language use, etc. of the US population
+** 5 year acs for most things
+* population estimate APIs if you want to get data on the population of US geographies for a non-decennial census year (i.e., a year not divisible by 10).
+
+## tidycensus package
+
+As we explained in the previous chapter, many APIs have R package wrappers. The [tidycensus package](https://walkerke.github.io/tidycensus/) wraps several U.S. Census Bureau APIs, allowing you to access decennial census and ACS data through R functions. 
+
+Before you use tidycensus for the first time, you'll need to obtain a Census Bureau API key. You can request one [here](https://api.census.gov/data/key_signup.html). You'll receive an email with your key. Copy your key to the clipboard, then navigate back to RStudio. Run the following line to open your .Renviron:
+
+```{r eval=FALSE}
+usethis::edit_r_environ()
+```
+
+Then, add the following line, replacing `YOUR_API_KEY` with the key sent to you by the Census Bureau.
+
+```{r eval=FALSE}
+CENSUS_API_KEY='YOUR_API_KEY`
+```
+
+You'll need to restart R (Ctrl/Cmd + F10) for the changes to take effect. 
+
+From now on, you won't need to worry about a key. Your key will stay in your .Renviron across R sessions, and tidycensus knows to look there for a key.
+
+### Which data set?
+
+In the next step, we're going to use the tidycensus function `load_variables()` to inspect the available variables for either the decennial census or ACS data. `load_variables()` needs two arguments: `year` and `dataset`. In this step, we'll describe how to choose which dataset to use and how to specify that dataset for tidycensus functions.
+
+__ACS vs. decennial__
+
+The first time to using tidycensus is to decide if you want data from the ACS or the decennial census. As we said earlier, the decennial is more definitive, but includes fewer variables and only happens once every ten years. ACS data are estimates, but the ACS happens more frequently and includes many more variables. 
+
+__Subtype__
+
+As explained earlier, if you use the ACS, you'll also need to decide if you want the 1-year of 5-year ACS estimates. For tidycensus, you'll set `dataset = "acs5"` for the 5-year ACS and `dataset = "acs1"` for the 1-year ACS.
+
+In the tidycensus package, you refer to the decennial census as either `"sf1"` or `"sf3`". _sf_ stands for _Summary File_. You'll likely want `"sf1"`. Summary File 1 refers to the short form census described earlier, while Summary File 3 refers to the long form. Because the ACS took the place of the long form census starting in 2001, `"sf3"` is only available for censuses from 2000 or earlier. In most cases, you'll want `"sf1"`.
+
+__Year__
+
+For the decennial censuses, the `year` parameter will just be the year of the decennial census. The tidycensus package can access the 1990, 2000, and 2010 decennial censuses.
+
+For ACS data, `year` refers to the end-year of the sample period. For example, if you want to use a 5-year ACS that ended in 2017, set `year = 2017`. If you want to use a 1-year ACS that ended in 2014, use `year = 2014`. As of December 2019, tidycensus supports the 2010 through 2017 ACS samples, for both the 1- and 5-year ACS. 
+
+### Find variables
+
+```{r echo=FALSE}
+all_vars_decennial <- 
+  load_variables(year = 2010, dataset = "sf1")
+
+all_vars_acs5 <- 
+  load_variables(year = 2017, dataset = "acs5")
+```
+
+Data from both the ACS and decennial census capture many variables. The 2010 decennial census includes `r format(nrow(all_vars_decennial), big.mark = ",")`, while the 2017 5-year ACS includes `r format(nrow(all_vars_acs), big.mark = ",")`!
+
+Each of these variables has an accompanying code---`H001001`, `P011014`, etc. You'll need to determine the codes of the variables you're interested in.
+
+We can find variables for the ACS or decennial census with the tidycensus function `load_variables()`. `load_variables()` returns a tibble of all variable codes from a given dataset, alongside brief descriptions. 
+
+If we wanted to look at the variables for the 2017 5-year ACS, we'd use
+
+```{r eval=FALSE}
+all_vars_acs5 <- 
+  load_variables(year = 2017, dataset = "acs5")
+
+all_vars_acs5
+```
+```{r echo=FALSE}
+all_vars_acs5
+```
+
+`name` is the variable code. `label` is a description of the variable. `concept` is a broader categorization. 
+
+Let's take a closer look at just one concept: sex by age.
+
+```{r}
+all_vars_acs5 %>% 
+  filter(concept == "SEX BY AGE")
+```
+
+`r nrow(all_vars_acs5 %>% filter(concept == "SEX BY AGE"))` belong to the "SEX BY AGE" concept. Each row refers to a variable under that concept. This way of thinking about variables can be a bit confusing at first. Here, the `Estimate!!Total` variable captures the number of people for whom sex by age data is available. `Estimate!!Total!!Male` captures the total number of males, while `Estimate!!Total!!Male!!Under 5 years` captures the total number of males under 5 years old. 
+
+Most concepts have a `Estimate!!Total` variable, or something similar. If you want to calculate a proportion, such as the proportion of males, use the `Estimate!!Total` as the denominator. 
+
+To find the variables you want, pipe the result of `load_variables()` into `view()`.
+
+```{r eval=FALSE}
+all_vars_acs5 %>% 
+  view()
+```
+
+Then, use _Ctrl/Cmd_ + _F_ to search for variables with a given a keyword (e.g., "income"). Once you've found the variables you want, copy their codes (the `name` variable), and store them in a named vector.
+
+```{r}
+vars_acs5 <-
+  c(
+    median_income = "B06011_001",
+    median_rent = "B25064_001"
+  )
+```
+
+
+If you want to get variables from the decennial census, use `dataset = "sf1"` or `dataset = "sf3"`. "sf" stands for "summary file".
+
+for each concept you have a total. use as a denom
+useful if something something alone
+otherwise use as a denominator
+
+https://www2.census.gov/programs-surveys/acs/tech_docs/subject_definitions/2018_ACSSubjectDefinitions.pdf?#
+some more information on acs variables
+
+there are different types of variables
+
+make a table about what is in the different datasets
+
+note that there is no sf3 for years after 2000
+
+### Getting data
+
+tidycensus includes two functions for getting data from the Census Bureau: `get_acs()` and `get_decennial()` that get data from the ACS and decennial census, respectively. 
+
+Once you've found the names of the variables you want, it's a good idea to store them in a vector. For example, here are some variables from the 5-year ACS.
+
+```{r}
+vars_acs <-
+  c(
+    median_income = "B06011_001"
+    # other variables
+  )
+```
+
+explain totals; explain how to read variable names
+
+Both `get_decennial()` and `get_acs()` take a `geography` argument which controls the geographic level of the data you get back. The tidycensus website includes [a table of all available geographics](https://walkerke.github.io/tidycensus/articles/basic-usage.html#geography-in-tidycensus). 
+
+We'll use `get_acs()` to get our chosen variables at the state level. We also need to specify a year. For the ACS, this is the end-year of the survey.
+
+```{r}
+df_acs <-
+  get_acs(
+    geography = "state", 
+    variables = vars_acs, 
+    year = 2017
+  )
+
+df_acs
+```
+
+`get_acs()` will return the estimate and margin of error (`moe`) for all variables (where available). 
+
+Note that the data isn't tidy. See pivot.
+
+```{r}
+df_acs %>% 
+  pivot_wider(names_from = variable, values_from = c(estimate, moe))
+```
+
+You can get variables from other ACS's by specifying `survey`. By default, `get_acs()` uses the 5-year ACS.
+
+`get_decennial()` works similarly. First, we'll find the variables with `load_variables()`:
+
+```{r eval=FALSE}
+load_variables(year = 2010, dataset = "sf1") %>% 
+  view()
+```
+
+
+```{r}
+vars_decennial <-
+  c(
+    pop_urban = "H002002",
+    pop_rural = "H002005"
+  )
+```
+
+Then, we'll use `get_decennial()`. This time, let's get the data at the county level. Here, `year` is the year of the decennial census (so needs to be divisible by 10).
+
+```{r}
+get_decennial(geography = "county", variables = vars_decennial, year = 2010)
+```
+
+again, data isn't tidy. need to pivot.
+
+## Census Bureau APIs
+
+population or hosuing see below we'll explain
+vintage vs. intercensal 
+join together

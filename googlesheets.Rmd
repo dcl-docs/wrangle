@@ -111,7 +111,7 @@ Paste the following into your .Rprofile, replacing `YOUR_GOOGLE_ACCOUNT_EMAIL` w
 
 ```{r eval=FALSE}
 options(
-  gargle_oauth_cache = "~/.R/gargle/gargle_oauth",
+  gargle_oauth_cache = "~/.R/gargle/gargle-oauth",
   gargle_oauth_email = "YOUR_GOOGLE_ACCOUNT_EMAIL"
 )
 ```
