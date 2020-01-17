@@ -150,15 +150,9 @@ all_vars_acs5 %>%
   filter(concept == "SEX BY AGE")
 ```
 
-`r nrow(all_vars_acs5 %>% filter(concept == "SEX BY AGE"))` belong to the "SEX BY AGE" concept. Each row refers to a variable under that concept. 
+`r nrow(all_vars_acs5 %>% filter(concept == "SEX BY AGE"))` variables belong to the "SEX BY AGE" concept. Each row refers to a variable under that concept. 
 
-This way of thinking about variables can be a bit confusing at first. Here, the `Estimate!!Total` variable captures the number of people for whom sex by age data is available. `Estimate!!Total!!Male` captures the total number of males, while `Estimate!!Total!!Male!!Under 5 years` captures the total number of males under 5 years old. 
-
-```{r echo=FALSE}
-knitr::include_graphics(
-  "images/googlesheets/census/variable-graph.png", dpi = image_dpi
-)
-```
+This way of thinking about variables can be a bit confusing at first. The `Estimate!!Total` variable captures the number of people for whom sex by age data is available. `Estimate!!Total!!Male` captures the total number of males, while `Estimate!!Total!!Male!!Under 5 years` captures the total number of males under 5 years old. 
 
 This is a bit more intuitive for concepts like `"SEX BY AGE (ASIAN ALONE)"`.
 
@@ -169,12 +163,11 @@ all_vars_acs5 %>%
 
 Here, `Estimate!!Total` represents the total number of Asian U.S. residents for whom sex/age data is relevant. 
 
-```{r echo=FALSE}
-knitr::include_graphics("images/googlesheets/census/acs-variables.png", dpi = image_dpi)
+```{r echo=FALSE, out.height='50%'}
+knitr::include_graphics("images/census/acs-variables.png", dpi = 50)
 ```
 
-
-Most concepts have a `Estimate!!Total` variable, or something similar. If you want to calculate a proportion, such as the proportion of males, use the `Estimate!!Total` as the denominator. Sometimes, `Estimate!!Total` will not be the same as the overall total because the variable in question is not relevant or available for everyone. 
+Most concepts have a `Estimate!!Total` variable, or something similar. If you want to calculate a proportion, such as the proportion of males, use the relevant `Estimate!!Total` as the denominator. 
 
 To find the variables you want, pipe the result of `load_variables()` into `view()`.
 
