@@ -291,7 +291,3 @@ example_eagle_pairs
 ```
 
 If we used `values_drop_na = TRUE` when we pivoted `example_eagle_pairs`, we would turn all these explicit missing values implicit, which isn't a good idea. 
-
-
-
-[^1]: Tidy Data (vignette). https://tidyr.tidyverse.org/articles/tidy-data.html.

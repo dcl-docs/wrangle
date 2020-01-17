@@ -14,8 +14,8 @@ rmd_files: [
   "scoped_predicate.Rmd",
   "apis.Rmd",
   "api-basics.Rmd",
+  "census.Rmd",
   "googlesheets.Rmd",
-  #"census.Rmd",
   "references.Rmd"
 ]
 
