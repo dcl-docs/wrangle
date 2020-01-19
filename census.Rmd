@@ -1,21 +1,3 @@
-```{r include=FALSE, cache=FALSE}
-set.seed(858)
-
-options(
-  digits = 3,
-  dplyr.print_max = 6,
-  dplyr.print_min = 6
-)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  fig.align = 'center',
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-
-image_dpi <- 125
-```
 
 # U.S. Census Bureau
 
@@ -120,22 +102,25 @@ For ACS data, the `year` argument of tidycensus functions refers to the end-year
 ```{r echo=FALSE}
 all_vars_decennial <- 
   load_variables(year = 2010, dataset = "sf1")
+
+all_vars_acs5 <- 
+  load_variables(year = 2017, dataset = "acs5")
 ```
 
 Data from both the ACS and decennial census capture many variables. The 2010 decennial census includes `r format(nrow(all_vars_decennial), big.mark = ",")`, while the 2017 5-year ACS includes `r format(nrow(all_vars_acs5), big.mark = ",")`!
 
-A code, like `H001001` or `P011014`, identifies each of these variables. To use tidycensus, you'll need to determine the codes of your variables of interest. We'll use the function `tidycensus::load_variables()` to find ACS or decennial census variables and their accompanying codes. `load_variables()` returns a tibble of all variable codes from a given dataset, alongside brief descriptions. 
+A code, like `H001001` or `P011014`, identifies each of these variables. To use tidycensus, you'll need to determine the codes of your variables of interest. We'll use the function `tidycensus::load_variables()` to find ACS or decennial census variables and their accompanying codes. 
 
-Here are the variables for the 2017 5-year ACS.
+`load_variables()` returns a tibble of all variable codes from a given dataset, alongside brief descriptions. We'll load the variables from the 2017 5-year ACS as an example. 
 
 ```{r}
 all_vars_acs5 <- 
   load_variables(year = 2017, dataset = "acs5")
 
-names(all_vars_acs5)
+all_vars_acs5
 ```
 
-The variables are:
+`load_variables()` returns a tibble with the three variables:
 
 * `name`: The variable code.
 * `label`: A description of the variable.
@@ -174,7 +159,7 @@ all_vars_acs5 %>%
   view()
 ```
 
-You can use the search bar to search for variables with a given a keyword (e.g., "income"). You can also click on the _Filter_ button to get search bars for each variable. Once you've found the variables you want, copy their codes (the `name` variable), and store them in a named vector.
+You can use the search bar to search for variables with a given a keyword (e.g., "income"). You can also click on the _Filter_ button to get a search bar for each variable. Once you've found the variables you want, copy their codes (the `name` variable), and store them in a named vector.
 
 ```{r}
 vars_acs5 <-
@@ -226,7 +211,7 @@ df_acs
 
 `get_acs()` will return the estimate and margin of error (`moe`) for each variable. Because the ACS values are estimates, the Census Bureau calculates a margin of error for most variables. 
 
-If we wish to pivot the data into a wider format, we can use `pivot_wider()`.  
+To pivot the data into a wider format, we can use `pivot_wider()`.  
 
 ```{r}
 df_acs %>% 
@@ -271,7 +256,7 @@ df_decennial %>%
   pivot_wider(names_from = variable, values_from = value)
 ```
 
-Now, you can use your data however you wish. Note that, if you're interested in geospatial aspects of ACS or decennial census data, we recommend using our [ussf package](https://github.com/dcl-docs/ussf) for boundaries. You can obtain this package with the following command.
+Now, you can use your data however you wish. Note that, if you're interested in geospatial aspects of ACS or decennial census data, we recommend using our [ussf package](https://github.com/dcl-docs/ussf) for boundaries. You can install the package with the following command.
 
 ```{r eval=FALSE}
 remotes::install_github("dcl-docs/ussf")
