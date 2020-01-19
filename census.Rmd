@@ -1,23 +1,5 @@
-```{r include=FALSE, cache=FALSE}
-set.seed(858)
 
-options(
-  digits = 3,
-  dplyr.print_max = 6,
-  dplyr.print_min = 6
-)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  fig.align = 'center',
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-
-image_dpi <- 125
-```
-
-# United States census
+# U.S. Census Bureau
 
 In this chapter, we'll use the tidycensus package. You'll need to install it if you haven't already.
 
@@ -27,7 +9,7 @@ library(tidycensus)
 library(tidyverse)
 ```
 
-## Census basics
+## Census Bureau basics
 
 The U.S. Census Bureau is a fantastic resource for data related to the U.S. population. As you saw in the [API Basics](http://dcl-wrangle.stanford.edu/api-basics.html) chapter, the Census Bureau makes a wide variety of APIs available. In this chapter, we'll focus on three: the decennial census, the American Community Survey, and the population estimates. 
 
@@ -47,7 +29,7 @@ Between 1790 and 2000, decennial censuses included both a short form and a long 
 
 The ACS, unlike the decennial census, is a sample. Every year, the ACS surveys a representative sample consisting of 3.5 million households. The Census Bureau then uses this sample to provide estimates for the entire U.S. population.^[U.S. Census Bureau. American Community Survey: Information Guide. https://www.census.gov/content/dam/Census/programs-surveys/acs/about/ACS_Information_Guide.pdf]
 
-The ACS calculates these estimates over two time periods: 1 year and 5 years. The 1-year estimates are the most current, but have larger margins of error due to their smaller sample size. Most of the time, you'll use the 5-year estimates. They don't have the granularity of the 1-year estimates, but are more reliable because of their larger sample sizes, particularly for smaller geographic units.
+The ACS calculates these estimates over two time periods: 1 year and 5 years. The 1-year estimates are the most current, but have larger margins of error due to their smaller sample size. Most of the time, you'll use the 5-year estimates. Their larger sample sizes gives them greater accuracy, particularly for smaller geographic units.
 
 ### Population estimates
 
@@ -86,16 +68,16 @@ usethis::edit_r_environ()
 Then, add the following line, replacing `YOUR_API_KEY` with the key sent to you by the Census Bureau.
 
 ```{r eval=FALSE}
-CENSUS_API_KEY='YOUR API KEY`
+CENSUS_API_KEY=YOUR_API_KEY
 ```
 
-Restart R (_Ctrl/Cmd_ + _F10_) for the changes to take effect. 
+Restart R (_Ctrl/Cmd_ + _Shift_ + _F10_) for the changes to take effect. 
 
 From now on, you won't need to worry about a key. Your key will stay in your .Renviron across R sessions.
 
 ### Specify a dataset
 
-We'll show you how to use the tidycensus package to access two Census APIs: the decennial census and the ACS. Before you start using tidycensus, you'll need to make two decide which dataset and year to use.
+We'll show you how to use the tidycensus package to access two Census APIs: the decennial census and the ACS. Before you start using tidycensus, you'll need to decide which dataset and year to use.
 
 __Dataset__
 
@@ -127,21 +109,22 @@ all_vars_acs5 <-
 
 Data from both the ACS and decennial census capture many variables. The 2010 decennial census includes `r format(nrow(all_vars_decennial), big.mark = ",")`, while the 2017 5-year ACS includes `r format(nrow(all_vars_acs5), big.mark = ",")`!
 
-A code, like `H001001` or `P011014`, identifies each of these variables. To use tidycensus, you'll need to determine the codes of your variables of interest. We'll use the function `tidycensus::load_variables()` to find ACS or decennial census variables and their accompanying codes. `load_variables()` returns a tibble of all variable codes from a given dataset, alongside brief descriptions. 
+A code, like `H001001` or `P011014`, identifies each of these variables. To use tidycensus, you'll need to determine the codes of your variables of interest. We'll use the function `tidycensus::load_variables()` to find ACS or decennial census variables and their accompanying codes. 
 
-If we wanted to look at the variables for the 2017 5-year ACS, we'd use
+`load_variables()` returns a tibble of all variable codes from a given dataset, alongside brief descriptions. We'll load the variables from the 2017 5-year ACS as an example. 
 
-```{r eval=FALSE}
+```{r}
 all_vars_acs5 <- 
   load_variables(year = 2017, dataset = "acs5")
 
 all_vars_acs5
 ```
-```{r echo=FALSE}
-all_vars_acs5 %>% view()
-```
 
-`name` is the variable code. `label` is a description of the variable. `concept` is a broader categorization. 
+`load_variables()` returns a tibble with the three variables:
+
+* `name`: The variable code.
+* `label`: A description of the variable.
+* `concept`: A broader categorization. 
 
 Let's take a closer look at just one concept: sex by age.
 
@@ -176,7 +159,7 @@ all_vars_acs5 %>%
   view()
 ```
 
-Then, use _Ctrl/Cmd_ + _F_ to search for variables with a given a keyword (e.g., "income"). Once you've found the variables you want, copy their codes (the `name` variable), and store them in a named vector.
+You can use the search bar to search for variables with a given a keyword (e.g., "income"). You can also click on the _Filter_ button to get a search bar for each variable. Once you've found the variables you want, copy their codes (the `name` variable), and store them in a named vector.
 
 ```{r}
 vars_acs5 <-
@@ -213,7 +196,7 @@ Supply `variables` with a vector of variable codes. Earlier, we stored the codes
 vars_acs5
 ```
 
-For `get_acs()`, `year` indicates the year that the ACS estimates _end_. If you want ACS estimates from 2012-2017, set `year = 2017`. By default, `get_acs()` uses the 5-year estimates. You can use other estimates by specifying `survey`.
+For `get_acs()`, `year` indicates the _end-year_ for the ACS estimates. If you want ACS estimates from 2012-2017, set `year = 2017`. By default, `get_acs()` uses the 5-year estimates. You can use other estimates by specifying `survey`.
 
 ```{r}
 df_acs <-
@@ -228,7 +211,7 @@ df_acs
 
 `get_acs()` will return the estimate and margin of error (`moe`) for each variable. Because the ACS values are estimates, the Census Bureau calculates a margin of error for most variables. 
 
-Note that the data isn't tidy, and we'll need to `pivot_wider()`.  
+To pivot the data into a wider format, we can use `pivot_wider()`.  
 
 ```{r}
 df_acs %>% 
@@ -266,18 +249,17 @@ df_decennial <-
 df_decennial
 ```
 
-Again, we need to `pivot_wider()`.
+Again, we can use `pivot_wider()`.
 
 ```{r}
 df_decennial %>% 
   pivot_wider(names_from = variable, values_from = value)
 ```
 
-Now, you can use your data however you wish. Note that, if you're interested in geospatial aspects of ACS or decennial census data, we recommend using our [ussf package](https://github.com/dcl-docs/ussf) for boundaries. 
+Now, you can use your data however you wish. Note that, if you're interested in geospatial aspects of ACS or decennial census data, we recommend using our [ussf package](https://github.com/dcl-docs/ussf) for boundaries. You can install the package with the following command.
 
-```{r}
-# remotes::install_github("dcl-docs/ussf")
-library(ussf)
+```{r eval=FALSE}
+remotes::install_github("dcl-docs/ussf")
 ```
 
 You can join your ACS or decennial census data with the result of `ussf::boundaries()`, using `GEOID` as a unique identifier. 
@@ -285,7 +267,7 @@ You can join your ACS or decennial census data with the result of `ussf::boundar
 ```{r}
 df_acs %>% 
   left_join(
-    boundaries(geography = "state") %>% select(GEOID, geometry), 
+    ussf::boundaries(geography = "state") %>% select(GEOID), 
     by = "GEOID"
   )
 ```
