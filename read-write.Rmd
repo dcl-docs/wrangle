@@ -1,16 +1,17 @@
 # (PART) Read/Write {-} 
 
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(vroom)
+```
+
 # vroom
 
 The [vroom package](https://vroom.r-lib.org/) provides a speedy way to read in and write out data. Try using vroom when working with very large data sets. Install vroom if you haven't already:
 
 ```{r eval=FALSE}
 install.packages("vroom")
-```
-
-```{r}
-library(tidyverse)
-library(vroom)
 ```
 
 ## Read
@@ -24,7 +25,7 @@ url_data <-
 vroom::vroom(url_data)
 ```
 
-`vroom::vroom()` is so fast because it doesn't actually read in all the data. It reads in a portion of the data, remembers where it stopped, and then reads more in later if needed. This is all done automatically and you shouldn't need to think much about how it works. 
+`vroom::vroom()` is so fast because it doesn't actually read in all the data. It reads in a portion of the data, remembers where it stopped, and reads in more only if it needs to later. This is all done automatically and you shouldn't need to think much about how it works. 
 
 vroom has the same interface as the readr functions. The arguments you're familiar with from `read_csv()`--`col_types`, `skip`, etc.--also work in `vroom::vroom()`.
 
