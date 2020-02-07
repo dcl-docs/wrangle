@@ -272,3 +272,142 @@ df_acs %>%
   )
 ```
 
+## Population estimates
+
+For population estimates outside decennial census years, you'll need to work directly with the [Population Estimates APIs](https://www.census.gov/data/developers/data-sets/popest-popproj/popest.html). 
+
+In the [API Basics](http://dcl-wrangle.stanford.edu/api-basics.html#find-your-api) chapter, we discussed a workflow for working directly with APIs, and walked you through an example that used the Population Estimates. In this section, we'll dive into more detail about the Population Estimates APIs.
+
+### Choose data
+
+There are two types of population estimate APIs: the _vintages_ and the _intercensals_. Each vintage contains data on all years since the last decennial census. For example, the 2018 Vintage contains data for each year between 2010 and 2018. You should use the most recent vintage available, since the Census Bureau updates all previous years' estimates. 
+
+The intercensals contain data between previous decennial census. For example, the 2000-2010 intercensal contains yearly data for 2000 through 2020. If you want data from, for example, 2000 to 2018, you'll need to use both a vintage and an intercensal, which will involve two API queries. 
+
+As of February 2020, the Vintage 2018 estimates are the most recent, fully available estimates. Vintage 2019 estimates are available for some geographic units, but won't be available at the county level until March 2020. 
+
+Once you've decided on a vintage or a intercensal, click on the corresponding tab. You'll see the various available APIs for those estimates. 
+
+The links under the API name provide you with more information about the API. If you want population data, you'll probably want the _Population Estimates_ API, which provides yearly population estimates are various geographic levels.
+
+```{r echo=FALSE}
+knitr::include_graphics(
+  "images/census/vintage-2018-pop-est.png", dpi = image_dpi
+)
+```
+
+
+### Craft your request
+
+In the Census Basics chapter, we laid out the steps for working with an API. After finding your API, the next step is to craft the request.
+
+First, you'll need to find the __base request__, which will be listed next to _API Call_. 
+
+```{r echo=FALSE}
+knitr::include_graphics(
+  "images/census/vintage-2018-api-call.png", dpi = image_dpi
+)
+```
+
+Next, add __parameters__ to the base request to specify exactly what data you want. For the Population Estimates APIs, there are two important parameters: `get` and `for`. (You'll also see `key` in the examples on the Census website, but an API key isn't actually necessary.)
+
+```{r echo=FALSE}
+knitr::include_graphics("images/census/api-request.png", dpi = image_dpi)
+```
+
+`get` controls which variables (i.e., what will eventually become your tibble columns) the request returns. `for` controls the geographic level. The parameters come after a `?` and are separated by a `&`. We'll go over both in more detail next.
+
+__Variables__
+
+To see all possible variables, click on the _Variables_ link under your chosen API.
+
+```{r echo=FALSE}
+knitr::include_graphics("images/census/vintage-2018-variables.png", dpi = image_dpi)
+```
+
+This will lead you to a table of variables. 
+
+```{r echo=FALSE}
+knitr::include_graphics(
+  "images/census/vintage-2018-variables-table.png", 
+  dpi = image_dpi
+)
+```
+
+The variables in all caps, like POP and GEONAME, are the names of variables returned by the API. The variables in lowercase, like `for` and `in`, are actually API request parameters. For now, just pay attention to the uppercase variables. You'll specify the names of your desired variable after the API parameter `get`.
+
+Often, you'll want to get population over time. To get data for each year, you'll need the variables `DATE_DESC` and `DATE_CODE`. `DATE_CODE` is a code associated with a date (e.g., `1` or `2`), and `DATE_DESC` describes the date  (e.g., `"7/1/2018 population estimate"`). Without `DATE_DESC`, you won't know what each `DATE_CODE` refers to, and without `DATE_CODE`, the API only returns data for one year.
+
+__Geographies__
+
+Next, you'll need to specify what geographic level of the data. For each Population Estimate API, check which geographies are available by clicking on the _Examples and Supported Geographies_ link.
+
+```{r echo=FALSE}
+knitr::include_graphics(
+  "images/census/vintage-2018-examples-geographies.png", 
+  dpi = image_dpi
+)
+```
+
+This link leads to a table with a description of the API, and links to examples, geographies, and other information. Click on the _geographies_ link. Then, you'll see a table with different geographies.
+
+```{r echo=FALSE}
+knitr::include_graphics(
+  "images/census/geographies.png", 
+  dpi = image_dpi
+)
+```
+
+Use these geographies to determine the data returned. For example:
+
+* `for=us` will return data for the entire U.S.
+* `for=state:30` will return data for Montana.
+* `for=state:*` will return data by state, for all states.
+* `for=county:*` will return data by county, for all counties in the U.S.
+* `for=count:*&in=state:30` will return data by county, just for Montana.
+
+#### Examples 
+
+Each API has an examples page. From the Population Estimates homepage, navigate to _Examples and Supported Geographies_ > _Examples_. [This page](https://api.census.gov/data/2018/pep/population/examples.html) lists examples for the 2018 Vintage Population Estimates API.
+
+Here are some more examples:
+
+__Entire U.S. population data by year__
+
+[https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=us](https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=us)
+
+__Population data for only Montana, by year__
+
+[https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=state:30](https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=state:30)
+
+__Population data for all counties, by year__
+
+[https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=county:*](https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=county:*)
+
+
+### Read the data into R
+
+The next step is to read your data into R. We'll use the same process introduced in [API Basics](http://dcl-wrangle.stanford.edu/api-basics.html#read-the-data-into-r). Let's use a request that gets population data for all states, by year.
+
+```{r}
+request <- 
+  "https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=state:*"
+
+response <-
+  request %>% 
+  jsonlite::fromJSON() %>% 
+  as_tibble() %>% 
+  janitor::row_to_names(row_number = 1)
+
+response
+```
+
+You'll still need to do a bit of light cleaning. Also, notice that there are three different estimates for 2010 (the decennial census year).
+
+```{r}
+response %>% 
+  distinct(DATE_DESC) %>% 
+  pull(DATE_DESC)
+```
+
+You'll generally want to use all the July 1st estimates so that all estimates are a year apart.
