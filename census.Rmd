@@ -282,13 +282,13 @@ In the [API Basics](http://dcl-wrangle.stanford.edu/api-basics.html#find-your-ap
 
 There are two types of population estimate APIs: the _vintages_ and the _intercensals_. Each vintage contains data on all years since the last decennial census. For example, the 2018 Vintage contains data for each year between 2010 and 2018. You should use the most recent vintage available, since the Census Bureau updates all previous years' estimates. 
 
-The intercensals contain data between previous decennial census. For example, the 2000-2010 intercensal contains yearly data for 2000 through 2020. If you want data from, for example, 2000 to 2018, you'll need to use both a vintage and an intercensal, which will involve two API queries. 
+The intercensals contain data between previous decennial census. For example, the 2000-2010 intercensal contains yearly data for 2000 through 2010. If you want data from, for example, 2000 to 2018, you'll need to use both a vintage and an intercensal, which will involve two API queries. 
 
 As of February 2020, the Vintage 2018 estimates are the most recent, fully available estimates. Vintage 2019 estimates are available for some geographic units, but won't be available at the county level until March 2020. 
 
 Once you've decided on a vintage or a intercensal, click on the corresponding tab. You'll see the various available APIs for those estimates. 
 
-The links under the API name provide you with more information about the API. If you want population data, you'll probably want the _Population Estimates_ API, which provides yearly population estimates are various geographic levels.
+The links under the API name provide you with more information about the API. If you want population data, you'll probably want the _Population Estimates_ API, which provides yearly population estimates at various geographic levels.
 
 ```{r echo=FALSE}
 knitr::include_graphics(
@@ -364,7 +364,7 @@ Use these geographies to determine the data returned. For example:
 * `for=state:30` will return data for Montana.
 * `for=state:*` will return data by state, for all states.
 * `for=county:*` will return data by county, for all counties in the U.S.
-* `for=count:*&in=state:30` will return data by county, just for Montana.
+* `for=county:*&in=state:30` will return data by county, just for Montana.
 
 #### Examples 
 
@@ -389,7 +389,7 @@ __Population data for all counties, by year__
 
 The next step is to read your data into R. We'll use the same process introduced in [API Basics](http://dcl-wrangle.stanford.edu/api-basics.html#read-the-data-into-r). Let's use a request that gets population data for all states, by year.
 
-```{r}
+```{r, warning=FALSE}
 request <- 
   "https://api.census.gov/data/2018/pep/population?get=GEONAME,DATE_CODE,DATE_DESC,POP&for=state:*"
 
