@@ -1,6 +1,4 @@
 
 # (PART) Scoped verbs {-} 
 
-# Introduction 
-
-words
+# Introduction

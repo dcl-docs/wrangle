@@ -1,0 +1,78 @@
+
+# Cheat sheet
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r}
+# Libraries
+library(tidyverse)
+library(googlesheets4)
+library(knitr)
+# Parameters
+  # Spreadsheet with content
+key <- "1TDkJNigZ4c2nVy18N116HwCnkQblRFP3HIkOsmWEo9U"
+```
+
+## Suffixes
+
+```{r}
+sheets_read(key, sheet = "suffix") %>% 
+  select(suffix, `use when`) %>% 
+  kable() 
+```
+
+## Examples
+
+```{r}
+examples <-
+  sheets_read(key, sheet = "examples") %>% 
+  mutate(
+    example_type = if_else(is.na(example_type), lag(example_type), example_type)
+  )
+```
+
+### `mutate()`, `summarize()`, `select()`, and `rename()`
+
+#### Named functions
+
+```{r}
+examples %>% 
+  filter(example_type == "named") %>% 
+  slice(-n()) %>% 
+  select(-example_type) %>% 
+  mutate_all(str_replace_na, " ") %>% 
+  rename_all(~(str_to_title(.) %>% str_replace("_", " "))) %>% 
+  kable(format = "markdown") #have to specify otherwise doesn't handle empty rows well
+```
+
+#### Extra arguments
+
+```{r}
+examples %>%
+  filter(str_detect(example_type, "(extra)")) %>%
+  select(-example_type) %>% 
+  kable()
+```
+
+#### Anonymous functions
+
+```{r}
+examples %>% 
+  filter(str_detect(example_type, "anonymous")) %>% 
+  select(-example_type) %>% 
+  kable()
+```
+
+### `filter()`
+
+```{r}
+examples %>% 
+  filter(example_type == "filter") %>% 
+  slice(-n()) %>% 
+  select(-example_type) %>% 
+  mutate_all(str_replace_na, " ") %>% 
+  kable(format = "markdown")
+```
