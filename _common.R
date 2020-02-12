@@ -8,6 +8,7 @@ options(
 
 knitr::opts_chunk$set(
   comment = "#>",
+  collapse = FALSE,
   fig.align = 'center',
   fig.asp = 0.618,  # 1 / phi
   fig.show = "hold"

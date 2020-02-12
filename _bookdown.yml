@@ -18,6 +18,7 @@ rmd_files: [
   "census.Rmd",
   "googlesheets.Rmd",
   "read-write.Rmd",
+  "web-scraping.Rmd",
   "references.Rmd"
 ]
 
