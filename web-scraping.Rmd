@@ -131,13 +131,14 @@ url_data %>%
   html_node(css = css_selector) 
 ```
 
-The data is still in HTML. Use `rvest::html_table()` to turn the output into a data frame.
+The data is still in HTML. Use `rvest::html_table()` to turn the output into a data frame. Note that `rvest::html_table()` returns a data.frame  object, not a tibble. To convert it to a tibble, use `as_tibble()`.
 
 ```{r}
 url_data %>% 
   read_html() %>% 
   html_node(css = css_selector) %>% 
-  html_table() 
+  html_table() %>% 
+  as_tibble()
 ```
 
 Now, the data is ready for wrangling in R.
