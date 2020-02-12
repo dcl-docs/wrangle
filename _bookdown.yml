@@ -17,8 +17,8 @@ rmd_files: [
   "api-basics.Rmd",
   "census.Rmd",
   "googlesheets.Rmd",
-  "read-write.Rmd",
-  "web-scraping.Rmd",
+  "vroom.Rmd",
+  "rvest.Rmd",
   "references.Rmd"
 ]
 

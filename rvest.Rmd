@@ -16,7 +16,7 @@ The [rvest package](https://rvest.tidyverse.org/index.html) (as in "harvest") al
 
 HTML (_Hyper Text Markup Language_) defines the content and structure of a web page. In Chrome, you can view the HTML that generates a given web page by navigating to _View_ > _Developer_ > _Developer tools_.
 
-A series of elements, like paragraphs, headers, and tables, make up every HTML page. Here's a very simple webpage and the HTML that generates it. 
+A series of elements, like paragraphs, headers, and tables, make up every HTML page. Here's a very simple web page and the HTML that generates it. 
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/rvest/html-example.png", dpi = image_dpi)
@@ -54,7 +54,7 @@ Using this table as an example, we'll show you how to use rvest to scrape a web 
 
 ### Read HTML
 
-First, copy the url of the webpage and store it in a parameter.
+First, copy the url of the web page and store it in a parameter.
 
 ```{r}
 url_data <- "https://ourworldindata.org/famines"
@@ -73,7 +73,7 @@ url_data %>%
 
 We'll find the CSS selector of the famines table and then use that selector to extract the data. 
 
-In Chrome, right click on a cell near the top of the table. ^[The process is very similar in Safari.]
+In Chrome, right click on a cell near the top of the table, then click _Inspect_ (or _Inspect element_ in Safari or Firefox).
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/rvest/famines-inspect.png", dpi = image_dpi)
@@ -88,7 +88,7 @@ knitr::include_graphics(
 )
 ```
 
-Hovering over different HTML elements in the _Elements_ pane will highlight different parts of the webpage.
+Hovering over different HTML elements in the _Elements_ pane will highlight different parts of the web page.
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/rvest/famines-hover.png", dpi = image_dpi)
@@ -103,7 +103,7 @@ knitr::include_graphics(
 )
 ```
 
-Right click on the line, then click _Copy_ > _Copy selector_.
+Right click on the line, then click _Copy_ > _Copy selector_ (Firefox: _Copy_ > _CSS selector_; Safari: _Copy_ > _Selector Path_).
 
 ```{r echo=FALSE}
 knitr::include_graphics(
@@ -131,7 +131,7 @@ url_data %>%
   html_node(css = css_selector) 
 ```
 
-The data is still in HTML. Use `rvest::html_table()` to turn the output into a data frame. Note that `rvest::html_table()` returns a data.frame  object, not a tibble. To convert it to a tibble, use `as_tibble()`.
+The data is still in HTML. Use `rvest::html_table()` to turn the output into a data frame. Note that `rvest::html_table()` returns a data.frame object, not a tibble. To convert it to a tibble, use `as_tibble()`.
 
 ```{r}
 url_data %>% 
@@ -143,7 +143,7 @@ url_data %>%
 
 Now, the data is ready for wrangling in R.
 
-Note that `html_table()` will only work if the HTML element you've supplied is a table. If, for example, wanted to extract a paragraph of text, we'd use `html_text()` instead.
+Note that `html_table()` will only work if the HTML element you've supplied is a table. If, for example, we wanted to extract a paragraph of text, we'd use `html_text()` instead.
 
 ```{r}
 css_selector_paragraph <- 
