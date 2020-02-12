@@ -1,13 +1,9 @@
 
 # Parsing
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-```
-
 So far you've worked with data sets that have been bundled in R packages, or have been created with `tibble()` or `tribble()`. Now it's time to learn how to read simple flat files from disk. To do this, we'll use functions from [readr](http://readr.tidyverse.org). readr is one of the core tidyverse packages, so you won't usually load it explicitly.
 
-```{r}
+```{r message = FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
