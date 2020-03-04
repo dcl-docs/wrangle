@@ -3,6 +3,8 @@
 
 ## Scoped verbs vs. purrr
 
+It can be easy to get confused between [purrr](https://dcl-prog.stanford.edu/purrr-basics.html) and scoped verbs. The following diagram illustrates which to use for different combinations of inputs and outputs. For example, use a scoped verb if you want to start and end with a tibble, but purrr if you want to start with a tibble and end up with a vector.
+
 ```{r echo=FALSE}
 knitr::include_graphics(
   "images/scoped-verbs/purrr-vs-scoped-verbs.png", 
