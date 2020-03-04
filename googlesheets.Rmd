@@ -93,13 +93,21 @@ When you run R code in the console or in an R Markdown chunk, you're in an _inte
 
 The first time you call a googlesheets4 function that requires authentication (e.g., `sheets_read(ss = id_gapminder)`), a browser tab will open and prompt you to sign into Google. Sign into your account and then return to RStudio. 
 
-By default, your user credentials will now be stored as something called a gargle token. gargle is the name of an R package for working with Google APIs. The next time googlesheets4 requires authentication, it will use this token to authenticate you.
+By default, your user credentials will now be stored as something called a gargle token. gargle is the name of an R package for working with Google APIs. The next time googlesheets4 requires authentication, it will use this token to authenticate you. On a Mac, you can locate your gargle token by looking in _~/.R/gargle/_. 
 
 ### Non-interactive session
 
-When you knit an R Markdown, you're using R _non-interactively_. googlesheets4 can't prompt you to sign into Google, because it doesn't assume that there's a human standing by to do so. This means that authentication requires some extra setup.
+When you knit an R Markdown, you're using R _non-interactively_. googlesheets4 can't prompt you to sign into Google, because it doesn't assume that there's a human standing by to do so. This should only be a problem if you're trying to knit an R Markdown document that uses googlesheets4 and you've never authenticated with googlesheets4 before. The easiest way to quickly authenticate and set up your gargle token is to run `googlesheets4::sheets_auth()` (you can run this anywhere: console, R Markdown chunk, etc.). Once you've signed into Google and returned to RStudio, try knitting your document. 
 
-Before trying to knit an R Markdown file that uses googlesheets4 for the first time, carry out the following steps:
+If you've authenticated with googlesheets4 before, but your R Markdown document never finishing knitting, you may need to update your gargle token. Run `googlesheets4::sheets_auth()` and then try knitting again.
+
+<!--
+
+### Remote scripts
+
+If you're trying to run a script that uses googlesheets4 on a remote machine (like we explain [here](http://dcl-workflow.stanford.edu/rscripts-remote.html)), you'll need to do some more setup. 
+
+Before running your script, open RStudio on the remote machine, then carry out the following steps:
 
 __Step 1__ Run `sheets_auth()` to initialize your gargle token.  
 
@@ -124,8 +132,8 @@ __Step 4__ Restart R for the changes to take effect.
 
 You can use the keyboard shortcut `Cmd/Ctrl + Shift + F10`, or go to _Session_ > _Restart R_. 
 
+__Step 5__ Run `sheets_auth()` again.
 
-__Step 5__ Run `sheets_auth()` again and try knitting.
+Now, you're all set to run googlesheets4 on a remote machine. You may need to run `sheets_auth()` once per new R session (e.g., whenever you re-open RStudio, restart R, etc.).
 
-Now, you're all set to knit R Markdown documents that use googlesheets4. You will need to run `sheets_auth()` once per new R session (e.g., whenever you re-open RStudio, restart R, etc.). If an R Markdown document that that uses googlesheets4 won't finish knitting, you may have forgotten to run `sheets_auth()`. 
-
+-->

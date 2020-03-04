@@ -12,7 +12,7 @@ rmd_files: [
   "scoped-verbs.Rmd",
   "scoped-basics.Rmd",
   "scoped-predicate.Rmd",
-  "scoped-cheat-sheet.Rmd",
+  "scoped-cheat-sheets.Rmd",
   "apis.Rmd",
   "api-basics.Rmd",
   "census.Rmd",

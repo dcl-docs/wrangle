@@ -1,12 +1,11 @@
 # (PART) Read/Write {-} 
 
+# vroom
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(vroom)
 ```
-
-# vroom
 
 The [vroom package](https://vroom.r-lib.org/) provides a speedy way to read in and write out data. Try using vroom when working with very large data sets. Install vroom if you haven't already:
 
