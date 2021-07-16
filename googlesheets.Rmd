@@ -2,24 +2,22 @@
 # Google Sheets
 
 ```{r setup, message=FALSE, warning=FALSE}
-# Libraries
 library(tidyverse)
 library(googlesheets4)
 
-# Parameters
-  # Sheet ID for Gapminder example
+# Sheet ID for Gapminder example
 id_gapminder <- "1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ"
 ```
 
 Google Sheets are a useful way to collect, store, and collaboratively work with data. The googlesheets4 package wraps the [Sheets API](https://developers.google.com/sheets/api), making it easy for you to work with Google Sheets in R.
 
-The "4" in googlesheets4 refers to the most recent version (v4) of the Google Sheets API. There's also an R package called googlesheets, which uses an older version (v3) of the Google Sheets API. If you've worked with the googlesheets package previously, note that the Sheets API v3 will be shut down on March 3, 2020, so you'll need to switch over to googlesheets4.  
+The "4" in googlesheets4 refers to the most recent version (v4) of the Google Sheets API. There's also an R package called googlesheets, which uses an older version (v3) of the Google Sheets API. If you've worked with the googlesheets package previously, note that the Sheets API v3 is being shut down, so you'll need to switch over to googlesheets4.  
 
 ## Reading
 
-Reading data stored in a Google Sheet into R will probably be your most common use of googlesheets4. Here, we'll read in the data from our [example sheet](https://docs.google.com/spreadsheets/d/1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ/), which contains data from [Gapminder](https://www.gapminder.org/). 
+Reading data stored in a Google sheet into R will probably be your most common use of googlesheets4. Here, we'll read in the data from our [example sheet](https://docs.google.com/spreadsheets/d/1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ/), which contains data from [Gapminder](https://www.gapminder.org/). 
 
-To read in the data, we need a way to identify the Google Sheet. googlesheets4 supports multiple ways of identifying sheets, but we recommend using the sheet ID, as it's stable and concise. You can find the ID of a Google Sheet in its URL:
+To read in the data, we need a way to identify the Google sheet. googlesheets4 supports multiple ways of identifying sheets, but we recommend using the sheet ID, as it's stable and concise. You can find the ID of a Google sheet in its URL:
 
 ```{r echo=FALSE}
 knitr::include_graphics("images/googlesheets/sheet-id.png", dpi = image_dpi)
@@ -39,28 +37,28 @@ Now, we can use the googlesheets4 function `read_sheet()` to read in the data. `
 read_sheet(ss = id_gapminder)
 ```
 
-Notice that the [original Sheet](https://docs.google.com/spreadsheets/d/1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ/) contains multiple sheets, one for each continent. We can list all these sheets by using the function `sheets_sheets()`.
+Notice that the [original sheet](https://docs.google.com/spreadsheets/d/1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ/) contains multiple sheets, one for each continent. We can list all these sheets by using the function `sheet_names()`.
 
 ```{r}
-sheets_sheets(ss = id_gapminder)
+sheet_names(ss = id_gapminder)
 ```
 
-By default, `sheets_read()` reads  in the first sheet. Here, that's the Africa sheet. If we want to read in Asia, we can specify the `sheet` argument.
+By default, `read_sheet()` reads  in the first sheet. Here, that's the Africa sheet. If we want to read in Asia, we can specify the `sheet` argument.
 
 ```{r}
-sheets_read(ss = id_gapminder, sheet = "Asia")
+read_sheet(ss = id_gapminder, sheet = "Asia")
 ```
 
 ## Writing
 
-As of 2019-12-05, you cannot write to Google Sheets with the googlesheets4 package. Check back for updates.
+You can write to a Google sheet using [`write_sheet()`](https://googlesheets4.tidyverse.org/reference/sheet_write.html). If the sheet already exists, any data on it will be overwritten.
 
 ## Finding sheets
 
 It can sometimes be difficult to find the exact Google Sheet you're looking for. googlesheets4 includes a handy function that will return the names of the all your sheets, alongside their IDs, in an object called a _dribble_. A dribble is a tibble specifically for storing metadata about Google Drive files. 
 
 ```{r message=FALSE, cache=TRUE}
-all_my_sheets <- sheets_find()
+all_my_sheets <- gs4_find()
 ```
 
 ```{r echo=FALSE, cache=TRUE}
@@ -76,9 +74,9 @@ all_my_sheets <-
 all_my_sheets
 ```
 
-Note that `sheets_find()` will lists both sheets that you own and private sheets that you have access to. These are the same sheets that you can see on your [Google Sheets homepage](https://docs.google.com/spreadsheets/).
+Note that `gs4_find()` will lists both sheets that you own and private sheets that you have access to. These are the same sheets that you can see on your [Google Sheets homepage](https://docs.google.com/spreadsheets/).
 
-Now, you can easily search for a sheet by piping the results of `sheets_find()` into `view()`.
+Now, you can easily search for a sheet by piping the results of `gs4_find()` into `view()`.
 
 ```{r eval=FALSE}
 all_my_sheets %>% 
@@ -91,15 +89,15 @@ all_my_sheets %>%
 
 When you run R code in the console or in an R Markdown chunk, you're in an _interactive session_. R understands that it's interacting with a human, and so can prompt you for input or actions. In an interactive session, you don't need to worry much about authentication. googlesheets4 will do most of the work for you.
 
-The first time you call a googlesheets4 function that requires authentication (e.g., `sheets_read(ss = id_gapminder)`), a browser tab will open and prompt you to sign into Google. Sign into your account and then return to RStudio. 
+The first time you call a googlesheets4 function that requires authentication (e.g., `read_sheet(ss = id_gapminder)`), a browser tab will open and prompt you to sign into Google. Sign into your account and then return to RStudio. 
 
-By default, your user credentials will now be stored as something called a gargle token. gargle is the name of an R package for working with Google APIs. The next time googlesheets4 requires authentication, it will use this token to authenticate you. On a Mac, you can locate your gargle token by looking in _~/.R/gargle/_. 
+By default, your user credentials will now be stored as something called a gargle token. gargle is the name of an R package for working with Google APIs. The next time googlesheets4 requires authentication, it will use this token to authenticate you.
 
 ### Non-interactive session
 
-When you knit an R Markdown, you're using R _non-interactively_. googlesheets4 can't prompt you to sign into Google, because it doesn't assume that there's a human standing by to do so. This should only be a problem if you're trying to knit an R Markdown document that uses googlesheets4 and you've never authenticated with googlesheets4 before. The easiest way to quickly authenticate and set up your gargle token is to run `googlesheets4::sheets_auth()` (you can run this anywhere: console, R Markdown chunk, etc.). Once you've signed into Google and returned to RStudio, try knitting your document. 
+When you knit an R Markdown, you're using R _non-interactively_. googlesheets4 can't prompt you to sign into Google, because it doesn't assume that there's a human standing by to do so. This should only be a problem if you're trying to knit an R Markdown document that uses googlesheets4 and you've never authenticated with googlesheets4 before. The easiest way to quickly authenticate and set up your gargle token is to run `googlesheets4::gs4_auth()` (you can run this anywhere: console, R Markdown chunk, etc.). Once you've signed into Google and returned to RStudio, try knitting your document. 
 
-If you've authenticated with googlesheets4 before, but your R Markdown document never finishing knitting, you may need to update your gargle token. Run `googlesheets4::sheets_auth()` and then try knitting again.
+If you've authenticated with googlesheets4 before, but your R Markdown document never finishing knitting, you may need to update your gargle token. Run `googlesheets4::gs4_auth()` and then try knitting again.
 
 <!--
 
@@ -109,7 +107,7 @@ If you're trying to run a script that uses googlesheets4 on a remote machine (li
 
 Before running your script, open RStudio on the remote machine, then carry out the following steps:
 
-__Step 1__ Run `sheets_auth()` to initialize your gargle token.  
+__Step 1__ Run `gs4_auth()` to initialize your gargle token.  
 
 __Step 2__ Open your .Rprofile in RStudio by running `usethis::edit_r_profile()`. 
 
@@ -126,14 +124,14 @@ options(
 
 Note that both need to be in quotes.
 
-`"~/.R/gargle/gargle_oauth"` is the default location for the gargle token you initialized in Step 1. Now, instead of needing to prompt you for information, `sheets_auth()` can use the information stored in your .Rprofile options to authenticate you.
+`"~/.R/gargle/gargle_oauth"` is the default location for the gargle token you initialized in Step 1. Now, instead of needing to prompt you for information, `gs4_auth()` can use the information stored in your .Rprofile options to authenticate you.
 
 __Step 4__ Restart R for the changes to take effect. 
 
 You can use the keyboard shortcut `Cmd/Ctrl + Shift + F10`, or go to _Session_ > _Restart R_. 
 
-__Step 5__ Run `sheets_auth()` again.
+__Step 5__ Run `gs4_auth()` again.
 
-Now, you're all set to run googlesheets4 on a remote machine. You may need to run `sheets_auth()` once per new R session (e.g., whenever you re-open RStudio, restart R, etc.).
+Now, you're all set to run googlesheets4 on a remote machine. You may need to run `gs4_auth()` once per new R session (e.g., whenever you re-open RStudio, restart R, etc.).
 
 -->

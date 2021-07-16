@@ -1,10 +1,7 @@
 # Basic pivoting
 
-```{r include=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
-```
-
-```{r}
 library(dcldata)
 ```
 
@@ -147,7 +144,7 @@ example_eagle_nests %>%
   )
 ```
 
-The data is now tidy! `pivot_longer()` has many optional arguments, but `cols`, `names_to`, and `values_to` will cover most of your use-cases. The _Missing values_ section and the _Advanced pivoting_ chapter cover some more specialized uses of `pivot_longer()`. 
+The data is now tidy! `pivot_longer()` has many optional arguments, but `cols`, `names_to`, and `values_to` will cover most of your use-cases. The _Missing values_ section below and the _Advanced pivoting_ chapter cover some more specialized uses of `pivot_longer()`. 
 
 Here's another eagle-related example. `example_eagle_pairs` contains data on the number of observed [bald eagle breeding pairs](https://www.fws.gov/midwest/eagle/NestingData/nos_state_tbl.html) across years and states. 
 
@@ -162,7 +159,7 @@ Here's the full call to `pivot_longer()`:
 ```{r}
 example_eagle_pairs %>% 
   pivot_longer(
-    cols = -starts_with("state"), 
+    cols = !starts_with("state"), 
     names_to = "year",
     values_to = "num_pairs"
   )
@@ -242,15 +239,6 @@ example_acs_1 %>%
   pivot_wider(names_from = variable, values_from = estimate)
 ```
 
-`pivot_wider()`'s first argument isn't actually `names_from`---it's a different argument named `id_cols`. This means that if you don't name `names_from` and `values_from`, you'll get a strange error:
-
-```{r error=TRUE}
-example_eagle_nests_tidy %>% 
-  pivot_wider(year, num_nests)
-```
-
-`pivot_wider()` thinks you're supplying `variable` to `id_cols`. We'll talk more about what `id_cols` actually does in the _Advanced pivoting_ chapter. For now, it's enough to know that you should name `names_from` and `values_from` to avoid the error. 
-
 ## Missing values
 
 The United Nations compiles [data](https://www.un.org/en/development/desa/population/migration/data/estimates2/estimates19.asp) on the origin and destination countries of international migrants. `example_migration` contains a subset of this data from 2017. The countries in the column names represent countries of origin, and the countries in `dest` represent destination countries. 
@@ -263,7 +251,7 @@ Again, the data isn't tidy. `Afghanistan`, `Canada`, etc. are values of a variab
 
 ```{r}
 example_migration %>% 
-  pivot_longer(cols = -dest, names_to = "origin", values_to = "migrants")
+  pivot_longer(cols = !dest, names_to = "origin", values_to = "migrants")
 ```
 
 There are a lot of `NA`s in the data. However, they don't actually represent missing values. Someone didn't forget to measure the number of migrants Afghanistan to Albania---there just weren't any. It doesn't really make sense to include these rows in our new, tidied dataset. We can use `values_drop_na` to exclude these rows.
@@ -271,7 +259,7 @@ There are a lot of `NA`s in the data. However, they don't actually represent mis
 ```{r}
 example_migration %>% 
   pivot_longer(
-    cols = -dest, 
+    cols = !dest, 
     names_to = "origin", 
     values_to = "migrants", 
     values_drop_na = TRUE
@@ -284,7 +272,7 @@ When you use `values_drop_na = TRUE` in `pivot_longer()`, you're turning _explic
 knitr::include_graphics("images/pivot/missing_values.png", dpi = image_dpi)
 ```
 
-`example_eagle_pairs`'s `NA`s aren't structual, and represent actual missing data. Paired Alabamian eagles probably existed in 2001, but the data isn't there. 
+In contrast, `example_eagle_pairs`'s `NA`s aren't structural and represent actual missing data. Paired Alabamian eagles probably existed in 2001, but the data isn't there. 
 
 ```{r}
 example_eagle_pairs

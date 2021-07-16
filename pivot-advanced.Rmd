@@ -3,9 +3,6 @@
 
 ```{r include=FALSE, message=FALSE}
 library(tidyverse)
-```
-
-```{r}
 library(dcldata)
 ```
 
@@ -26,42 +23,42 @@ example_eagle_nests %>%
   )
 ```
 
-It's probably more useful to store `year` as an integer. We can tell `pivot_longer()` our desired type for the `names_to` column by using the optional `names_ptypes` argument. 
+It's probably more useful to store `year` as an integer. We can tell `pivot_longer()` our desired type for the `names_to` column by using the optional `names_transform` argument. 
 
-`names_types` takes a named list of column name and _prototype_ pairs. A prototype is a vector with a type, but no elements. The integer prototype is `integer()`. Here's how we would create `year` as an integer column:
+`names_transform` takes a named list of column name and function pairs. For example, here's how we would create `year` as an integer column:
 
 ```{r}
 example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
-    names_ptypes = list(year = integer()),
+    names_transform = list(year = as.integer),
     values_to = "num_nests"
   )
 ```
 
-If we wanted `year` to be a double, we would use the `double()` prototype.
+If we wanted `year` to be a double, we would use the following:
 
 ```{r}
 example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
-    names_ptypes = list(year = double()),
+    names_transform = list(year = as.double),
     values_to = "num_nests"
   )
 ```
 
-`pivot_longer()` also has a `values_ptypes` argument that controls the type of the `values_to` column. You specify `values_ptypes` in the same way as `names_ptypes`. For example, say we wanted to change `num_nests` from its default type (double) to an integer.
+`pivot_longer()` also has a `values_transform` argument that controls the type of the `values_to` column. You specify `values_transform` in the same way as `names_transform`. For example, say we wanted to change `num_nests` from its default type (double) to an integer.
 
 ```{r}
 example_eagle_nests %>% 
   pivot_longer(
     cols = c(`2007`, `2009`), 
     names_to = "year", 
-    names_ptypes = list(year = integer()),
+    names_transform = list(year = as.integer),
     values_to = "num_nests",
-    values_ptypes = list(num_nests = integer())
+    values_transform = list(num_nests = as.integer)
   )
 ```
 
@@ -78,7 +75,7 @@ To tidy `example_gymnastics_1`, we need to pivot `score_vault` and `score_floor`
 ```{r}
 example_gymnastics_1 %>% 
   pivot_longer(
-    cols = -country, 
+    cols = !country, 
     names_to = "event", 
     values_to = "score"
   )
@@ -89,7 +86,7 @@ However, `score_vault` isn't really a value of `event`. It would be better for t
 ```{r}
 example_gymnastics_1 %>% 
   pivot_longer(
-    cols = -country, 
+    cols = !country, 
     names_to = "event", 
     names_prefix = "score_",
     values_to = "score"
@@ -109,7 +106,7 @@ There are four variables in this non-tidy dataset: `country`, `event`, `year`, a
 ```{r}
 example_gymnastics_2 %>% 
   pivot_longer(
-    cols = -country,
+    cols = !country,
     names_to = "event_year",
     values_to = "score"
   )
@@ -125,7 +122,7 @@ We'll need to make the following two changes to our `pivot_longer()` call:
 ```{r}
 example_gymnastics_2 %>% 
   pivot_longer(
-    cols = -country,
+    cols = !country,
     names_to = c("event", "year"),
     names_sep = "_",
     values_to = "score"
@@ -145,7 +142,7 @@ example_gymnastics_3
 ```{r}
 example_gymnastics_3 %>% 
   pivot_longer(
-    cols = -country,
+    cols = !country,
     names_to = c("event", "year", "gender"),
     names_sep = "_",
     values_to = "score"
@@ -173,7 +170,7 @@ Here's the call to `pivot_longer()`:
 ```{r}
 example_gymnastics_4 %>% 
   pivot_longer(
-    cols = -country,
+    cols = !country,
     names_to = c("event", "year"),
     names_pattern = "([A-Za-z]+)(\\d+)",
     values_to = "score"
@@ -254,7 +251,7 @@ example_acs_3 %>%
 
 ### `id_cols`
 
-In the previous chapter, we mentioned that you'll need to name `names_from` and `values_from` in `pivot_wider()` because `pivot_wider()`'s first argument is actually `id_cols`. But what does `id_cols` do? To explain, we'll go over a brief example.
+`pivot_wider()` has an additional argument `id_cols`, which is useful in some situations. To explain, we'll go over a brief example.
 
 Here's another ACS dataset:
 
@@ -279,17 +276,11 @@ This probably isn't the result we want. `pivot_wider()` created one row for each
 ```{r}
 example_acs_4 %>% 
   pivot_wider(
-    id_cols = -error,
+    id_cols = !error,
     names_from = variable,
     values_from = estimate
   )
 ```
 
 That looks a lot better! `pivot_wider()` threw out the `error` column and created one row for each state. 
-
-
-
-
-
-
 

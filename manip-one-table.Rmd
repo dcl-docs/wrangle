@@ -1,7 +1,7 @@
 
 # Other single-table verbs
 
-You've learned the most important verbs for data analysis: `filter()`, `mutate()`, `group_by()` and `summarize()`. There are a number of other verbs that are not quite as important but still come in handy from time-to-time. The goal of this document is to familiarise you with their purpose and basic operation
+You've learned the most important verbs for data analysis: `filter()`, `mutate()`, `group_by()` and `summarize()`. There are a number of other verbs that are not quite as important but still come in handy from time-to-time. The goal of this section is to familiarize you with their purpose and basic operation.
 
 ```{r setup, message = FALSE}
 library(tidyverse)
@@ -21,27 +21,20 @@ Most of the datasets you'll work with in this class only have a relatively small
   select all variables that match a given regular expression (which you'll 
   learn about later in the course).
   
-* `a:e` selects all variables from variable `a` to variable `e` inclsive.
+* `a:e` selects all variables from variable `a` to variable `e` inclusive.
 
-You can also select a single varible just by using its name directly.
+You can also select a single variable just by using its name directly.
 
 ```{r}
 flights %>% 
   select(year:day, ends_with("delay"))
 ```
 
-To remove variables from selection, put a `-` in front of the expression.
+To remove variables from selection, put an exclamation point `!` in front of the expression.
 
 ```{r}
 flights %>% 
-  select(-starts_with("dep"))
-```
-
-There's one last helper that's useful if you just want to move a few variables to the start: `everything()`.
-
-```{r}
-flights %>% 
-  select(dep_delay, arr_delay, everything())
+  select(!starts_with("dep"))
 ```
 
 ## Rename
@@ -60,6 +53,14 @@ flights %>%
   select(year:day, tail_num = tailnum)
 ```
 
+## Change column order
+
+Use `relocate()` to change column positions. It uses the same syntax as `select()`. The arguments `.before` and `.after` indicate where to move columns. If neither argument is supplied, columns are moved before the first column.
+
+```{r}
+flights %>% 
+  relocate(carrier, flight, origin, dest, .after = dep_time)
+```
 
 ## Transmute
 
@@ -68,11 +69,11 @@ Transmute is a minor variation of `mutate()`. The main difference is that it dro
 ```{r}
 df <- tibble(x = 1:3, y = 3:1)
 
-# mutate() keeps all the variables
+# mutate() keeps x and y
 df %>% 
   mutate(z = x + y)
 
-# transmute() drops all the variables
+# transmute() drops x and y
 df %>% 
   transmute(z = x + y)
 ```
@@ -98,42 +99,57 @@ flights %>%
   distinct(carrier, flight)
 ```
 
+## Slice rows
+
+`slice()` allows you to pick rows by position, by group.
+
+```{r}
+# Rows 10 - 14
+flights %>% 
+  slice(10:14)
+```
+
+`slice_head()` and `slice_tail()` show the first (or last) rows of the data frame or its groups. 
+
+```{r}
+# First 5 flights to each destination
+flights %>% 
+  select(year:dep_time, carrier, flight, origin, dest) %>% 
+  group_by(dest) %>%
+  slice_head(n = 5)
+
+# Last 5 flights overall
+flights %>% 
+  select(year:dep_time, carrier, flight, origin, dest) %>% 
+  slice_tail(n = 5)
+```
+
+`slice_min()` and `slice_max()` select rows by the highest or lowest values of a variable. By default all ties are returned, in which case you may receive more rows than you ask for.
+
+```{r}
+# Flights with the last time_hour
+flights %>% 
+  select(time_hour, carrier, flight, origin, dest) %>%
+  slice_max(n = 1, time_hour)
+```
 
 ## Sample
 
-When working with very large datasets, sometimes it's convenient to reduce to a smaller dataset, just by taking a random sample. That's the job of `sample_n()` and `sample_frac()`. `sample_n()` selects the same number of observations from each group, `sample_frac()` selects the same proportion.
+When working with very large datasets, sometimes it's convenient to reduce to a smaller dataset, just by taking a random sample. That's the job of `slice_sample()`. You use the `n` argument to select the same number of observations from each group. You use the `prop` argument to select the same proportion.
 
 ```{r}
+# Popular destinations
 popular_dest <- 
   flights %>%
   group_by(dest) %>%
-  filter(n() > 1000)
+  filter(n() >= 1000)
 
-# Creates a dataset with the same number of flights to each dest
+# Dataset with a random sample of 100 flights to each destination
 popular_dest %>% 
-  sample_n(100)
+  slice_sample(n = 100)
 
-# Creates a dataset with proportion number of flights to each dest
+# Dataset with a random sample of 1% of the flights to each destination
 popular_dest %>% 
-  sample_frac(0.01)
-```
-
-## Slice rows
-
-`slice()` allows to pick rows by position, by group. `head()` and `tail()` just show the first (or last) few rows of the entire data frame. 
-
-```{r}
-# first flights to each dest
-flights %>% 
-  group_by(dest) %>%
-  slice(1:5)
-
-# first flights overall
-flights %>% 
-  head()
-
-# last flights overall
-flights %>% 
-  tail()
+  slice_sample(prop = 0.01)
 ```
 

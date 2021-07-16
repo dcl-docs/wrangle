@@ -7,7 +7,7 @@ library(tidyverse)
 library(vroom)
 ```
 
-The [vroom package](https://vroom.r-lib.org/) provides a speedy way to read in and write out data. Try using vroom when working with very large data sets. Install vroom if you haven't already:
+The [vroom](https://vroom.r-lib.org/) package provides a speedy way to read in and write out data. Try using vroom when working with very large data sets. To install vroom if you haven't already:
 
 ```{r eval=FALSE}
 install.packages("vroom")
@@ -15,24 +15,25 @@ install.packages("vroom")
 
 ## Read
 
-`vroom::vroom()` reads in delimited data (csv, tsv, etc.). 
+`vroom()` reads in delimited data (csv, tsv, etc.). 
 
 ```{r}
 url_data <- 
   "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-11-05/commute.csv"
 
-vroom::vroom(url_data)
+commute <- vroom(url_data)
+
+commute
 ```
 
-`vroom::vroom()` is so fast because it doesn't actually read in all the data. It reads in a portion of the data, remembers where it stopped, and reads in more only if it needs to later. This is all done automatically and you shouldn't need to think much about how it works. 
+`vroom()` is so fast because it doesn't actually read in all the data. It reads in a portion of the data, remembers where it stopped, and reads in more only if it needs to later. This is all done automatically and you shouldn't need to think much about how it works. 
 
-vroom has the same interface as the readr functions. The arguments you're familiar with from `read_csv()`--`col_types`, `skip`, etc.--also work in `vroom::vroom()`.
+vroom has the same interface as the readr functions. The arguments you're familiar with from `read_csv()`, such as `col_types`, `skip`, etc., also work in `vroom()`.
 
 If you want to see how the columns were parsed, call `spec()`.
 
 ```{r}
-vroom::vroom(url_data) %>% 
-  vroom::spec()
+spec(commute)
 ```
 
 You can then copy this output and supply it, with or without changes, to `col_types`.
@@ -40,7 +41,7 @@ You can then copy this output and supply it, with or without changes, to `col_ty
 ```{r}
 commute <-
   url_data %>% 
-  vroom::vroom(
+  vroom(
     col_types = 
       cols(
         city = col_character(),
@@ -64,16 +65,15 @@ This is useful if you want to ensure that `vroom()` parses the data exactly as y
 
 You can also write with vroom.
 
-`vroom::vroom_write()` is the speedy analogue of the readr write functions (`read_delim()`, `read_csv()`, etc.). Note that, by default, `vroom::vroom_write()` uses tabs as its delimiter, creating a .tsv file.
+`vroom_write()` is the speedy analogue of the readr write functions (`write_csv()`, `write_delim()`, etc.). Note that, by default, `vroom_write()` uses tabs as its delimiter, creating a .tsv file.
 
 ```{r eval=FALSE}
-vroom::vroom_write(commute, "commute.tsv")
+vroom_write(commute, file = "commute.tsv")
 ```
 
 If you want to write to a .csv file, use `delim = ","`.
 
 ```{r eval=FALSE}
-vroom::vroom_write(commute, "commute.csv", delim = ",")
+vroom_write(commute, file = "commute.csv", delim = ",")
 ```
-
 

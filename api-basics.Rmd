@@ -1,7 +1,7 @@
 
 # API basics
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
@@ -49,7 +49,7 @@ Now that you've determined which API you to use, you're ready to start construct
 The specifics of an API request determine the information you'll receive back. To figure out how to specify your request, you'll typically need to consult your API's documentation to determine two things:
 
 * The base API request. This is analogous to a homepage URL, like https://www.wikipedia.org/.
-* The API parameters. API parameters allow you to control what the request asks for, like how information at the end of a normal URL can point to a specific webpage (e.g., [https://wikipedia.org/wiki/Snow_leopard](https://wikipedia.org/wiki/Snow_leopard/)).
+* The API parameters. API parameters allow you to control what the request asks for, like how information at the end of a normal URL can point to a specific webpage (e.g., [https://en.wikipedia.org/wiki/Tardigrade](https://en.wikipedia.org/wiki/Tardigrade)).
 
 ### Base request
 
@@ -171,7 +171,7 @@ response %>%
 
 Then, we can apply the same steps as we did in the JSON section.
 
-```{r}
+```{r warning=FALSE}
 response %>% 
   httr::content() %>% 
   unlist() %>% 

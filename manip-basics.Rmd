@@ -10,15 +10,15 @@ library(nycflights13)
 
 ## dplyr basics
 
-In this reading you will going to learn about three important dplyr functions that give you basic data manipulation power:
+In this section you will learn about three important dplyr functions that give you basic data manipulation power:
 
 * Pick observations by their values (`filter()`).
-* Create new variables with functions of existing variables (`mutate()`).
+* Create new variables from existing variables (`mutate()`).
 * Collapse many values down to a single summary (`summarize()`).
 
-These can all be used in conjunction with `group_by()` which changes the scope of each function from operating on the entire dataset to operating on it group-by-group. 
+These can all be used in conjunction with `group_by()`, which changes the scope of each function from operating on the entire dataset to operating on it group-by-group. 
 
-(Use the [data transformation cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf) to jog your memory, and learn about other dplyr functions we'll cover in the future)
+You can use the [Data Transformation cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf) to jog your memory, and learn about other dplyr functions we'll cover in the future.
 
 All dplyr verbs work similarly: 
 
@@ -47,19 +47,13 @@ jan1 <-
   filter(month == 1, day == 1)
 ```
 
-R either prints out the results, or saves them to a variable. If you want to do both, you can wrap the assignment in parentheses:
-
-```{r}
-(dec25 <- flights %>% filter(month == 12, day == 25))
-```
-
 ### Comparisons
 
-To use filtering effectively, you have to know how to select the observations that you want using the comparison operators. R provides the standard suite: `>`, `>=`, `<`, `<=`, `!=` (not equal), and `==` (equal). 
+To use filtering effectively, you have to know how to select the observations that you want using the comparison operators. R provides the standard relational operators: `<`, `>`, `<=`, `>=`, `==` (equal), and `!=` (not equal). 
 
-When you're starting out with R, the easiest mistake to make is to use `=` instead of `==` when testing for equality. When this happens you'll get an informative error:
+When you're starting out with R, the easiest mistake to make is to use `=` instead of `==` when testing for equality. When this happens, you'll get an informative error:
 
-```{r, error = TRUE}
+```{r, error=TRUE}
 flights %>% 
   filter(month = 1)
 ```
@@ -77,7 +71,7 @@ flights %>%
 
 The order of operations doesn't work like English. You can't write `filter(flights, month == 11 | 12)`, which you might literally translate into  "finds all flights that departed in November or December". Instead it finds all months that equal `11 | 12`, an expression that evaluates to `TRUE`. In a numeric context (like here), `TRUE` becomes one, so this finds all flights in January, not November or December. This is quite confusing!
 
-A useful short-hand for this problem is `x %in% y`. This will select every row where `x` is one of the values in `y`. We could use it to rewrite the code above:
+A useful equivalent way to filter is to use `x %in% y`. This will select every row where `x` is one of the values in `y`. We could use it to rewrite the code above:
 
 ```{r, eval = FALSE}
 nov_dec <- 
@@ -91,10 +85,10 @@ As well as `&` and `|`, R also has `&&` and `||`. Don't use them here! You'll le
 
 Besides selecting sets of existing columns, it's often useful to add new columns that are functions of existing columns. That's the job of `mutate()`. 
 
-`mutate()` always adds new columns at the end of your dataset so we'll start by creating a narrower dataset so we can see the new variables. Remember that when you're in RStudio, the easiest way to see all the columns is `View()`.
+`mutate()` always adds new columns at the end of your dataset, so we'll start by creating a narrower dataset so we can see the new variables. Remember that when you're in RStudio, the easiest way to see all the columns is `view()`.
 
 ```{r}
-flights_sml <- 
+flights_small <- 
   flights %>% 
   select( 
     year:day, 
@@ -103,17 +97,17 @@ flights_sml <-
     air_time
   )
 
-flights_sml %>% 
+flights_small %>% 
   mutate(
     gain = arr_delay - dep_delay,
-    speed = distance / air_time * 60
+    speed = 60 * distance / air_time
   )
 ```
 
 Note that you can refer to columns that you've just created:
 
 ```{r}
-flights_sml %>% 
+flights_small %>% 
   mutate(
     gain = arr_delay - dep_delay,
     hours = air_time / 60,
@@ -130,9 +124,9 @@ flights %>%
   summarize(delay = mean(dep_delay, na.rm = TRUE))
 ```
 
-(`na.rm = TRUE` removes the missing values so they don't affect the final summary)
+(`na.rm = TRUE` removes the missing values so they don't affect the final summary.)
 
-`summarize()` is not terribly useful unless we pair it with `group_by()`. This changes the unit of analysis from the complete dataset to individual groups. Then, when you use the dplyr verbs on a grouped data frame they'll be automatically applied "by group". For example, if we applied exactly the same code to a data frame grouped by date, we get the average delay per date:
+`summarize()` is not terribly useful unless we pair it with `group_by()`. This changes the unit of analysis from the complete dataset to individual groups. Then, when you use the dplyr verbs on a grouped data frame, they'll be automatically applied "by group". For example, if we applied exactly the same code to a data frame grouped by date, we get the average delay per date:
 
 ```{r}
 by_day <- 
@@ -149,7 +143,7 @@ Together `group_by()` and `summarize()` provide one of the tools that you'll use
 
 Imagine that we want to explore the relationship between the distance and average delay for each location. Using what you know about dplyr and not using pipes, you might write code like this:
 
-```{r, fig.width = 6}
+```{r, message=FALSE}
 by_dest <- group_by(flights, dest)
 delay <- 
   summarize(
@@ -160,13 +154,12 @@ delay <-
   )
 delay <- filter(delay, count > 20, dest != "HNL")
 
-# It looks like delays increase with distance up to ~750 miles 
-# and then decrease. Maybe as flights get longer there's more 
-# ability to make up delays in the air?
 ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
-  geom_point(aes(size = count), alpha = 1/3) +
+  geom_point(aes(size = count), alpha = 1 / 3) +
   geom_smooth(se = FALSE)
 ```
+
+It looks like delays increase with distance up to ~750 miles and then decrease. Maybe as flights get longer there's more ability to make up delays in the air?
 
 There are three steps to prepare this data:
 

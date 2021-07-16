@@ -9,9 +9,9 @@ library(tidyverse)
 
 ## Delimited files
 
-In this unit, we're going to focus on delimited files. Delimited files have a __delimiter__ between each value. Two types make up the majority of delimited files that you'll see in the wild: csv (comma separated) and tsv (tab separated). We'll focus on csv files, but everything you'll learn applies equally to tsvs, replacing commas with tabs.
+In this section, we're going to focus on delimited files. Delimited files have a __delimiter__ between each value. Two types make up the majority of delimited files that you'll see in the wild: CSV (comma separated) and TSV (tab separated). We'll focus on CSV files, but everything you'll learn applies equally to TSVs, replacing commas with tabs.
 
-A typical csv file looks something like this:
+A typical CSV file looks something like this:
 
 ```
 Sepal.Length,Sepal.Width,Petal.Length,Petal.Width,Species
@@ -27,11 +27,11 @@ Sepal.Length,Sepal.Width,Petal.Length,Petal.Width,Species
 
 Note that:
 
-* The first line gives the column names
-* Each subsequent line is one row of data
-* Each value is separated by a comma (hence the name)
+* The first line gives the column names.
+* Each subsequent line is one row of data.
+* Each value is separated by a comma (hence the name).
 
-Typically you can recognise a csv file by its extension: `.csv`. But beware! Sometimes the extension lies, and if you're getting weird errors when reading a file, it's a good idea to peek inside the file using `readr::read_lines()` and `writeLines()`, specifying the `n_max` argument to just look at the first few lines. (You'll learn more about `writeLines()` when we get to strings; for now just remember it's a useful tool for printing lines to the screen.)
+Typically, you can recognize a CSV file by its extension: `.csv`. But beware! Sometimes the extension lies, and if you're getting weird errors when reading a file, it's a good idea to peek inside the file using `readr::read_lines()` and `writeLines()`, specifying the `n_max` argument to just look at the first few lines. (You'll learn more about `writeLines()` when we get to strings; for now just remember it's a useful tool for printing lines to the screen.)
 
 ```{r}
 "data/heights.csv" %>% 
@@ -39,11 +39,11 @@ Typically you can recognise a csv file by its extension: `.csv`. But beware! Som
   writeLines()
 ```
 
-This file illustrates another feature present in many csv files: some values are surrounded by quotes. Confusingly, this isn't a guarantee that the value is a string: some csv files also surround numbers in quotes too.  As you work with more csv files you'll discover there are few hard and fast rules: for pretty much every crazy thing that you can imagine, someone has done it in a csv file somewhere.
+This file illustrates another feature present in many CSV files: some values are surrounded by quotes. Confusingly, this isn't a guarantee that the value is a string: some CSV files also surround numbers in quotes too.  As you work with more CSV files, you'll discover there are few hard and fast rules: for pretty much every crazy thing that you can imagine, someone has done it in a CSV file somewhere.
 
 ## `read_csv()`
 
-The workhorse for reading in csv files is called `read_csv()`. You give it a path to a csv file and it gives you back a tibble:
+The workhorse for reading in CSV files is called `read_csv()`. You give it a path to a CSV file and it gives you back a tibble:
 
 ```{r}
 heights <- read_csv("data/heights.csv")
@@ -54,22 +54,12 @@ If you are very lucky, you can point `read_csv()` at a file and it just works. B
 
 The most important arguments to `read_csv()` are:
 
-*   `col_names`: usually `col_names = TRUE` which tells `read_csv()` that
-    the first line of the file is the column names. If there aren't any
-    column names set `col_names = FALSE` or supply a character vector telling
-    `read_csv()` what they should be `col_names = c("x", "y", "z")`
+*   `col_names`: Usually `col_names = TRUE`, the default, which tells `read_csv()` that the first line of the file contains the column names. If there aren't any column, names set `col_names = FALSE` or supply a character vector telling `read_csv()` what they should be `col_names = c("x", "y", "z")`.
     
-*   `col_types`: you might have noticed that when we called `read_csv()` above
-    it printed out a list of column "specifications". That describes how readr
-    converts each column into an data structure. readr uses some pretty good 
-    heuristics to guess the type, but sometimes the heuristics fail and you'll
-    need to supply the truth. You'll learn more about that later in the course
+*   `col_types`: You might have noticed that when we called `read_csv()` above it printed out a list of column "specifications". That describes how readr converts each column into an data structure. readr uses some pretty good heuristics to guess the type, but sometimes the heuristics fail and you'll need to supply the truth. You'll learn more about that later in the course.
     
-*   It's fairly common to encounter csv files that have a bunch of 
-    `r "\U0001f4a9"` at the top. You can use `skip = n` to skip the first n 
-    lines, or `comment = "#"` to ignore all lines that start with `#`.
+*   It's fairly common to encounter CSV files that have a bunch of lines at the top you don't wish to parse. You can use `skip = n` to skip the first n lines, or `comment = "#"` to ignore all lines that start with `#`.
 
-*   `read_csv()` expects missing values to be suppled as `NA`. If your file
-    uses a different convention, use `na = "."` to override the default.
+*   `read_csv()` expects missing values to be supplied as `""` or `"NA"`. If your file uses a different convention, use the `na` argument to override the default.
 
 You'll get to practice using these arguments in the exercises.

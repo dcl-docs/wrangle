@@ -4,11 +4,11 @@
 # rvest
 
 ```{r warning=FALSE, message=FALSE}
-library(rvest)
 library(tidyverse)
+library(rvest)
 ```
 
-The [rvest package](https://rvest.tidyverse.org/index.html) (as in "harvest") allows you to scrape information from a web page and read it into R. In this chapter, we'll explain the basics of rvest and walk you through an example. 
+The [rvest](https://rvest.tidyverse.org/index.html) package (as in "harvest") allows you to scrape information from a web page and read it into R. In this chapter, we'll explain the basics of rvest and walk you through an example. 
 
 ## Web page basics
 
@@ -67,7 +67,7 @@ url_data %>%
   read_html()
 ```
 
-`read_html()` reads in all the html for the page. The page contains far more information than we need, so next we'll extract just the famines data table. 
+`read_html()` reads in all the HTML for the page. The page contains far more information than we need, so next we'll extract just the famines data table. 
 
 ### Find the CSS selector
 
@@ -120,25 +120,21 @@ css_selector <- "#tablepress-73"
 
 ### Extract the table
 
-You already saw how to read HTML into R with `rvest::read_html()`. Next, use `rvest::html_node()` to select just the element identified by your CSS selector. 
+You already saw how to read HTML into R with `rvest::read_html()`. Next, use `rvest::html_element()` to select just the element identified by your CSS selector. 
 
 ```{r}
-url_data <- "https://ourworldindata.org/famines"
-css_selector <- "#tablepress-73"
-
 url_data %>% 
   read_html() %>% 
-  html_node(css = css_selector) 
+  html_element(css = css_selector) 
 ```
 
-The data is still in HTML. Use `rvest::html_table()` to turn the output into a data frame. Note that `rvest::html_table()` returns a data.frame object, not a tibble. To convert it to a tibble, use `as_tibble()`.
+The data is still in HTML. Use `rvest::html_table()` to turn the output into a tibble.
 
 ```{r}
 url_data %>% 
   read_html() %>% 
-  html_node(css = css_selector) %>% 
-  html_table() %>% 
-  as_tibble()
+  html_element(css = css_selector) %>% 
+  html_table()
 ```
 
 Now, the data is ready for wrangling in R.
@@ -151,7 +147,7 @@ css_selector_paragraph <-
 
 url_data %>% 
   read_html() %>% 
-  html_node(css = css_selector_paragraph) %>% 
+  html_element(css = css_selector_paragraph) %>% 
   html_text()
 ```
 

@@ -3,7 +3,8 @@ set.seed(858)
 options(
   digits = 3,
   dplyr.print_max = 6,
-  dplyr.print_min = 6
+  dplyr.print_min = 6,
+  dplyr.summarise.inform = FALSE
 )
 
 knitr::opts_chunk$set(
