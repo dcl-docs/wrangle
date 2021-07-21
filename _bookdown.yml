@@ -13,9 +13,7 @@ rmd_files: [
   "api-basics.Rmd",
   "census.Rmd",
   "googlesheets.Rmd",
-  "vroom.Rmd",
-  "rvest.Rmd",
-  "references.Rmd"
+  "rvest.Rmd"
 ]
 
 before_chapter_script: "_common.R"
