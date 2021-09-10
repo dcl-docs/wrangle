@@ -1,3 +1,6 @@
+---
+nocite: "@walker-2021"
+---
 
 # U.S. Census Bureau
 
@@ -408,3 +411,8 @@ response %>%
 ```
 
 You'll generally want to use all the July 1st estimates so that all estimates are a year apart.
+
+## To learn more
+
+A good source to go deeper into working with census data is Walker, [Analyzing US Census Data: Methods, Maps, and Models in R](https://walker-data.com/census-r/).
+

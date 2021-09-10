@@ -13,7 +13,8 @@ rmd_files: [
   "api-basics.Rmd",
   "census.Rmd",
   "googlesheets.Rmd",
-  "rvest.Rmd"
+  "rvest.Rmd",
+  "references.Rmd"
 ]
 
 before_chapter_script: "_common.R"
