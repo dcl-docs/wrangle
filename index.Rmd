@@ -2,7 +2,6 @@
 knitr: bookdown::render_book
 title: "Data Wrangling"
 author: "Sara Altman, Bill Behrman, Hadley Wickham"
-date: "`r Sys.Date()`"
 description: "A collection of readings on data wrangling."
 url: 'https\://dcl-wrangle.stanford.edu'
 github-repo: dcl-docs/wrangle
@@ -14,9 +13,33 @@ link-citations: true
 
 # Welcome {-}
 
+This book is a practical introduction to data wrangling using the tidyverse.
 
-## How to read this book {-}
+In the following, we used these packages:
 
+```{r echo=FALSE}
+sessioninfo::package_info(
+  pkgs = 
+    c(
+      "dcldata",
+      "googlesheets4",
+      "httr",
+      "janitor",
+      "jsonlite",
+      "nycflights13",
+      "rvest",
+      "tidycensus",
+      "tidyverse",
+      "usethis",
+      "ussf"
+    ),
+  dependencies = FALSE
+) |> 
+  tibble::as_tibble() |> 
+  dplyr::mutate(Source = stringr::str_remove(source, "@\\w*")) |> 
+  dplyr::select(Package = package, Version = ondiskversion, Source) |> 
+  knitr::kable()
+```
 
 ## An evolving book {-}
 
