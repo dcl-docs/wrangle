@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10 Google Sheets | Data Wrangling</title>
+  <meta name="description" content="A collection of readings on data wrangling." />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10 Google Sheets | Data Wrangling" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://dcl-wrangle.stanford.edu" />
+  
+  <meta property="og:description" content="A collection of readings on data wrangling." />
+  <meta name="github-repo" content="dcl-docs/wrangle" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10 Google Sheets | Data Wrangling" />
+  
+  <meta name="twitter:description" content="A collection of readings on data wrangling." />
+  
+
+<meta name="author" content="Sara Altman, Bill Behrman, Hadley Wickham" />
+
+
+<meta name="date" content="2021-09-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="census.html"/>
+<link rel="next" href="rvest.html"/>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Data Wrangling</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-read-this-book"><i class="fa fa-check"></i>How to read this book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#an-evolving-book"><i class="fa fa-check"></i>An evolving book</a></li>
+</ul></li>
+<li class="part"><span><b>I Manipulation</b></span></li>
+<li class="chapter" data-level="1" data-path="manip-basics.html"><a href="manip-basics.html"><i class="fa fa-check"></i><b>1</b> Basics</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="manip-basics.html"><a href="manip-basics.html#dplyr-basics"><i class="fa fa-check"></i><b>1.1</b> dplyr basics</a></li>
+<li class="chapter" data-level="1.2" data-path="manip-basics.html"><a href="manip-basics.html#filter-rows-with-filter"><i class="fa fa-check"></i><b>1.2</b> Filter rows with <code>filter()</code></a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="manip-basics.html"><a href="manip-basics.html#comparisons"><i class="fa fa-check"></i><b>1.2.1</b> Comparisons</a></li>
+<li class="chapter" data-level="1.2.2" data-path="manip-basics.html"><a href="manip-basics.html#logical-operators"><i class="fa fa-check"></i><b>1.2.2</b> Logical operators</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="manip-basics.html"><a href="manip-basics.html#add-new-variables-with-mutate"><i class="fa fa-check"></i><b>1.3</b> Add new variables with <code>mutate()</code></a></li>
+<li class="chapter" data-level="1.4" data-path="manip-basics.html"><a href="manip-basics.html#grouped-summaries-with-summarize"><i class="fa fa-check"></i><b>1.4</b> Grouped summaries with <code>summarize()</code></a></li>
+<li class="chapter" data-level="1.5" data-path="manip-basics.html"><a href="manip-basics.html#combining-multiple-operations-with-the-pipe"><i class="fa fa-check"></i><b>1.5</b> Combining multiple operations with the pipe</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="manip-one-table.html"><a href="manip-one-table.html"><i class="fa fa-check"></i><b>2</b> Other single-table verbs</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="manip-one-table.html"><a href="manip-one-table.html#select"><i class="fa fa-check"></i><b>2.1</b> Select</a></li>
+<li class="chapter" data-level="2.2" data-path="manip-one-table.html"><a href="manip-one-table.html#rename"><i class="fa fa-check"></i><b>2.2</b> Rename</a></li>
+<li class="chapter" data-level="2.3" data-path="manip-one-table.html"><a href="manip-one-table.html#change-column-order"><i class="fa fa-check"></i><b>2.3</b> Change column order</a></li>
+<li class="chapter" data-level="2.4" data-path="manip-one-table.html"><a href="manip-one-table.html#transmute"><i class="fa fa-check"></i><b>2.4</b> Transmute</a></li>
+<li class="chapter" data-level="2.5" data-path="manip-one-table.html"><a href="manip-one-table.html#arrange"><i class="fa fa-check"></i><b>2.5</b> Arrange</a></li>
+<li class="chapter" data-level="2.6" data-path="manip-one-table.html"><a href="manip-one-table.html#distinct"><i class="fa fa-check"></i><b>2.6</b> Distinct</a></li>
+<li class="chapter" data-level="2.7" data-path="manip-one-table.html"><a href="manip-one-table.html#slice-rows"><i class="fa fa-check"></i><b>2.7</b> Slice rows</a></li>
+<li class="chapter" data-level="2.8" data-path="manip-one-table.html"><a href="manip-one-table.html#sample"><i class="fa fa-check"></i><b>2.8</b> Sample</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="parse-basics.html"><a href="parse-basics.html"><i class="fa fa-check"></i><b>3</b> Parsing</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="parse-basics.html"><a href="parse-basics.html#delimited-files"><i class="fa fa-check"></i><b>3.1</b> Delimited files</a></li>
+<li class="chapter" data-level="3.2" data-path="parse-basics.html"><a href="parse-basics.html#read_csv"><i class="fa fa-check"></i><b>3.2</b> <code>read_csv()</code></a></li>
+</ul></li>
+<li class="part"><span><b>II Tidy data</b></span></li>
+<li class="chapter" data-level="4" data-path="tidy.html"><a href="tidy.html"><i class="fa fa-check"></i><b>4</b> Introduction</a></li>
+<li class="chapter" data-level="5" data-path="pivot-basic.html"><a href="pivot-basic.html"><i class="fa fa-check"></i><b>5</b> Basic pivoting</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="pivot-basic.html"><a href="pivot-basic.html#longer"><i class="fa fa-check"></i><b>5.1</b> Longer</a></li>
+<li class="chapter" data-level="5.2" data-path="pivot-basic.html"><a href="pivot-basic.html#wider"><i class="fa fa-check"></i><b>5.2</b> Wider</a></li>
+<li class="chapter" data-level="5.3" data-path="pivot-basic.html"><a href="pivot-basic.html#missing-values"><i class="fa fa-check"></i><b>5.3</b> Missing values</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="pivot-advanced.html"><a href="pivot-advanced.html"><i class="fa fa-check"></i><b>6</b> Advanced pivoting</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="pivot-advanced.html"><a href="pivot-advanced.html#longer-1"><i class="fa fa-check"></i><b>6.1</b> Longer</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="pivot-advanced.html"><a href="pivot-advanced.html#types"><i class="fa fa-check"></i><b>6.1.1</b> Types</a></li>
+<li class="chapter" data-level="6.1.2" data-path="pivot-advanced.html"><a href="pivot-advanced.html#prefixes"><i class="fa fa-check"></i><b>6.1.2</b> Prefixes</a></li>
+<li class="chapter" data-level="6.1.3" data-path="pivot-advanced.html"><a href="pivot-advanced.html#multiple-values"><i class="fa fa-check"></i><b>6.1.3</b> Multiple values</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="pivot-advanced.html"><a href="pivot-advanced.html#wider-1"><i class="fa fa-check"></i><b>6.2</b> Wider</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="pivot-advanced.html"><a href="pivot-advanced.html#prefixes-1"><i class="fa fa-check"></i><b>6.2.1</b> Prefixes</a></li>
+<li class="chapter" data-level="6.2.2" data-path="pivot-advanced.html"><a href="pivot-advanced.html#multiple-values-1"><i class="fa fa-check"></i><b>6.2.2</b> Multiple values</a></li>
+<li class="chapter" data-level="6.2.3" data-path="pivot-advanced.html"><a href="pivot-advanced.html#id_cols"><i class="fa fa-check"></i><b>6.2.3</b> <code>id_cols</code></a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Working with APIs</b></span></li>
+<li class="chapter" data-level="7" data-path="apis.html"><a href="apis.html"><i class="fa fa-check"></i><b>7</b> Introduction</a></li>
+<li class="chapter" data-level="8" data-path="api-basics.html"><a href="api-basics.html"><i class="fa fa-check"></i><b>8</b> API basics</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="api-basics.html"><a href="api-basics.html#what-is-an-api"><i class="fa fa-check"></i><b>8.1</b> What is an API?</a></li>
+<li class="chapter" data-level="8.2" data-path="api-basics.html"><a href="api-basics.html#find-your-api"><i class="fa fa-check"></i><b>8.2</b> Find your API</a></li>
+<li class="chapter" data-level="8.3" data-path="api-basics.html"><a href="api-basics.html#craft-your-request"><i class="fa fa-check"></i><b>8.3</b> Craft your request</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="api-basics.html"><a href="api-basics.html#base-request"><i class="fa fa-check"></i><b>8.3.1</b> Base request</a></li>
+<li class="chapter" data-level="8.3.2" data-path="api-basics.html"><a href="api-basics.html#parameters"><i class="fa fa-check"></i><b>8.3.2</b> Parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="api-basics.html"><a href="api-basics.html#test-your-request"><i class="fa fa-check"></i><b>8.4</b> Test your request</a></li>
+<li class="chapter" data-level="8.5" data-path="api-basics.html"><a href="api-basics.html#read-the-data-into-r"><i class="fa fa-check"></i><b>8.5</b> Read the data into R</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="api-basics.html"><a href="api-basics.html#json-data"><i class="fa fa-check"></i><b>8.5.1</b> JSON data</a></li>
+<li class="chapter" data-level="8.5.2" data-path="api-basics.html"><a href="api-basics.html#all-formats"><i class="fa fa-check"></i><b>8.5.2</b> All formats</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="api-basics.html"><a href="api-basics.html#next-steps"><i class="fa fa-check"></i><b>8.6</b> Next steps</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="census.html"><a href="census.html"><i class="fa fa-check"></i><b>9</b> U.S. Census Bureau</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="census.html"><a href="census.html#census-bureau-basics"><i class="fa fa-check"></i><b>9.1</b> Census Bureau basics</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="census.html"><a href="census.html#decennial-census"><i class="fa fa-check"></i><b>9.1.1</b> Decennial census</a></li>
+<li class="chapter" data-level="9.1.2" data-path="census.html"><a href="census.html#acs"><i class="fa fa-check"></i><b>9.1.2</b> ACS</a></li>
+<li class="chapter" data-level="9.1.3" data-path="census.html"><a href="census.html#population-estimates"><i class="fa fa-check"></i><b>9.1.3</b> Population estimates</a></li>
+<li class="chapter" data-level="9.1.4" data-path="census.html"><a href="census.html#choosing-data"><i class="fa fa-check"></i><b>9.1.4</b> Choosing data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="census.html"><a href="census.html#tidycensus"><i class="fa fa-check"></i><b>9.2</b> tidycensus</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="census.html"><a href="census.html#specify-a-dataset"><i class="fa fa-check"></i><b>9.2.1</b> Specify a dataset</a></li>
+<li class="chapter" data-level="9.2.2" data-path="census.html"><a href="census.html#find-variables"><i class="fa fa-check"></i><b>9.2.2</b> Find variables</a></li>
+<li class="chapter" data-level="9.2.3" data-path="census.html"><a href="census.html#get-data"><i class="fa fa-check"></i><b>9.2.3</b> Get data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="census.html"><a href="census.html#population-estimates-1"><i class="fa fa-check"></i><b>9.3</b> Population estimates</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="census.html"><a href="census.html#choose-data"><i class="fa fa-check"></i><b>9.3.1</b> Choose data</a></li>
+<li class="chapter" data-level="9.3.2" data-path="census.html"><a href="census.html#craft-your-request-1"><i class="fa fa-check"></i><b>9.3.2</b> Craft your request</a></li>
+<li class="chapter" data-level="9.3.3" data-path="census.html"><a href="census.html#read-the-data-into-r-1"><i class="fa fa-check"></i><b>9.3.3</b> Read the data into R</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="census.html"><a href="census.html#to-learn-more"><i class="fa fa-check"></i><b>9.4</b> To learn more</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="googlesheets.html"><a href="googlesheets.html"><i class="fa fa-check"></i><b>10</b> Google Sheets</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="googlesheets.html"><a href="googlesheets.html#reading"><i class="fa fa-check"></i><b>10.1</b> Reading</a></li>
+<li class="chapter" data-level="10.2" data-path="googlesheets.html"><a href="googlesheets.html#writing"><i class="fa fa-check"></i><b>10.2</b> Writing</a></li>
+<li class="chapter" data-level="10.3" data-path="googlesheets.html"><a href="googlesheets.html#finding-sheets"><i class="fa fa-check"></i><b>10.3</b> Finding sheets</a></li>
+<li class="chapter" data-level="10.4" data-path="googlesheets.html"><a href="googlesheets.html#authentication"><i class="fa fa-check"></i><b>10.4</b> Authentication</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="googlesheets.html"><a href="googlesheets.html#interactive-session"><i class="fa fa-check"></i><b>10.4.1</b> Interactive session</a></li>
+<li class="chapter" data-level="10.4.2" data-path="googlesheets.html"><a href="googlesheets.html#non-interactive-session"><i class="fa fa-check"></i><b>10.4.2</b> Non-interactive session</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>IV Web scraping</b></span></li>
+<li class="chapter" data-level="11" data-path="rvest.html"><a href="rvest.html"><i class="fa fa-check"></i><b>11</b> rvest</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="rvest.html"><a href="rvest.html#web-page-basics"><i class="fa fa-check"></i><b>11.1</b> Web page basics</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="rvest.html"><a href="rvest.html#html"><i class="fa fa-check"></i><b>11.1.1</b> HTML</a></li>
+<li class="chapter" data-level="11.1.2" data-path="rvest.html"><a href="rvest.html#css"><i class="fa fa-check"></i><b>11.1.2</b> CSS</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="rvest.html"><a href="rvest.html#scrape-data-with-rvest"><i class="fa fa-check"></i><b>11.2</b> Scrape data with rvest</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="rvest.html"><a href="rvest.html#read-html"><i class="fa fa-check"></i><b>11.2.1</b> Read HTML</a></li>
+<li class="chapter" data-level="11.2.2" data-path="rvest.html"><a href="rvest.html#find-the-css-selector"><i class="fa fa-check"></i><b>11.2.2</b> Find the CSS selector</a></li>
+<li class="chapter" data-level="11.2.3" data-path="rvest.html"><a href="rvest.html#extract-the-table"><i class="fa fa-check"></i><b>11.2.3</b> Extract the table</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Wrangling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="google-sheets" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Google Sheets</h1>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="googlesheets.html#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb105-2"><a href="googlesheets.html#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(googlesheets4)</span>
+<span id="cb105-3"><a href="googlesheets.html#cb105-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-4"><a href="googlesheets.html#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sheet ID for Gapminder example</span></span>
+<span id="cb105-5"><a href="googlesheets.html#cb105-5" aria-hidden="true" tabindex="-1"></a>id_gapminder <span class="ot">&lt;-</span> <span class="st">&quot;1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ&quot;</span></span></code></pre></div>
+<p>Google Sheets are a useful way to collect, store, and collaboratively work with data. The googlesheets4 package wraps the <a href="https://developers.google.com/sheets/api">Sheets API</a>, making it easy for you to work with Google Sheets in R.</p>
+<p>The “4” in googlesheets4 refers to the most recent version (v4) of the Google Sheets API. There’s also an R package called googlesheets, which uses an older version (v3) of the Google Sheets API. If you’ve worked with the googlesheets package previously, note that the Sheets API v3 is being shut down, so you’ll need to switch over to googlesheets4.</p>
+<div id="reading" class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> Reading</h2>
+<p>Reading data stored in a Google sheet into R will probably be your most common use of googlesheets4. Here, we’ll read in the data from our <a href="https://docs.google.com/spreadsheets/d/1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ/">example sheet</a>, which contains data from <a href="https://www.gapminder.org/">Gapminder</a>.</p>
+<p>To read in the data, we need a way to identify the Google sheet. googlesheets4 supports multiple ways of identifying sheets, but we recommend using the sheet ID, as it’s stable and concise. You can find the ID of a Google sheet in its URL:</p>
+<p><img src="images/googlesheets/sheet-id.png" width="9058" style="display: block; margin: auto;" /></p>
+<p>If you want to extract an ID from a URL programmatically, you can also use the function <code>as_sheets_id()</code>.</p>
+<p>We’ve stored the ID for the Gapminder sheet in the parameters section up at the top. Here it is:</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="googlesheets.html#cb106-1" aria-hidden="true" tabindex="-1"></a>id_gapminder</span>
+<span id="cb106-2"><a href="googlesheets.html#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ&quot;</span></span></code></pre></div>
+<p>Now, we can use the googlesheets4 function <code>read_sheet()</code> to read in the data. <code>read_sheet()</code>’s first argument, <code>ss</code>, takes the sheet ID.</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="googlesheets.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_sheet</span>(<span class="at">ss =</span> id_gapminder)</span>
+<span id="cb107-2"><a href="googlesheets.html#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Reading from &quot;test-gs-gapminder&quot;.</span></span>
+<span id="cb107-3"><a href="googlesheets.html#cb107-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Range &#39;Africa&#39;.</span></span>
+<span id="cb107-4"><a href="googlesheets.html#cb107-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 624 × 6</span></span>
+<span id="cb107-5"><a href="googlesheets.html#cb107-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country continent  year lifeExp      pop gdpPercap</span></span>
+<span id="cb107-6"><a href="googlesheets.html#cb107-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb107-7"><a href="googlesheets.html#cb107-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Algeria Africa     1952    43.1  9279525     2449.</span></span>
+<span id="cb107-8"><a href="googlesheets.html#cb107-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Algeria Africa     1957    45.7 10270856     3014.</span></span>
+<span id="cb107-9"><a href="googlesheets.html#cb107-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Algeria Africa     1962    48.3 11000948     2551.</span></span>
+<span id="cb107-10"><a href="googlesheets.html#cb107-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Algeria Africa     1967    51.4 12760499     3247.</span></span>
+<span id="cb107-11"><a href="googlesheets.html#cb107-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Algeria Africa     1972    54.5 14760787     4183.</span></span>
+<span id="cb107-12"><a href="googlesheets.html#cb107-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Algeria Africa     1977    58.0 17152804     4910.</span></span>
+<span id="cb107-13"><a href="googlesheets.html#cb107-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 618 more rows</span></span></code></pre></div>
+<p>Notice that the <a href="https://docs.google.com/spreadsheets/d/1BzfL0kZUz1TsI5zxJF1WNF01IxvC67FbOJUiiGMZ_mQ/">original sheet</a> contains multiple sheets, one for each continent. We can list all these sheets by using the function <code>sheet_names()</code>.</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="googlesheets.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sheet_names</span>(<span class="at">ss =</span> id_gapminder)</span>
+<span id="cb108-2"><a href="googlesheets.html#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Africa&quot;   &quot;Americas&quot; &quot;Asia&quot;     &quot;Europe&quot;   &quot;Oceania&quot;</span></span></code></pre></div>
+<p>By default, <code>read_sheet()</code> reads in the first sheet. Here, that’s the Africa sheet. If we want to read in Asia, we can specify the <code>sheet</code> argument.</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="googlesheets.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_sheet</span>(<span class="at">ss =</span> id_gapminder, <span class="at">sheet =</span> <span class="st">&quot;Asia&quot;</span>)</span>
+<span id="cb109-2"><a href="googlesheets.html#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Reading from &quot;test-gs-gapminder&quot;.</span></span>
+<span id="cb109-3"><a href="googlesheets.html#cb109-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Range &#39;&#39;Asia&#39;&#39;.</span></span>
+<span id="cb109-4"><a href="googlesheets.html#cb109-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 396 × 6</span></span>
+<span id="cb109-5"><a href="googlesheets.html#cb109-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country     continent  year lifeExp      pop gdpPercap</span></span>
+<span id="cb109-6"><a href="googlesheets.html#cb109-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb109-7"><a href="googlesheets.html#cb109-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Afghanistan Asia       1952    28.8  8425333      779.</span></span>
+<span id="cb109-8"><a href="googlesheets.html#cb109-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Afghanistan Asia       1957    30.3  9240934      821.</span></span>
+<span id="cb109-9"><a href="googlesheets.html#cb109-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Afghanistan Asia       1962    32.0 10267083      853.</span></span>
+<span id="cb109-10"><a href="googlesheets.html#cb109-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Afghanistan Asia       1967    34.0 11537966      836.</span></span>
+<span id="cb109-11"><a href="googlesheets.html#cb109-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Afghanistan Asia       1972    36.1 13079460      740.</span></span>
+<span id="cb109-12"><a href="googlesheets.html#cb109-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Afghanistan Asia       1977    38.4 14880372      786.</span></span>
+<span id="cb109-13"><a href="googlesheets.html#cb109-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 390 more rows</span></span></code></pre></div>
+</div>
+<div id="writing" class="section level2" number="10.2">
+<h2><span class="header-section-number">10.2</span> Writing</h2>
+<p>You can write to a Google sheet using <a href="https://googlesheets4.tidyverse.org/reference/sheet_write.html"><code>write_sheet()</code></a>. If the sheet already exists, any data on it will be overwritten.</p>
+</div>
+<div id="finding-sheets" class="section level2" number="10.3">
+<h2><span class="header-section-number">10.3</span> Finding sheets</h2>
+<p>It can sometimes be difficult to find the exact Google Sheet you’re looking for. googlesheets4 includes a handy function that will return the names of the all your sheets, alongside their IDs, in an object called a <em>dribble</em>. A dribble is a tibble specifically for storing metadata about Google Drive files.</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="googlesheets.html#cb110-1" aria-hidden="true" tabindex="-1"></a>all_my_sheets <span class="ot">&lt;-</span> <span class="fu">gs4_find</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="googlesheets.html#cb111-1" aria-hidden="true" tabindex="-1"></a>all_my_sheets</span>
+<span id="cb111-2"><a href="googlesheets.html#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A dribble: 4 × 3</span></span>
+<span id="cb111-3"><a href="googlesheets.html#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name            id                                           drive_resource   </span></span>
+<span id="cb111-4"><a href="googlesheets.html#cb111-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;drv_id&gt;                                     &lt;list&gt;           </span></span>
+<span id="cb111-5"><a href="googlesheets.html#cb111-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 top-secret-data 1_vlFSg_2zP9JXo_tj-Ct5EGqCYpp0RC74DZ-7eEybUA &lt;named list [34]&gt;</span></span>
+<span id="cb111-6"><a href="googlesheets.html#cb111-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 important-data  1rOnvdsEmqhTVjPcvFUpLftL8jmaPdSaJJo-_tBA6udk &lt;named list [34]&gt;</span></span>
+<span id="cb111-7"><a href="googlesheets.html#cb111-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 my-sheet-2      1aRknFvsCDiYzwPkhv-g59fjPcojzJD71jyZM2H0j-t8 &lt;named list [34]&gt;</span></span>
+<span id="cb111-8"><a href="googlesheets.html#cb111-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 my-sheet-1      1vSUFy9ENZXfcKFOb0woYuoBQj5Jgabm4b_1YD55dKGI &lt;named list [34]&gt;</span></span></code></pre></div>
+<p>Note that <code>gs4_find()</code> will lists both sheets that you own and private sheets that you have access to. These are the same sheets that you can see on your <a href="https://docs.google.com/spreadsheets/">Google Sheets homepage</a>.</p>
+<p>Now, you can easily search for a sheet by piping the results of <code>gs4_find()</code> into <code>view()</code>.</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="googlesheets.html#cb112-1" aria-hidden="true" tabindex="-1"></a>all_my_sheets <span class="sc">%&gt;%</span> </span>
+<span id="cb112-2"><a href="googlesheets.html#cb112-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">view</span>()</span></code></pre></div>
+</div>
+<div id="authentication" class="section level2" number="10.4">
+<h2><span class="header-section-number">10.4</span> Authentication</h2>
+<div id="interactive-session" class="section level3" number="10.4.1">
+<h3><span class="header-section-number">10.4.1</span> Interactive session</h3>
+<p>When you run R code in the console or in an R Markdown chunk, you’re in an <em>interactive session</em>. R understands that it’s interacting with a human, and so can prompt you for input or actions. In an interactive session, you don’t need to worry much about authentication. googlesheets4 will do most of the work for you.</p>
+<p>The first time you call a googlesheets4 function that requires authentication (e.g., <code>read_sheet(ss = id_gapminder)</code>), a browser tab will open and prompt you to sign into Google. Sign into your account and then return to RStudio.</p>
+<p>By default, your user credentials will now be stored as something called a gargle token. gargle is the name of an R package for working with Google APIs. The next time googlesheets4 requires authentication, it will use this token to authenticate you.</p>
+</div>
+<div id="non-interactive-session" class="section level3" number="10.4.2">
+<h3><span class="header-section-number">10.4.2</span> Non-interactive session</h3>
+<p>When you knit an R Markdown, you’re using R <em>non-interactively</em>. googlesheets4 can’t prompt you to sign into Google, because it doesn’t assume that there’s a human standing by to do so. This should only be a problem if you’re trying to knit an R Markdown document that uses googlesheets4 and you’ve never authenticated with googlesheets4 before. The easiest way to quickly authenticate and set up your gargle token is to run <code>googlesheets4::gs4_auth()</code> (you can run this anywhere: console, R Markdown chunk, etc.). Once you’ve signed into Google and returned to RStudio, try knitting your document.</p>
+<p>If you’ve authenticated with googlesheets4 before, but your R Markdown document never finishing knitting, you may need to update your gargle token. Run <code>googlesheets4::gs4_auth()</code> and then try knitting again.</p>
+<!--
+
+### Remote scripts
+
+If you're trying to run a script that uses googlesheets4 on a remote machine (like we explain [here](http://dcl-workflow.stanford.edu/rscripts-remote.html)), you'll need to do some more setup. 
+
+Before running your script, open RStudio on the remote machine, then carry out the following steps:
+
+__Step 1__ Run `gs4_auth()` to initialize your gargle token.  
+
+__Step 2__ Open your .Rprofile in RStudio by running `usethis::edit_r_profile()`. 
+
+__Step 3__ Add gargle options to your .Rprofile.
+
+Paste the following into your .Rprofile, replacing `YOUR_GOOGLE_ACCOUNT_EMAIL` with your Google Account email (complete with the \@gmail.com, \@stanford.edu, etc.). 
+
+
+```r
+options(
+  gargle_oauth_cache = "~/.R/gargle/gargle-oauth",
+  gargle_oauth_email = "YOUR_GOOGLE_ACCOUNT_EMAIL"
+)
+```
+
+Note that both need to be in quotes.
+
+`"~/.R/gargle/gargle_oauth"` is the default location for the gargle token you initialized in Step 1. Now, instead of needing to prompt you for information, `gs4_auth()` can use the information stored in your .Rprofile options to authenticate you.
+
+__Step 4__ Restart R for the changes to take effect. 
+
+You can use the keyboard shortcut `Cmd/Ctrl + Shift + F10`, or go to _Session_ > _Restart R_. 
+
+__Step 5__ Run `gs4_auth()` again.
+
+Now, you're all set to run googlesheets4 on a remote machine. You may need to run `gs4_auth()` once per new R session (e.g., whenever you re-open RStudio, restart R, etc.).
+
+-->
+
+</div>
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="census.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="rvest.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/dcl-docs/wrangle/edit/master/googlesheets.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

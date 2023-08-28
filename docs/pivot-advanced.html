@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Advanced pivoting | Data Wrangling</title>
+  <meta name="description" content="A collection of readings on data wrangling." />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Advanced pivoting | Data Wrangling" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://dcl-wrangle.stanford.edu" />
+  
+  <meta property="og:description" content="A collection of readings on data wrangling." />
+  <meta name="github-repo" content="dcl-docs/wrangle" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Advanced pivoting | Data Wrangling" />
+  
+  <meta name="twitter:description" content="A collection of readings on data wrangling." />
+  
+
+<meta name="author" content="Sara Altman, Bill Behrman, Hadley Wickham" />
+
+
+<meta name="date" content="2021-09-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="pivot-basic.html"/>
+<link rel="next" href="apis.html"/>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">Data Wrangling</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#how-to-read-this-book"><i class="fa fa-check"></i>How to read this book</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#an-evolving-book"><i class="fa fa-check"></i>An evolving book</a></li>
+</ul></li>
+<li class="part"><span><b>I Manipulation</b></span></li>
+<li class="chapter" data-level="1" data-path="manip-basics.html"><a href="manip-basics.html"><i class="fa fa-check"></i><b>1</b> Basics</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="manip-basics.html"><a href="manip-basics.html#dplyr-basics"><i class="fa fa-check"></i><b>1.1</b> dplyr basics</a></li>
+<li class="chapter" data-level="1.2" data-path="manip-basics.html"><a href="manip-basics.html#filter-rows-with-filter"><i class="fa fa-check"></i><b>1.2</b> Filter rows with <code>filter()</code></a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="manip-basics.html"><a href="manip-basics.html#comparisons"><i class="fa fa-check"></i><b>1.2.1</b> Comparisons</a></li>
+<li class="chapter" data-level="1.2.2" data-path="manip-basics.html"><a href="manip-basics.html#logical-operators"><i class="fa fa-check"></i><b>1.2.2</b> Logical operators</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="manip-basics.html"><a href="manip-basics.html#add-new-variables-with-mutate"><i class="fa fa-check"></i><b>1.3</b> Add new variables with <code>mutate()</code></a></li>
+<li class="chapter" data-level="1.4" data-path="manip-basics.html"><a href="manip-basics.html#grouped-summaries-with-summarize"><i class="fa fa-check"></i><b>1.4</b> Grouped summaries with <code>summarize()</code></a></li>
+<li class="chapter" data-level="1.5" data-path="manip-basics.html"><a href="manip-basics.html#combining-multiple-operations-with-the-pipe"><i class="fa fa-check"></i><b>1.5</b> Combining multiple operations with the pipe</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="manip-one-table.html"><a href="manip-one-table.html"><i class="fa fa-check"></i><b>2</b> Other single-table verbs</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="manip-one-table.html"><a href="manip-one-table.html#select"><i class="fa fa-check"></i><b>2.1</b> Select</a></li>
+<li class="chapter" data-level="2.2" data-path="manip-one-table.html"><a href="manip-one-table.html#rename"><i class="fa fa-check"></i><b>2.2</b> Rename</a></li>
+<li class="chapter" data-level="2.3" data-path="manip-one-table.html"><a href="manip-one-table.html#change-column-order"><i class="fa fa-check"></i><b>2.3</b> Change column order</a></li>
+<li class="chapter" data-level="2.4" data-path="manip-one-table.html"><a href="manip-one-table.html#transmute"><i class="fa fa-check"></i><b>2.4</b> Transmute</a></li>
+<li class="chapter" data-level="2.5" data-path="manip-one-table.html"><a href="manip-one-table.html#arrange"><i class="fa fa-check"></i><b>2.5</b> Arrange</a></li>
+<li class="chapter" data-level="2.6" data-path="manip-one-table.html"><a href="manip-one-table.html#distinct"><i class="fa fa-check"></i><b>2.6</b> Distinct</a></li>
+<li class="chapter" data-level="2.7" data-path="manip-one-table.html"><a href="manip-one-table.html#slice-rows"><i class="fa fa-check"></i><b>2.7</b> Slice rows</a></li>
+<li class="chapter" data-level="2.8" data-path="manip-one-table.html"><a href="manip-one-table.html#sample"><i class="fa fa-check"></i><b>2.8</b> Sample</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="parse-basics.html"><a href="parse-basics.html"><i class="fa fa-check"></i><b>3</b> Parsing</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="parse-basics.html"><a href="parse-basics.html#delimited-files"><i class="fa fa-check"></i><b>3.1</b> Delimited files</a></li>
+<li class="chapter" data-level="3.2" data-path="parse-basics.html"><a href="parse-basics.html#read_csv"><i class="fa fa-check"></i><b>3.2</b> <code>read_csv()</code></a></li>
+</ul></li>
+<li class="part"><span><b>II Tidy data</b></span></li>
+<li class="chapter" data-level="4" data-path="tidy.html"><a href="tidy.html"><i class="fa fa-check"></i><b>4</b> Introduction</a></li>
+<li class="chapter" data-level="5" data-path="pivot-basic.html"><a href="pivot-basic.html"><i class="fa fa-check"></i><b>5</b> Basic pivoting</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="pivot-basic.html"><a href="pivot-basic.html#longer"><i class="fa fa-check"></i><b>5.1</b> Longer</a></li>
+<li class="chapter" data-level="5.2" data-path="pivot-basic.html"><a href="pivot-basic.html#wider"><i class="fa fa-check"></i><b>5.2</b> Wider</a></li>
+<li class="chapter" data-level="5.3" data-path="pivot-basic.html"><a href="pivot-basic.html#missing-values"><i class="fa fa-check"></i><b>5.3</b> Missing values</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="pivot-advanced.html"><a href="pivot-advanced.html"><i class="fa fa-check"></i><b>6</b> Advanced pivoting</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="pivot-advanced.html"><a href="pivot-advanced.html#longer-1"><i class="fa fa-check"></i><b>6.1</b> Longer</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="pivot-advanced.html"><a href="pivot-advanced.html#types"><i class="fa fa-check"></i><b>6.1.1</b> Types</a></li>
+<li class="chapter" data-level="6.1.2" data-path="pivot-advanced.html"><a href="pivot-advanced.html#prefixes"><i class="fa fa-check"></i><b>6.1.2</b> Prefixes</a></li>
+<li class="chapter" data-level="6.1.3" data-path="pivot-advanced.html"><a href="pivot-advanced.html#multiple-values"><i class="fa fa-check"></i><b>6.1.3</b> Multiple values</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="pivot-advanced.html"><a href="pivot-advanced.html#wider-1"><i class="fa fa-check"></i><b>6.2</b> Wider</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="pivot-advanced.html"><a href="pivot-advanced.html#prefixes-1"><i class="fa fa-check"></i><b>6.2.1</b> Prefixes</a></li>
+<li class="chapter" data-level="6.2.2" data-path="pivot-advanced.html"><a href="pivot-advanced.html#multiple-values-1"><i class="fa fa-check"></i><b>6.2.2</b> Multiple values</a></li>
+<li class="chapter" data-level="6.2.3" data-path="pivot-advanced.html"><a href="pivot-advanced.html#id_cols"><i class="fa fa-check"></i><b>6.2.3</b> <code>id_cols</code></a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Working with APIs</b></span></li>
+<li class="chapter" data-level="7" data-path="apis.html"><a href="apis.html"><i class="fa fa-check"></i><b>7</b> Introduction</a></li>
+<li class="chapter" data-level="8" data-path="api-basics.html"><a href="api-basics.html"><i class="fa fa-check"></i><b>8</b> API basics</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="api-basics.html"><a href="api-basics.html#what-is-an-api"><i class="fa fa-check"></i><b>8.1</b> What is an API?</a></li>
+<li class="chapter" data-level="8.2" data-path="api-basics.html"><a href="api-basics.html#find-your-api"><i class="fa fa-check"></i><b>8.2</b> Find your API</a></li>
+<li class="chapter" data-level="8.3" data-path="api-basics.html"><a href="api-basics.html#craft-your-request"><i class="fa fa-check"></i><b>8.3</b> Craft your request</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="api-basics.html"><a href="api-basics.html#base-request"><i class="fa fa-check"></i><b>8.3.1</b> Base request</a></li>
+<li class="chapter" data-level="8.3.2" data-path="api-basics.html"><a href="api-basics.html#parameters"><i class="fa fa-check"></i><b>8.3.2</b> Parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="api-basics.html"><a href="api-basics.html#test-your-request"><i class="fa fa-check"></i><b>8.4</b> Test your request</a></li>
+<li class="chapter" data-level="8.5" data-path="api-basics.html"><a href="api-basics.html#read-the-data-into-r"><i class="fa fa-check"></i><b>8.5</b> Read the data into R</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="api-basics.html"><a href="api-basics.html#json-data"><i class="fa fa-check"></i><b>8.5.1</b> JSON data</a></li>
+<li class="chapter" data-level="8.5.2" data-path="api-basics.html"><a href="api-basics.html#all-formats"><i class="fa fa-check"></i><b>8.5.2</b> All formats</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="api-basics.html"><a href="api-basics.html#next-steps"><i class="fa fa-check"></i><b>8.6</b> Next steps</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="census.html"><a href="census.html"><i class="fa fa-check"></i><b>9</b> U.S. Census Bureau</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="census.html"><a href="census.html#census-bureau-basics"><i class="fa fa-check"></i><b>9.1</b> Census Bureau basics</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="census.html"><a href="census.html#decennial-census"><i class="fa fa-check"></i><b>9.1.1</b> Decennial census</a></li>
+<li class="chapter" data-level="9.1.2" data-path="census.html"><a href="census.html#acs"><i class="fa fa-check"></i><b>9.1.2</b> ACS</a></li>
+<li class="chapter" data-level="9.1.3" data-path="census.html"><a href="census.html#population-estimates"><i class="fa fa-check"></i><b>9.1.3</b> Population estimates</a></li>
+<li class="chapter" data-level="9.1.4" data-path="census.html"><a href="census.html#choosing-data"><i class="fa fa-check"></i><b>9.1.4</b> Choosing data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="census.html"><a href="census.html#tidycensus"><i class="fa fa-check"></i><b>9.2</b> tidycensus</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="census.html"><a href="census.html#specify-a-dataset"><i class="fa fa-check"></i><b>9.2.1</b> Specify a dataset</a></li>
+<li class="chapter" data-level="9.2.2" data-path="census.html"><a href="census.html#find-variables"><i class="fa fa-check"></i><b>9.2.2</b> Find variables</a></li>
+<li class="chapter" data-level="9.2.3" data-path="census.html"><a href="census.html#get-data"><i class="fa fa-check"></i><b>9.2.3</b> Get data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="census.html"><a href="census.html#population-estimates-1"><i class="fa fa-check"></i><b>9.3</b> Population estimates</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="census.html"><a href="census.html#choose-data"><i class="fa fa-check"></i><b>9.3.1</b> Choose data</a></li>
+<li class="chapter" data-level="9.3.2" data-path="census.html"><a href="census.html#craft-your-request-1"><i class="fa fa-check"></i><b>9.3.2</b> Craft your request</a></li>
+<li class="chapter" data-level="9.3.3" data-path="census.html"><a href="census.html#read-the-data-into-r-1"><i class="fa fa-check"></i><b>9.3.3</b> Read the data into R</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="census.html"><a href="census.html#to-learn-more"><i class="fa fa-check"></i><b>9.4</b> To learn more</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="googlesheets.html"><a href="googlesheets.html"><i class="fa fa-check"></i><b>10</b> Google Sheets</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="googlesheets.html"><a href="googlesheets.html#reading"><i class="fa fa-check"></i><b>10.1</b> Reading</a></li>
+<li class="chapter" data-level="10.2" data-path="googlesheets.html"><a href="googlesheets.html#writing"><i class="fa fa-check"></i><b>10.2</b> Writing</a></li>
+<li class="chapter" data-level="10.3" data-path="googlesheets.html"><a href="googlesheets.html#finding-sheets"><i class="fa fa-check"></i><b>10.3</b> Finding sheets</a></li>
+<li class="chapter" data-level="10.4" data-path="googlesheets.html"><a href="googlesheets.html#authentication"><i class="fa fa-check"></i><b>10.4</b> Authentication</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="googlesheets.html"><a href="googlesheets.html#interactive-session"><i class="fa fa-check"></i><b>10.4.1</b> Interactive session</a></li>
+<li class="chapter" data-level="10.4.2" data-path="googlesheets.html"><a href="googlesheets.html#non-interactive-session"><i class="fa fa-check"></i><b>10.4.2</b> Non-interactive session</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>IV Web scraping</b></span></li>
+<li class="chapter" data-level="11" data-path="rvest.html"><a href="rvest.html"><i class="fa fa-check"></i><b>11</b> rvest</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="rvest.html"><a href="rvest.html#web-page-basics"><i class="fa fa-check"></i><b>11.1</b> Web page basics</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="rvest.html"><a href="rvest.html#html"><i class="fa fa-check"></i><b>11.1.1</b> HTML</a></li>
+<li class="chapter" data-level="11.1.2" data-path="rvest.html"><a href="rvest.html#css"><i class="fa fa-check"></i><b>11.1.2</b> CSS</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="rvest.html"><a href="rvest.html#scrape-data-with-rvest"><i class="fa fa-check"></i><b>11.2</b> Scrape data with rvest</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="rvest.html"><a href="rvest.html#read-html"><i class="fa fa-check"></i><b>11.2.1</b> Read HTML</a></li>
+<li class="chapter" data-level="11.2.2" data-path="rvest.html"><a href="rvest.html#find-the-css-selector"><i class="fa fa-check"></i><b>11.2.2</b> Find the CSS selector</a></li>
+<li class="chapter" data-level="11.2.3" data-path="rvest.html"><a href="rvest.html#extract-the-table"><i class="fa fa-check"></i><b>11.2.3</b> Extract the table</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Data Wrangling</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="advanced-pivoting" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Advanced pivoting</h1>
+<p><code>pivot_longer()</code> and <code>pivot_wider()</code> are very flexible, and can easily tidy a wide variety of non-tidy datasets. The previous chapter only covered the basics. In this chapter, we’ll explore this flexibility by introducing some of the pivot functions’ advanced functionality.</p>
+<div id="longer-1" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Longer</h2>
+<div id="types" class="section level3" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> Types</h3>
+<p>By default, <code>pivot_longer()</code> creates the <code>names_to</code> column as a character variable. For example, when we <code>pivot_longer()</code> <code>example_eagle_nests</code>, <code>year</code> becomes a character column.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="pivot-advanced.html#cb49-1" aria-hidden="true" tabindex="-1"></a>example_eagle_nests <span class="sc">%&gt;%</span> </span>
+<span id="cb49-2"><a href="pivot-advanced.html#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb49-3"><a href="pivot-advanced.html#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">2007</span><span class="st">`</span>, <span class="st">`</span><span class="at">2009</span><span class="st">`</span>), </span>
+<span id="cb49-4"><a href="pivot-advanced.html#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, </span>
+<span id="cb49-5"><a href="pivot-advanced.html#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;num_nests&quot;</span></span>
+<span id="cb49-6"><a href="pivot-advanced.html#cb49-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb49-7"><a href="pivot-advanced.html#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb49-8"><a href="pivot-advanced.html#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   region                     year  num_nests</span></span>
+<span id="cb49-9"><a href="pivot-advanced.html#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                      &lt;chr&gt;     &lt;dbl&gt;</span></span>
+<span id="cb49-10"><a href="pivot-advanced.html#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Pacific                    2007       1039</span></span>
+<span id="cb49-11"><a href="pivot-advanced.html#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Pacific                    2009       2587</span></span>
+<span id="cb49-12"><a href="pivot-advanced.html#cb49-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Southwest                  2007         51</span></span>
+<span id="cb49-13"><a href="pivot-advanced.html#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Southwest                  2009        176</span></span>
+<span id="cb49-14"><a href="pivot-advanced.html#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Rocky Mountains and Plains 2007        200</span></span>
+<span id="cb49-15"><a href="pivot-advanced.html#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Rocky Mountains and Plains 2009        338</span></span></code></pre></div>
+<p>It’s probably more useful to store <code>year</code> as an integer. We can tell <code>pivot_longer()</code> our desired type for the <code>names_to</code> column by using the optional <code>names_transform</code> argument.</p>
+<p><code>names_transform</code> takes a named list of column name and function pairs. For example, here’s how we would create <code>year</code> as an integer column:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="pivot-advanced.html#cb50-1" aria-hidden="true" tabindex="-1"></a>example_eagle_nests <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="pivot-advanced.html#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb50-3"><a href="pivot-advanced.html#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">2007</span><span class="st">`</span>, <span class="st">`</span><span class="at">2009</span><span class="st">`</span>), </span>
+<span id="cb50-4"><a href="pivot-advanced.html#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, </span>
+<span id="cb50-5"><a href="pivot-advanced.html#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_transform =</span> <span class="fu">list</span>(<span class="at">year =</span> as.integer),</span>
+<span id="cb50-6"><a href="pivot-advanced.html#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;num_nests&quot;</span></span>
+<span id="cb50-7"><a href="pivot-advanced.html#cb50-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-8"><a href="pivot-advanced.html#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb50-9"><a href="pivot-advanced.html#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   region                      year num_nests</span></span>
+<span id="cb50-10"><a href="pivot-advanced.html#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                      &lt;int&gt;     &lt;dbl&gt;</span></span>
+<span id="cb50-11"><a href="pivot-advanced.html#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Pacific                     2007      1039</span></span>
+<span id="cb50-12"><a href="pivot-advanced.html#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Pacific                     2009      2587</span></span>
+<span id="cb50-13"><a href="pivot-advanced.html#cb50-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Southwest                   2007        51</span></span>
+<span id="cb50-14"><a href="pivot-advanced.html#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Southwest                   2009       176</span></span>
+<span id="cb50-15"><a href="pivot-advanced.html#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Rocky Mountains and Plains  2007       200</span></span>
+<span id="cb50-16"><a href="pivot-advanced.html#cb50-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Rocky Mountains and Plains  2009       338</span></span></code></pre></div>
+<p>If we wanted <code>year</code> to be a double, we would use the following:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="pivot-advanced.html#cb51-1" aria-hidden="true" tabindex="-1"></a>example_eagle_nests <span class="sc">%&gt;%</span> </span>
+<span id="cb51-2"><a href="pivot-advanced.html#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb51-3"><a href="pivot-advanced.html#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">2007</span><span class="st">`</span>, <span class="st">`</span><span class="at">2009</span><span class="st">`</span>), </span>
+<span id="cb51-4"><a href="pivot-advanced.html#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, </span>
+<span id="cb51-5"><a href="pivot-advanced.html#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_transform =</span> <span class="fu">list</span>(<span class="at">year =</span> as.double),</span>
+<span id="cb51-6"><a href="pivot-advanced.html#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;num_nests&quot;</span></span>
+<span id="cb51-7"><a href="pivot-advanced.html#cb51-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb51-8"><a href="pivot-advanced.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb51-9"><a href="pivot-advanced.html#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   region                      year num_nests</span></span>
+<span id="cb51-10"><a href="pivot-advanced.html#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                      &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb51-11"><a href="pivot-advanced.html#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Pacific                     2007      1039</span></span>
+<span id="cb51-12"><a href="pivot-advanced.html#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Pacific                     2009      2587</span></span>
+<span id="cb51-13"><a href="pivot-advanced.html#cb51-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Southwest                   2007        51</span></span>
+<span id="cb51-14"><a href="pivot-advanced.html#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Southwest                   2009       176</span></span>
+<span id="cb51-15"><a href="pivot-advanced.html#cb51-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Rocky Mountains and Plains  2007       200</span></span>
+<span id="cb51-16"><a href="pivot-advanced.html#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Rocky Mountains and Plains  2009       338</span></span></code></pre></div>
+<p><code>pivot_longer()</code> also has a <code>values_transform</code> argument that controls the type of the <code>values_to</code> column. You specify <code>values_transform</code> in the same way as <code>names_transform</code>. For example, say we wanted to change <code>num_nests</code> from its default type (double) to an integer.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="pivot-advanced.html#cb52-1" aria-hidden="true" tabindex="-1"></a>example_eagle_nests <span class="sc">%&gt;%</span> </span>
+<span id="cb52-2"><a href="pivot-advanced.html#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb52-3"><a href="pivot-advanced.html#cb52-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">2007</span><span class="st">`</span>, <span class="st">`</span><span class="at">2009</span><span class="st">`</span>), </span>
+<span id="cb52-4"><a href="pivot-advanced.html#cb52-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, </span>
+<span id="cb52-5"><a href="pivot-advanced.html#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_transform =</span> <span class="fu">list</span>(<span class="at">year =</span> as.integer),</span>
+<span id="cb52-6"><a href="pivot-advanced.html#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;num_nests&quot;</span>,</span>
+<span id="cb52-7"><a href="pivot-advanced.html#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_transform =</span> <span class="fu">list</span>(<span class="at">num_nests =</span> as.integer)</span>
+<span id="cb52-8"><a href="pivot-advanced.html#cb52-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-9"><a href="pivot-advanced.html#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb52-10"><a href="pivot-advanced.html#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   region                      year num_nests</span></span>
+<span id="cb52-11"><a href="pivot-advanced.html#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                      &lt;int&gt;     &lt;int&gt;</span></span>
+<span id="cb52-12"><a href="pivot-advanced.html#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Pacific                     2007      1039</span></span>
+<span id="cb52-13"><a href="pivot-advanced.html#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Pacific                     2009      2587</span></span>
+<span id="cb52-14"><a href="pivot-advanced.html#cb52-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Southwest                   2007        51</span></span>
+<span id="cb52-15"><a href="pivot-advanced.html#cb52-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Southwest                   2009       176</span></span>
+<span id="cb52-16"><a href="pivot-advanced.html#cb52-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Rocky Mountains and Plains  2007       200</span></span>
+<span id="cb52-17"><a href="pivot-advanced.html#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Rocky Mountains and Plains  2009       338</span></span></code></pre></div>
+</div>
+<div id="prefixes" class="section level3" number="6.1.2">
+<h3><span class="header-section-number">6.1.2</span> Prefixes</h3>
+<p>Sometimes, the columns you want to pivot will contain extra information, either in their names or their values. For example, <code>example_gymnastics_1</code> contains data on the scores of three countries’ women’s Olympic gymnastic teams in 2016.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="pivot-advanced.html#cb53-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_1</span>
+<span id="cb53-2"><a href="pivot-advanced.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb53-3"><a href="pivot-advanced.html#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       score_vault score_floor</span></span>
+<span id="cb53-4"><a href="pivot-advanced.html#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb53-5"><a href="pivot-advanced.html#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States        46.9        46.0</span></span>
+<span id="cb53-6"><a href="pivot-advanced.html#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Russia               45.7        42.0</span></span>
+<span id="cb53-7"><a href="pivot-advanced.html#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 China                44.3        42.1</span></span></code></pre></div>
+<p>To tidy <code>example_gymnastics_1</code>, we need to pivot <code>score_vault</code> and <code>score_floor</code>.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="pivot-advanced.html#cb54-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_1 <span class="sc">%&gt;%</span> </span>
+<span id="cb54-2"><a href="pivot-advanced.html#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb54-3"><a href="pivot-advanced.html#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>country, </span>
+<span id="cb54-4"><a href="pivot-advanced.html#cb54-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;event&quot;</span>, </span>
+<span id="cb54-5"><a href="pivot-advanced.html#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span></span>
+<span id="cb54-6"><a href="pivot-advanced.html#cb54-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-7"><a href="pivot-advanced.html#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb54-8"><a href="pivot-advanced.html#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       event       score</span></span>
+<span id="cb54-9"><a href="pivot-advanced.html#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;       &lt;dbl&gt;</span></span>
+<span id="cb54-10"><a href="pivot-advanced.html#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States score_vault  46.9</span></span>
+<span id="cb54-11"><a href="pivot-advanced.html#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 United States score_floor  46.0</span></span>
+<span id="cb54-12"><a href="pivot-advanced.html#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Russia        score_vault  45.7</span></span>
+<span id="cb54-13"><a href="pivot-advanced.html#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Russia        score_floor  42.0</span></span>
+<span id="cb54-14"><a href="pivot-advanced.html#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 China         score_vault  44.3</span></span>
+<span id="cb54-15"><a href="pivot-advanced.html#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 China         score_floor  42.1</span></span></code></pre></div>
+<p>However, <code>score_vault</code> isn’t really a value of <code>event</code>. It would be better for the values to be <code>"vault"</code> and <code>"floor"</code>. We can remove the <code>"score_"</code> prefix with <code>pivot_longer()'</code>s <code>names_prefix</code> argument.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="pivot-advanced.html#cb55-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_1 <span class="sc">%&gt;%</span> </span>
+<span id="cb55-2"><a href="pivot-advanced.html#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb55-3"><a href="pivot-advanced.html#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>country, </span>
+<span id="cb55-4"><a href="pivot-advanced.html#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;event&quot;</span>, </span>
+<span id="cb55-5"><a href="pivot-advanced.html#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">&quot;score_&quot;</span>,</span>
+<span id="cb55-6"><a href="pivot-advanced.html#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span></span>
+<span id="cb55-7"><a href="pivot-advanced.html#cb55-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb55-8"><a href="pivot-advanced.html#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb55-9"><a href="pivot-advanced.html#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       event score</span></span>
+<span id="cb55-10"><a href="pivot-advanced.html#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span id="cb55-11"><a href="pivot-advanced.html#cb55-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States vault  46.9</span></span>
+<span id="cb55-12"><a href="pivot-advanced.html#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 United States floor  46.0</span></span>
+<span id="cb55-13"><a href="pivot-advanced.html#cb55-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Russia        vault  45.7</span></span>
+<span id="cb55-14"><a href="pivot-advanced.html#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Russia        floor  42.0</span></span>
+<span id="cb55-15"><a href="pivot-advanced.html#cb55-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 China         vault  44.3</span></span>
+<span id="cb55-16"><a href="pivot-advanced.html#cb55-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 China         floor  42.1</span></span></code></pre></div>
+</div>
+<div id="multiple-values" class="section level3" number="6.1.3">
+<h3><span class="header-section-number">6.1.3</span> Multiple values</h3>
+<p><code>example_gymnastics_2</code> includes data on both the 2012 and 2016 Olympics.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="pivot-advanced.html#cb56-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_2</span>
+<span id="cb56-2"><a href="pivot-advanced.html#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span id="cb56-3"><a href="pivot-advanced.html#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       vault_2012 floor_2012 vault_2016 floor_2016</span></span>
+<span id="cb56-4"><a href="pivot-advanced.html#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb56-5"><a href="pivot-advanced.html#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States       48.1       45.4       46.9       46.0</span></span>
+<span id="cb56-6"><a href="pivot-advanced.html#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Russia              46.4       41.6       45.7       42.0</span></span>
+<span id="cb56-7"><a href="pivot-advanced.html#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 China               44.3       40.8       44.3       42.1</span></span></code></pre></div>
+<p>There are four variables in this non-tidy dataset: <code>country</code>, <code>event</code>, <code>year</code>, and <code>score</code>. To tidy the data, we’ll need to pivot <code>vault_2012</code> through <code>floor_2016</code>. In contrast to other examples we’ve seen so far, though, each of these variable names contains <em>two</em> values: a <code>event</code> value and a <code>year</code> value. If we <code>pivot_longer()</code> as usual, both of these values will get placed in the same cell:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="pivot-advanced.html#cb57-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_2 <span class="sc">%&gt;%</span> </span>
+<span id="cb57-2"><a href="pivot-advanced.html#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb57-3"><a href="pivot-advanced.html#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>country,</span>
+<span id="cb57-4"><a href="pivot-advanced.html#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">&quot;event_year&quot;</span>,</span>
+<span id="cb57-5"><a href="pivot-advanced.html#cb57-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span></span>
+<span id="cb57-6"><a href="pivot-advanced.html#cb57-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb57-7"><a href="pivot-advanced.html#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 3</span></span>
+<span id="cb57-8"><a href="pivot-advanced.html#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       event_year score</span></span>
+<span id="cb57-9"><a href="pivot-advanced.html#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;      &lt;dbl&gt;</span></span>
+<span id="cb57-10"><a href="pivot-advanced.html#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States vault_2012  48.1</span></span>
+<span id="cb57-11"><a href="pivot-advanced.html#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 United States floor_2012  45.4</span></span>
+<span id="cb57-12"><a href="pivot-advanced.html#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 United States vault_2016  46.9</span></span>
+<span id="cb57-13"><a href="pivot-advanced.html#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 United States floor_2016  46.0</span></span>
+<span id="cb57-14"><a href="pivot-advanced.html#cb57-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Russia        vault_2012  46.4</span></span>
+<span id="cb57-15"><a href="pivot-advanced.html#cb57-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Russia        floor_2012  41.6</span></span>
+<span id="cb57-16"><a href="pivot-advanced.html#cb57-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 6 more rows</span></span></code></pre></div>
+<p><code>event_year</code> contains two variables, and so the result isn’t tidy. Instead, we want <code>pivot_longer()</code> to split each pivoted variable name into two, placing <code>"vault"</code> or <code>"floor"</code> into an <code>event</code> variable and <code>2012</code> or <code>2016</code> into a <code>year</code> variable.</p>
+<p>We’ll need to make the following two changes to our <code>pivot_longer()</code> call:</p>
+<ul>
+<li>Change <code>names_to</code> to be a vector of two names: <code>c("event", "year)</code>. This will tell <code>pivot_longer()</code> to create two variables from the column names instead of one.</li>
+<li>Use the <code>names_sep</code> argument to tell <code>pivot_longer()</code> what separates an <code>event</code> value from a <code>year</code> in each of the column names. Here, that’s an underscore (<code>_</code>).</li>
+</ul>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="pivot-advanced.html#cb58-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_2 <span class="sc">%&gt;%</span> </span>
+<span id="cb58-2"><a href="pivot-advanced.html#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb58-3"><a href="pivot-advanced.html#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>country,</span>
+<span id="cb58-4"><a href="pivot-advanced.html#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;event&quot;</span>, <span class="st">&quot;year&quot;</span>),</span>
+<span id="cb58-5"><a href="pivot-advanced.html#cb58-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span>,</span>
+<span id="cb58-6"><a href="pivot-advanced.html#cb58-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span></span>
+<span id="cb58-7"><a href="pivot-advanced.html#cb58-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb58-8"><a href="pivot-advanced.html#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 4</span></span>
+<span id="cb58-9"><a href="pivot-advanced.html#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       event year  score</span></span>
+<span id="cb58-10"><a href="pivot-advanced.html#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span id="cb58-11"><a href="pivot-advanced.html#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States vault 2012   48.1</span></span>
+<span id="cb58-12"><a href="pivot-advanced.html#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 United States floor 2012   45.4</span></span>
+<span id="cb58-13"><a href="pivot-advanced.html#cb58-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 United States vault 2016   46.9</span></span>
+<span id="cb58-14"><a href="pivot-advanced.html#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 United States floor 2016   46.0</span></span>
+<span id="cb58-15"><a href="pivot-advanced.html#cb58-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Russia        vault 2012   46.4</span></span>
+<span id="cb58-16"><a href="pivot-advanced.html#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Russia        floor 2012   41.6</span></span>
+<span id="cb58-17"><a href="pivot-advanced.html#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 6 more rows</span></span></code></pre></div>
+<p><code>pivot_longer()</code> created three variables, instead of the default two: <code>event</code>, <code>year</code>, and <code>score</code>. Now, the data is tidy.</p>
+<p>We can extend this idea to work with any number of columns. <code>example_gymnastics_3</code> has three values stored in each column name: <code>event</code>, <code>year</code>, and <code>gender</code>.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="pivot-advanced.html#cb59-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_3</span>
+<span id="cb59-2"><a href="pivot-advanced.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 9</span></span>
+<span id="cb59-3"><a href="pivot-advanced.html#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       vault_2012_f vault_2012_m vault_2016_f vault_2016_m floor_2012_f</span></span>
+<span id="cb59-4"><a href="pivot-advanced.html#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb59-5"><a href="pivot-advanced.html#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States         48.1         46.6         46.9         45.9         45.4</span></span>
+<span id="cb59-6"><a href="pivot-advanced.html#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Russia                46.4         46.9         45.7         46.0         41.6</span></span>
+<span id="cb59-7"><a href="pivot-advanced.html#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 China                 44.3         48.3         44.3         45           40.8</span></span>
+<span id="cb59-8"><a href="pivot-advanced.html#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 3 more variables: floor_2012_m &lt;dbl&gt;, floor_2016_f &lt;dbl&gt;,</span></span>
+<span id="cb59-9"><a href="pivot-advanced.html#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   floor_2016_m &lt;dbl&gt;</span></span></code></pre></div>
+<p><code>names_sep</code> is still <code>_</code>, but we’ll need to change <code>names_to</code> to include <code>"gender"</code>.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="pivot-advanced.html#cb60-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_3 <span class="sc">%&gt;%</span> </span>
+<span id="cb60-2"><a href="pivot-advanced.html#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb60-3"><a href="pivot-advanced.html#cb60-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>country,</span>
+<span id="cb60-4"><a href="pivot-advanced.html#cb60-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;event&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;gender&quot;</span>),</span>
+<span id="cb60-5"><a href="pivot-advanced.html#cb60-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span>,</span>
+<span id="cb60-6"><a href="pivot-advanced.html#cb60-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span></span>
+<span id="cb60-7"><a href="pivot-advanced.html#cb60-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb60-8"><a href="pivot-advanced.html#cb60-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 5</span></span>
+<span id="cb60-9"><a href="pivot-advanced.html#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       event year  gender score</span></span>
+<span id="cb60-10"><a href="pivot-advanced.html#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;</span></span>
+<span id="cb60-11"><a href="pivot-advanced.html#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States vault 2012  f       48.1</span></span>
+<span id="cb60-12"><a href="pivot-advanced.html#cb60-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 United States vault 2012  m       46.6</span></span>
+<span id="cb60-13"><a href="pivot-advanced.html#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 United States vault 2016  f       46.9</span></span>
+<span id="cb60-14"><a href="pivot-advanced.html#cb60-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 United States vault 2016  m       45.9</span></span>
+<span id="cb60-15"><a href="pivot-advanced.html#cb60-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 United States floor 2012  f       45.4</span></span>
+<span id="cb60-16"><a href="pivot-advanced.html#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 United States floor 2012  m       45.3</span></span>
+<span id="cb60-17"><a href="pivot-advanced.html#cb60-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 18 more rows</span></span></code></pre></div>
+<p>Finally, what if there isn’t a separator like <code>_</code> in the column names?</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="pivot-advanced.html#cb61-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_4 </span>
+<span id="cb61-2"><a href="pivot-advanced.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span id="cb61-3"><a href="pivot-advanced.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       vault2012 floor2012 vault2016 floor2016</span></span>
+<span id="cb61-4"><a href="pivot-advanced.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb61-5"><a href="pivot-advanced.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States      48.1      45.4      46.9      46.0</span></span>
+<span id="cb61-6"><a href="pivot-advanced.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Russia             46.4      41.6      45.7      42.0</span></span>
+<span id="cb61-7"><a href="pivot-advanced.html#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 China              44.3      40.8      44.3      42.1</span></span></code></pre></div>
+<p>Instead of using <code>names_sep</code>, we can a related <code>pivot_longer()</code> argument: <code>names_pattern</code>. <code>names_pattern</code> is more flexible than <code>names_sep</code> because it allows regular expression groups, matching each group with a variable from <code>names_to</code>.</p>
+<p>For <code>example_gymnastics_4</code>, we want to create two variables from the column names: <code>event</code> and <code>year</code>. This means <code>names_pattern</code> needs two groups. Here’s a regular expression we could use:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="pivot-advanced.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;([A-Za-z]+)(</span><span class="sc">\\</span><span class="st">d+)&quot;</span></span></code></pre></div>
+<p><code>"([A-Za-z]+)"</code> matches only letters, so will pull out just <code>"vault"</code> or <code>"floor"</code>. <code>"(\\d+)"</code> matches digits and will pull out <code>2012</code> or <code>2016</code>.</p>
+<p>Here’s the call to <code>pivot_longer()</code>:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="pivot-advanced.html#cb63-1" aria-hidden="true" tabindex="-1"></a>example_gymnastics_4 <span class="sc">%&gt;%</span> </span>
+<span id="cb63-2"><a href="pivot-advanced.html#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb63-3"><a href="pivot-advanced.html#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">!</span>country,</span>
+<span id="cb63-4"><a href="pivot-advanced.html#cb63-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;event&quot;</span>, <span class="st">&quot;year&quot;</span>),</span>
+<span id="cb63-5"><a href="pivot-advanced.html#cb63-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_pattern =</span> <span class="st">&quot;([A-Za-z]+)(</span><span class="sc">\\</span><span class="st">d+)&quot;</span>,</span>
+<span id="cb63-6"><a href="pivot-advanced.html#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;score&quot;</span></span>
+<span id="cb63-7"><a href="pivot-advanced.html#cb63-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb63-8"><a href="pivot-advanced.html#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 4</span></span>
+<span id="cb63-9"><a href="pivot-advanced.html#cb63-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country       event year  score</span></span>
+<span id="cb63-10"><a href="pivot-advanced.html#cb63-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span id="cb63-11"><a href="pivot-advanced.html#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 United States vault 2012   48.1</span></span>
+<span id="cb63-12"><a href="pivot-advanced.html#cb63-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 United States floor 2012   45.4</span></span>
+<span id="cb63-13"><a href="pivot-advanced.html#cb63-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 United States vault 2016   46.9</span></span>
+<span id="cb63-14"><a href="pivot-advanced.html#cb63-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 United States floor 2016   46.0</span></span>
+<span id="cb63-15"><a href="pivot-advanced.html#cb63-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Russia        vault 2012   46.4</span></span>
+<span id="cb63-16"><a href="pivot-advanced.html#cb63-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Russia        floor 2012   41.6</span></span>
+<span id="cb63-17"><a href="pivot-advanced.html#cb63-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 6 more rows</span></span></code></pre></div>
+<p><code>pivot_longer()</code> successfully separates the events from the years.</p>
+</div>
+</div>
+<div id="wider-1" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Wider</h2>
+<div id="prefixes-1" class="section level3" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> Prefixes</h3>
+<p>Like <code>pivot_longer()</code>, <code>pivot_wider()</code> also has a <code>names_prefix</code> argument. However, it adds a prefix instead of removing one.</p>
+<p><code>example_twins</code> contains some data on two sets of (real) twins. <code>n</code> defines the birth order.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="pivot-advanced.html#cb64-1" aria-hidden="true" tabindex="-1"></a>example_twins</span>
+<span id="cb64-2"><a href="pivot-advanced.html#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb64-3"><a href="pivot-advanced.html#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   family name      n</span></span>
+<span id="cb64-4"><a href="pivot-advanced.html#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;</span></span>
+<span id="cb64-5"><a href="pivot-advanced.html#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Kelly  Mark      1</span></span>
+<span id="cb64-6"><a href="pivot-advanced.html#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Kelly  Scott     2</span></span>
+<span id="cb64-7"><a href="pivot-advanced.html#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Quin   Tegan     1</span></span>
+<span id="cb64-8"><a href="pivot-advanced.html#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Quin   Sara      2</span></span></code></pre></div>
+<p>If we <code>pivot_wider()</code> without a prefix, we’ll get numbers as column names, which isn’t very informative.</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="pivot-advanced.html#cb65-1" aria-hidden="true" tabindex="-1"></a>example_twins <span class="sc">%&gt;%</span> </span>
+<span id="cb65-2"><a href="pivot-advanced.html#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">&quot;n&quot;</span>, <span class="at">values_from =</span> <span class="st">&quot;name&quot;</span>)</span>
+<span id="cb65-3"><a href="pivot-advanced.html#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span id="cb65-4"><a href="pivot-advanced.html#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   family `1`   `2`  </span></span>
+<span id="cb65-5"><a href="pivot-advanced.html#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;</span></span>
+<span id="cb65-6"><a href="pivot-advanced.html#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Kelly  Mark  Scott</span></span>
+<span id="cb65-7"><a href="pivot-advanced.html#cb65-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Quin   Tegan Sara</span></span></code></pre></div>
+<p>We can use <code>names_prefix</code> to add an informative prefix.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="pivot-advanced.html#cb66-1" aria-hidden="true" tabindex="-1"></a>example_twins <span class="sc">%&gt;%</span> </span>
+<span id="cb66-2"><a href="pivot-advanced.html#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb66-3"><a href="pivot-advanced.html#cb66-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">&quot;n&quot;</span>, </span>
+<span id="cb66-4"><a href="pivot-advanced.html#cb66-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">&quot;twin_&quot;</span>, </span>
+<span id="cb66-5"><a href="pivot-advanced.html#cb66-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="st">&quot;name&quot;</span></span>
+<span id="cb66-6"><a href="pivot-advanced.html#cb66-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-7"><a href="pivot-advanced.html#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span id="cb66-8"><a href="pivot-advanced.html#cb66-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   family twin_1 twin_2</span></span>
+<span id="cb66-9"><a href="pivot-advanced.html#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; </span></span>
+<span id="cb66-10"><a href="pivot-advanced.html#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Kelly  Mark   Scott </span></span>
+<span id="cb66-11"><a href="pivot-advanced.html#cb66-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Quin   Tegan  Sara</span></span></code></pre></div>
+</div>
+<div id="multiple-values-1" class="section level3" number="6.2.2">
+<h3><span class="header-section-number">6.2.2</span> Multiple values</h3>
+<p>Earlier, we showed how you can create multiple columns from data stored in column names using <code>pivot_longer()</code>. Analogously, you can use <code>pivot_wider()</code> to create column names that combine values from multiple columns.</p>
+<p>For example, take the following modified subset of the American Community Survey data from last chapter:</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="pivot-advanced.html#cb67-1" aria-hidden="true" tabindex="-1"></a>example_acs_2</span>
+<span id="cb67-2"><a href="pivot-advanced.html#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 5</span></span>
+<span id="cb67-3"><a href="pivot-advanced.html#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    variable    measure    value</span></span>
+<span id="cb67-4"><a href="pivot-advanced.html#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt;</span></span>
+<span id="cb67-5"><a href="pivot-advanced.html#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama pop_renter  estimate 1434765</span></span>
+<span id="cb67-6"><a href="pivot-advanced.html#cb67-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 01    Alabama pop_renter  error      16736</span></span>
+<span id="cb67-7"><a href="pivot-advanced.html#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 01    Alabama median_rent estimate     747</span></span>
+<span id="cb67-8"><a href="pivot-advanced.html#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 01    Alabama median_rent error          3</span></span>
+<span id="cb67-9"><a href="pivot-advanced.html#cb67-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 13    Georgia pop_renter  estimate 3592422</span></span>
+<span id="cb67-10"><a href="pivot-advanced.html#cb67-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 13    Georgia pop_renter  error      33385</span></span>
+<span id="cb67-11"><a href="pivot-advanced.html#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 2 more rows</span></span></code></pre></div>
+<p>The <code>measure</code> column indicates if a given row represents the estimate of the variable or the margin of error. We might want each combination of <code>variable</code> and <code>measure</code> to become the name of a new variable (i.e., <code>pop_renter_estimate</code>, <code>pop_renter_error</code>, <code>median_rent_estimate</code>, <code>median_rent_error</code>). Recall that <code>pivot_wider()</code>’s <code>names_from</code> argument controls which column’s values are used for the new column names. If we supply multiple columns to <code>names_from</code>, <code>pivot_wider()</code> will create one new column for each unique combination.</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="pivot-advanced.html#cb68-1" aria-hidden="true" tabindex="-1"></a>example_acs_2 <span class="sc">%&gt;%</span> </span>
+<span id="cb68-2"><a href="pivot-advanced.html#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb68-3"><a href="pivot-advanced.html#cb68-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="fu">c</span>(variable, measure), </span>
+<span id="cb68-4"><a href="pivot-advanced.html#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> value</span>
+<span id="cb68-5"><a href="pivot-advanced.html#cb68-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb68-6"><a href="pivot-advanced.html#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 6</span></span>
+<span id="cb68-7"><a href="pivot-advanced.html#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    pop_renter_estimate pop_renter_error median_rent_estimate</span></span>
+<span id="cb68-8"><a href="pivot-advanced.html#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt;            &lt;dbl&gt;                &lt;dbl&gt;</span></span>
+<span id="cb68-9"><a href="pivot-advanced.html#cb68-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama             1434765            16736                  747</span></span>
+<span id="cb68-10"><a href="pivot-advanced.html#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 13    Georgia             3592422            33385                  927</span></span>
+<span id="cb68-11"><a href="pivot-advanced.html#cb68-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 1 more variable: median_rent_error &lt;dbl&gt;</span></span></code></pre></div>
+<p>By default, <code>pivot_wider()</code> will combine the two values with an underscore, but you can control the separator with <code>names_sep</code>.</p>
+<p>In <code>example_acs_2</code>, the names of our desired columns were stored across two variables: <code>variable</code> and <code>measure</code>. You might also encounter values stored across multiple variables.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="pivot-advanced.html#cb69-1" aria-hidden="true" tabindex="-1"></a>example_acs_3</span>
+<span id="cb69-2"><a href="pivot-advanced.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 5</span></span>
+<span id="cb69-3"><a href="pivot-advanced.html#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    variable    estimate error</span></span>
+<span id="cb69-4"><a href="pivot-advanced.html#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb69-5"><a href="pivot-advanced.html#cb69-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama pop_renter   1434765 16736</span></span>
+<span id="cb69-6"><a href="pivot-advanced.html#cb69-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 01    Alabama median_rent      747     3</span></span>
+<span id="cb69-7"><a href="pivot-advanced.html#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 13    Georgia pop_renter   3592422 33385</span></span>
+<span id="cb69-8"><a href="pivot-advanced.html#cb69-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 13    Georgia median_rent      927     3</span></span></code></pre></div>
+<p>Now, values of our desired variables (<code>pop_renter_esimate</code>, <code>pop_renter_error</code>, <code>median_rent_estimate</code>, and <code>median_rent_error</code>) are in two separate columns: <code>estimate</code> and <code>error</code>. We can specify both columns to <code>pivot_wider()</code>’s <code>values_from</code> argument.</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="pivot-advanced.html#cb70-1" aria-hidden="true" tabindex="-1"></a>example_acs_3 <span class="sc">%&gt;%</span> </span>
+<span id="cb70-2"><a href="pivot-advanced.html#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb70-3"><a href="pivot-advanced.html#cb70-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> variable, </span>
+<span id="cb70-4"><a href="pivot-advanced.html#cb70-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(estimate, error)</span>
+<span id="cb70-5"><a href="pivot-advanced.html#cb70-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb70-6"><a href="pivot-advanced.html#cb70-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 6</span></span>
+<span id="cb70-7"><a href="pivot-advanced.html#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    estimate_pop_renter estimate_median_rent error_pop_renter</span></span>
+<span id="cb70-8"><a href="pivot-advanced.html#cb70-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                 &lt;dbl&gt;                &lt;dbl&gt;            &lt;dbl&gt;</span></span>
+<span id="cb70-9"><a href="pivot-advanced.html#cb70-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama             1434765                  747            16736</span></span>
+<span id="cb70-10"><a href="pivot-advanced.html#cb70-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 13    Georgia             3592422                  927            33385</span></span>
+<span id="cb70-11"><a href="pivot-advanced.html#cb70-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 1 more variable: error_median_rent &lt;dbl&gt;</span></span></code></pre></div>
+<p><code>pivot_wider()</code> pivots <code>variable</code>, then creates columns by combining the value of measure with each column name specified in <code>values_from</code>.</p>
+</div>
+<div id="id_cols" class="section level3" number="6.2.3">
+<h3><span class="header-section-number">6.2.3</span> <code>id_cols</code></h3>
+<p><code>pivot_wider()</code> has an additional argument <code>id_cols</code>, which is useful in some situations. To explain, we’ll go over a brief example.</p>
+<p>Here’s another ACS dataset:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="pivot-advanced.html#cb71-1" aria-hidden="true" tabindex="-1"></a>example_acs_4</span>
+<span id="cb71-2"><a href="pivot-advanced.html#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span id="cb71-3"><a href="pivot-advanced.html#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    variable    estimate error</span></span>
+<span id="cb71-4"><a href="pivot-advanced.html#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb71-5"><a href="pivot-advanced.html#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama pop_housed   4731852    NA</span></span>
+<span id="cb71-6"><a href="pivot-advanced.html#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 01    Alabama pop_renter   1434765 16736</span></span>
+<span id="cb71-7"><a href="pivot-advanced.html#cb71-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 01    Alabama median_rent      747     3</span></span>
+<span id="cb71-8"><a href="pivot-advanced.html#cb71-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 13    Georgia pop_housed   9943137    NA</span></span>
+<span id="cb71-9"><a href="pivot-advanced.html#cb71-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 13    Georgia pop_renter   3592422 33385</span></span>
+<span id="cb71-10"><a href="pivot-advanced.html#cb71-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 13    Georgia median_rent      927     3</span></span></code></pre></div>
+<p>Now, <code>variable</code> includes three variables: the total housed population (<code>"pop_housed"</code>), total renter population (<code>"pop_renter"</code>), and median rent (<code>"median_rent"</code>). However, <code>error</code> is only available for <code>"pop_renter"</code> and <code>"median_rent"</code>. Say that we don’t want to pivot <code>error</code> because we don’t need the margin of error data. Here’s an attempt:</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="pivot-advanced.html#cb72-1" aria-hidden="true" tabindex="-1"></a>example_acs_4 <span class="sc">%&gt;%</span> </span>
+<span id="cb72-2"><a href="pivot-advanced.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb72-3"><a href="pivot-advanced.html#cb72-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> variable,</span>
+<span id="cb72-4"><a href="pivot-advanced.html#cb72-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> estimate</span>
+<span id="cb72-5"><a href="pivot-advanced.html#cb72-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb72-6"><a href="pivot-advanced.html#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
+<span id="cb72-7"><a href="pivot-advanced.html#cb72-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    error pop_housed pop_renter median_rent</span></span>
+<span id="cb72-8"><a href="pivot-advanced.html#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb72-9"><a href="pivot-advanced.html#cb72-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama    NA    4731852         NA          NA</span></span>
+<span id="cb72-10"><a href="pivot-advanced.html#cb72-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 01    Alabama 16736         NA    1434765          NA</span></span>
+<span id="cb72-11"><a href="pivot-advanced.html#cb72-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 01    Alabama     3         NA         NA         747</span></span>
+<span id="cb72-12"><a href="pivot-advanced.html#cb72-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 13    Georgia    NA    9943137         NA          NA</span></span>
+<span id="cb72-13"><a href="pivot-advanced.html#cb72-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 13    Georgia 33385         NA    3592422          NA</span></span>
+<span id="cb72-14"><a href="pivot-advanced.html#cb72-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 13    Georgia     3         NA         NA         927</span></span></code></pre></div>
+<p>This probably isn’t the result we want. <code>pivot_wider()</code> created one row for each <code>geoid</code>-<code>name</code>-<code>error</code> combination, thinking that <code>geoid</code>, <code>name</code>, and <code>error</code> all identify an observation. We can fix this by setting <code>id_cols</code>.</p>
+<p><code>id_cols</code> controls which columns define an observation. By default, <code>id_cols</code> includes all columns not specified in <code>names_from</code> or <code>values_from</code>. Here, we want <code>pivot_wider()</code> to understand that each observation should be a state, defined by <code>geoid</code> and <code>name</code>. To fix the problem, we’ll tell <code>pivot_longer()</code> that <code>error</code> should not be included in <code>id_cols</code>.</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="pivot-advanced.html#cb73-1" aria-hidden="true" tabindex="-1"></a>example_acs_4 <span class="sc">%&gt;%</span> </span>
+<span id="cb73-2"><a href="pivot-advanced.html#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb73-3"><a href="pivot-advanced.html#cb73-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="sc">!</span>error,</span>
+<span id="cb73-4"><a href="pivot-advanced.html#cb73-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> variable,</span>
+<span id="cb73-5"><a href="pivot-advanced.html#cb73-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> estimate</span>
+<span id="cb73-6"><a href="pivot-advanced.html#cb73-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb73-7"><a href="pivot-advanced.html#cb73-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 5</span></span>
+<span id="cb73-8"><a href="pivot-advanced.html#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   geoid name    pop_housed pop_renter median_rent</span></span>
+<span id="cb73-9"><a href="pivot-advanced.html#cb73-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb73-10"><a href="pivot-advanced.html#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 01    Alabama    4731852    1434765         747</span></span>
+<span id="cb73-11"><a href="pivot-advanced.html#cb73-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 13    Georgia    9943137    3592422         927</span></span></code></pre></div>
+<p>That looks a lot better! <code>pivot_wider()</code> threw out the <code>error</code> column and created one row for each state.</p>
+
+</div>
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="pivot-basic.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="apis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/dcl-docs/wrangle/edit/master/pivot-advanced.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
